@@ -1,22 +1,29 @@
 #pragma once
 #include <string>
-/* Address object - Try work with IPv4 types: address, mask and default gateway
- * TODO: all
- */
+#include "address.hpp"
+#include "packet.hpp"
+#include <queue>
 
-class NetworkInterface {
+class NetworkInterface
+{
 public:
-    NetworkInterface() {
+    NetworkInterface() : _address(0) {}
+    NetworkInterface(const std::string &adr);
 
-    };
-    NetworkInterface(const std::string& adr, const std::string& mask, const std::string& gw) {
+    bool SetAddress(const std::string &adr);
+    const std::string GetAddressStr() const;
+    const uint32_t GetAddressInt() const { return _address; }
 
-    }
-    ~NetworkInterface() {};
+    ~NetworkInterface(){};
+
+    // queue of packets to be sent to a link
+    std::queue<Packet> transmit;
+    // queue of packets received from a link
+    std::queue<Packet> receive;
+
 private:
-    // pass string of type "xxx.yyy.zzz.www" and parse it to 32-bit integer format
-    uint32_t StringToOctets(const std::string& str) const;
-    uint32_t address;
-    uint32_t mask;
-    uint32_t gateway;
+    // 32-bit representation of an IP address.
+    // Note: real networking would use Big Endian, but cutting corners here
+    // 0 is determined as valid IP
+    uint32_t _address;
 };
