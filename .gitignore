@@ -1,0 +1,22 @@
+# copied from https://courses-git.comnet.aalto.fi/CPP-S2020/student_base/src/branch/master/.gitignore
+
+.vs/
+.vscode/
+*
+!*.*
+!*/
+!README.md
+!CMakeLists.txt
+
+*.user
+src/CMakeFiles
+*.cmake
+*~
+.*.swp
+.*.swo
+*.o
+*.a
+*~
+settings.json
+*.txt
+*.exe
