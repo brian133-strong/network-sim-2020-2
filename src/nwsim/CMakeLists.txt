@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.6)
-project (nwsim)
+project (networksim)
 #include_directories("src")
 
 # Set the name of the executable to be produced
-set(EXECUTABLE_NAME nwsim)
+set(EXECUTABLE_NAME networksim)
 
 # Add all .cpp - files under src/ directory
 #file(GLOB SOURCES src/*.cpp)
