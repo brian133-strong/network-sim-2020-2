@@ -15,12 +15,6 @@ public:
     const uint32_t GetAddressInt() const { return _address; }
 
     ~NetworkInterface(){};
-
-    // queue of packets to be sent to a link
-    std::queue<Packet> transmit;
-    // queue of packets received from a link
-    std::queue<Packet> receive;
-
 private:
     // 32-bit representation of an IP address.
     // Note: real networking would use Big Endian, but cutting corners here
