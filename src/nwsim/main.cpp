@@ -6,6 +6,7 @@
 #include "networkinterface.hpp"
 #include "node.hpp"
 #include "link.hpp"
+#include "eventqueue.hpp"
 //print line
 void println(const std::string& s) {
     std::cout << s << std::endl;
@@ -151,5 +152,45 @@ int main(void) {
         std::cout << "\tPacket: " << p.GetData() << std::endl;
         packets.pop();
     }
+
+
+	// Testing eventqueue
+
+	println("Adding events");
+	EventQueue eq;
+	eq.AddEventTimeStep(1, link12);
+	eq.AddEventTimeStep(2, link12);
+	eq.AddEventTimeStep(3, link12);
+
+	println("Trying to retrieve events");
+
+	try {
+		while (true) {
+			Link temp = eq.GetNextTimeStep();
+			std::cout << "got next event\n";
+		}
+	}
+	catch (std::logic_error& e) {
+		std::cout << "got error: " << e.what() << std::endl;
+	}
+	
+	eq.ClearQueue();
+	println("adding 100 random events");
+	for (int i = 0; i < 100; ++i) {
+		eq.AddEventTimeStep(rand() % 100 + 1, link12);
+	}
+
+	int got = 0;
+	try {
+		while (true) {
+			Link temp = eq.GetNextTimeStep();
+			got++;
+		}
+	}
+	catch (std::logic_error& e) {
+		std::cout << "got error: " << e.what() << std::endl;
+		std::cout << "before error got " << got << " events" << std::endl;
+	}
+
     return 0;
 }
