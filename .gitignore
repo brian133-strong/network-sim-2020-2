@@ -9,6 +9,7 @@
 !CMakeLists.txt
 
 *.user
+src/CMakeFiles
 src/*/CMakeFiles
 *.cmake
 *~
