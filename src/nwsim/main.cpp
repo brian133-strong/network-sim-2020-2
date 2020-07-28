@@ -1,8 +1,11 @@
 #include <iostream>
 #include <exception>
+#include <memory>
 #include "address.hpp"
 #include "packet.hpp"
 #include "networkinterface.hpp"
+#include "node.hpp"
+#include "link.hpp"
 //print line
 void println(const std::string& s) {
     std::cout << s << std::endl;
@@ -106,6 +109,47 @@ int main(void) {
     std::cout << "Manual override size - 0: " << p2.SetSize(0) << std::endl;
     
 
+    /*
+     * Testing Nodes and Links, transmitting packets over links
+     */
+    println("=== Testing nodes, links and packet transfer ===");
+    std::string adr1,adr2;
+    adr1 = "10.0.0.1";
+    adr2 = "10.0.0.2";
+    std::shared_ptr<Node> node1 = std::make_shared<Node>();
+    std::shared_ptr<Node> node2 = std::make_shared<Node>();
+    node1->network_interface.SetAddress(adr1);
+    node2->network_interface.SetAddress(adr2);
 
+    Packet pck1("Test Packet 1",Address::AddressStrToInt(adr2), Address::AddressStrToInt(adr1));
+    Packet pck2("Test Packet 2",Address::AddressStrToInt(adr2), Address::AddressStrToInt(adr1));
+    Packet pck3("Test Packet 3",Address::AddressStrToInt(adr2), Address::AddressStrToInt(adr1));
+    
+    Link link12 = Link(node1, node2, 1, 1);
+    std::cout << "nodes and links created, current lengths: " << std::endl;
+    std::cout << "\tqueue lengths: node1: " << node1->GetTransmitQueueLength() << ", node2: " << node2->GetTransmitQueueLength() << ", link: " << link12.GetTransmissionQueueSize() << std::endl;
+    std::cout << "Attempting to transmit packets with empty queues, all should remain 0:" << std::endl;
+    link12.TransmitPackets();
+    std::cout << "\tqueue lengths: node1: " << node1->GetTransmitQueueLength() << ", node2: " << node2->GetTransmitQueueLength() << ", link: " << link12.GetTransmissionQueueSize() << std::endl;
+
+    std::cout << "Adding packets to node1 queue:" << std::endl;
+    node1->AddTransmitPacket(pck1,node2);
+    node1->AddTransmitPacket(pck2,node2);
+    node1->AddTransmitPacket(pck3,node2);
+    std::cout << "\tqueue lengths: node1: " << node1->GetTransmitQueueLength() << ", node2: " << node2->GetTransmitQueueLength() << ", link: " << link12.GetTransmissionQueueSize() << std::endl;
+
+    std::cout << "Attempting to transmit all 3 packets from node1 to node2:" << std::endl;
+    link12.TransmitPackets();
+    link12.TransmitPackets();
+    link12.TransmitPackets();
+    std::cout << "\tqueue lengths: node1: " << node1->GetTransmitQueueLength() << ", node2: " << node2->GetTransmitQueueLength() << ", link: " << link12.GetTransmissionQueueSize() << std::endl;
+    auto packets = node2->GetReceivedPackets();
+    std::cout << "\treceived queue: size: " << packets.size() << std::endl;
+    while(!packets.empty())
+    {
+        auto p = packets.front();
+        std::cout << "\tPacket: " << p.GetData() << std::endl;
+        packets.pop();
+    }
     return 0;
 }
