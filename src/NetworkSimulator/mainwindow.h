@@ -18,6 +18,8 @@ public:
 
 private slots:
     void buttonPressed();
+    void exitSlot();
+    void on_quitBtn_clicked();
 
 private:
     Ui::MainWindow *ui;

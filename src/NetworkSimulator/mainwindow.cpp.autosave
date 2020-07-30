@@ -53,10 +53,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//void MainWindow::buttonPressed() {
-//    qDebug() << "signal from pressed button";
-//    button = new QPushButton();
-//}
+void MainWindow::buttonPressed() {
+    qDebug() << "signal from pressed button";
+    button = new QPushButton();
+}
 
 
 void MainWindow::on_quitBtn_clicked()
