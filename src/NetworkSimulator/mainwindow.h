@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QPushButton>
+#include <QGraphicsScene>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -14,6 +16,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void buttonPressed();
+
 private:
     Ui::MainWindow *ui;
+    QPushButton *button;
+    QGraphicsScene *scene;
+    QString string;
 };

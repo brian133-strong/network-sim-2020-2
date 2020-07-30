@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="nwsim-gui"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\Applications\;CMake Files\..\..\..\..\Applications\Qt\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Widgets\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Core\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Svg\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Zlib\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Network\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5VirtualKeyboard\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Quick\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5QmlModels\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Qml\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5EventDispatcherSupport\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5FontDatabaseSupport\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5EglSupport\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5ThemeSupport\;CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5WebSockets\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="nwsim-gui">
+				<Option output="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/nwsim-gui" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_ZLIB_LIB"/>
+					<Add option="-DQT_EVENTDISPATCHER_SUPPORT_LIB"/>
+					<Add option="-DQT_FONTDATABASE_SUPPORT_LIB"/>
+					<Add option="-DQT_EGL_SUPPORT_LIB"/>
+					<Add directory="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug"/>
+					<Add directory="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui"/>
+					<Add directory="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/nwsim-gui_autogen/include"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtWidgets"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtGui"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtCore"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/./mkspecs/wasm-emscripten"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtZlib"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtEventDispatcherSupport"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtFontDatabaseSupport"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtEglSupport"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 nwsim-gui"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="nwsim-gui/fast">
+				<Option output="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/nwsim-gui" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_ZLIB_LIB"/>
+					<Add option="-DQT_EVENTDISPATCHER_SUPPORT_LIB"/>
+					<Add option="-DQT_FONTDATABASE_SUPPORT_LIB"/>
+					<Add option="-DQT_EGL_SUPPORT_LIB"/>
+					<Add directory="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug"/>
+					<Add directory="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui"/>
+					<Add directory="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/nwsim-gui_autogen/include"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtWidgets"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtGui"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtCore"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/./mkspecs/wasm-emscripten"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtZlib"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtEventDispatcherSupport"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtFontDatabaseSupport"/>
+					<Add directory="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/include/QtEglSupport"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/11.0.3/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include"/>
+					<Add directory="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 nwsim-gui/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="nwsim-gui_autogen">
+				<Option working_dir="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 nwsim-gui_autogen"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QGifPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QICNSPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QJpegPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QTgaPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QTiffPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QWasmIntegrationPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QWbmpPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QWebpPlugin_Import.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/build-nwsim-gui-Qt_5_15_0_WebAssembly-Debug/nwsim-gui_autogen/mocs_compilation.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/main.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/mainwindow.cpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/mainwindow.hpp">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/mainwindow.ui">
+			<Option target="nwsim-gui"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5/Qt5Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5/Qt5ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5/Qt5ModuleLocation.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QGifPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QICNSPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QICOPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QJpegPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QSvgIconPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QSvgPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QTgaPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QTiffPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QTuioTouchPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QVirtualKeyboardPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QWasmIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QWbmpPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QWebGLIntegrationPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Gui/Qt5Gui_QWebpPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Core/Qt5CoreConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Core/Qt5CoreMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Svg/Qt5SvgConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Svg\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Svg/Qt5SvgConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Svg\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Zlib/Qt5ZlibConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Zlib\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Zlib/Qt5ZlibConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Zlib\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Network/Qt5NetworkConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Network\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Network/Qt5NetworkConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Network\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5VirtualKeyboard/Qt5VirtualKeyboardConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5VirtualKeyboard\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5VirtualKeyboard/Qt5VirtualKeyboardConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5VirtualKeyboard\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5VirtualKeyboard/Qt5VirtualKeyboard_QtVirtualKeyboardHangulPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5VirtualKeyboard\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5VirtualKeyboard/Qt5VirtualKeyboard_QtVirtualKeyboardOpenWnnPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5VirtualKeyboard\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5VirtualKeyboard/Qt5VirtualKeyboard_QtVirtualKeyboardPinyinPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5VirtualKeyboard\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5VirtualKeyboard/Qt5VirtualKeyboard_QtVirtualKeyboardTCImePlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5VirtualKeyboard\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5VirtualKeyboard/Qt5VirtualKeyboard_QtVirtualKeyboardThaiPlugin.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5VirtualKeyboard\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Quick/Qt5QuickConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Quick\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Quick/Qt5QuickConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Quick\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5QmlModels/Qt5QmlModelsConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5QmlModels\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5QmlModels/Qt5QmlModelsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5QmlModels\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Qml/Qt5QmlConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Qml\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Qml/Qt5QmlConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Qml\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5Qml/Qt5QmlConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5Qml\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5EventDispatcherSupport/Qt5EventDispatcherSupportConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5EventDispatcherSupport\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5EventDispatcherSupport/Qt5EventDispatcherSupportConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5EventDispatcherSupport\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5FontDatabaseSupport/Qt5FontDatabaseSupportConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5FontDatabaseSupport\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5FontDatabaseSupport/Qt5FontDatabaseSupportConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5FontDatabaseSupport\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5EglSupport/Qt5EglSupportConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5EglSupport\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5EglSupport/Qt5EglSupportConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5EglSupport\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5ThemeSupport/Qt5ThemeSupportConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5ThemeSupport\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5ThemeSupport/Qt5ThemeSupportConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5ThemeSupport\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5WebSockets/Qt5WebSocketsConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5WebSockets\"/>
+		</Unit>
+		<Unit filename="/Users/dancunogenda/tmp/network-sim-2020-2/src/nwsim-gui/../../../../Applications/Qt/5.15.0/wasm_32/lib/cmake/Qt5WebSockets/Qt5WebSocketsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\Applications\Qt\5.15.0\wasm_32\lib\cmake\Qt5WebSockets\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
