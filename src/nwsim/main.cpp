@@ -179,7 +179,7 @@ int main(void) {
 
 	try {
 		while (true) {
-			Link temp = eq.GetNextTimeStep();
+			auto temp = eq.GetNextTimeStep();
 			std::cout << "got next event\n";
 		}
 	}
@@ -196,7 +196,7 @@ int main(void) {
 	int got = 0;
 	try {
 		while (true) {
-			Link temp = eq.GetNextTimeStep();
+			auto temp = eq.GetNextTimeStep();
 			got++;
 		}
 	}

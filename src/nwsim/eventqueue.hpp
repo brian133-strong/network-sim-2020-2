@@ -7,7 +7,7 @@ Handles the simulation timesteps
 class EventQueue {
 public:
 	void AddEventTimeStep(int, Link&);
-	Link& GetNextTimeStep();
+	std::pair<Link&, int> GetNextTimeStep();
 	void ClearQueue();
 private:
 	std::priority_queue<std::pair<int, Link&>> _timeStepQueue;
