@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     line->setLine(10, 20, 40, 50);
     scene->addItem(line);
 
+
 }
 
 MainWindow::~MainWindow()
@@ -53,10 +54,10 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-//void MainWindow::buttonPressed() {
-//    qDebug() << "signal from pressed button";
-//    button = new QPushButton();
-//}
+void MainWindow::buttonPressed() {
+    qDebug() << "signal from pressed button";
+    button = new QPushButton();
+}
 
 
 void MainWindow::on_quitBtn_clicked()
@@ -68,8 +69,6 @@ void MainWindow::on_quitBtn_clicked()
 void MainWindow::exitSlot() {
     MainWindow::close();
 }
-
-
 
 
 

@@ -21,6 +21,7 @@ private slots:
     void exitSlot();
     void on_quitBtn_clicked();
 
+
 private:
     Ui::MainWindow *ui;
     QPushButton *button;
