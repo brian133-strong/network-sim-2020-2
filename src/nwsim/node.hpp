@@ -1,10 +1,12 @@
 #pragma once
+#include <iostream>
 #include <vector>
 #include <queue>
 #include <memory>
 #include "networkinterface.hpp"
 #include "application.hpp"
 #include "link.hpp"
+
 class Node {
 public:
     Node() { }
@@ -16,7 +18,6 @@ public:
     void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
     void ReceivePacket(Packet p);
     std::queue<Packet> GetReceivedPackets() const { return _receive; }
-
 
     NetworkInterface network_interface;
 private:

@@ -7,12 +7,14 @@
 #include "node.hpp"
 #include "link.hpp"
 #include "eventqueue.hpp"
+#include "dummy.hpp"
 //print line
 void println(const std::string& s) {
     std::cout << s << std::endl;
 }
 
 int main(void) {
+    /*
     println("=== Testing NetworkInterface ===");
     std::cout << "Default constructor:" << std::endl;
     NetworkInterface n1;
@@ -113,6 +115,7 @@ int main(void) {
     /*
      * Testing Nodes and Links, transmitting packets over links
      */
+    /*
     println("=== Testing nodes, links and packet transfer ===");
     std::string adr1,adr2;
     adr1 = "10.0.0.1";
@@ -191,6 +194,12 @@ int main(void) {
 		std::cout << "got error: " << e.what() << std::endl;
 		std::cout << "before error got " << got << " events" << std::endl;
 	}
+    */
 
+    // Testing node to json
+    Dummy d(3, 2);
+
+    d.write();
+    
     return 0;
 }
