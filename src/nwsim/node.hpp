@@ -3,9 +3,16 @@
 #include <vector>
 #include <queue>
 #include <memory>
+
 #include "networkinterface.hpp"
 #include "application.hpp"
 #include "link.hpp"
+
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonValue>
+#include <QString>
+
 // pixel position values
 struct Position {
     float posX;
@@ -32,7 +39,12 @@ public:
     Position GetPosition() const { return _pos; }
     // Set Node position on GUI
     void SetPosition(float posX, float posY) { _pos = {posX, posY}; }
-    
+
+    // Get node as a JSON-object
+    void WriteToJSON(QJsonObject &json) const;
+
+    void ReadFromJSON(QJsonObject &json);
+
     NetworkInterface network_interface;
 private:
     // queue of packets to be sent to a link, keep track of where to send if multiple connected nodes
