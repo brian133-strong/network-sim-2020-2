@@ -156,9 +156,22 @@ int main(void) {
         packets.pop();
     }
 
+    // Testing node position
+    println("=== Testing node position ===");
+    std::shared_ptr<Node> NodePos1 = std::make_shared<Node>(); // default constructed
+    std::shared_ptr<Node> NodePos2 = std::make_shared<Node>(10,20); // constructed with int values
+    std::shared_ptr<Node> NodePos3 = std::make_shared<Node>(123.456, 666.666); // constructed with float values
+    
+    std::cout << "Default pos: '" << NodePos1->GetPosition().posX << "," << NodePos1->GetPosition().posY << "'" << std::endl;
+    std::cout << "Int constructed pos: '" << NodePos2->GetPosition().posX << "," << NodePos2->GetPosition().posY << "'" << std::endl;
+    std::cout << "Float constructed pos: '" << NodePos3->GetPosition().posX << "," << NodePos3->GetPosition().posY << "'" << std::endl;
+    
+    NodePos1->SetPosition(0.123, 0.666);
+    std::cout << "Moved pos: '" << NodePos1->GetPosition().posX << "," << NodePos1->GetPosition().posY << "'" << std::endl << std::endl;
+    
 
 	// Testing eventqueue
-
+    println("=== Testing event queue ===");
 	println("Adding events");
 	EventQueue eq;
 	eq.AddEventTimeStep(1, link12);
@@ -169,7 +182,7 @@ int main(void) {
 
 	try {
 		while (true) {
-			Link temp = eq.GetNextTimeStep();
+			auto temp = eq.GetNextTimeStep();
 			std::cout << "got next event\n";
 		}
 	}
@@ -186,7 +199,7 @@ int main(void) {
 	int got = 0;
 	try {
 		while (true) {
-			Link temp = eq.GetNextTimeStep();
+			auto temp = eq.GetNextTimeStep();
 			got++;
 		}
 	}

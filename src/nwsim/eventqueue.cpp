@@ -25,11 +25,11 @@ void EventQueue::AddEventTimeStep(int time, Link& link) {
 	_timeStepQueue.push({ -time, link });
 }
 
-Link& EventQueue::GetNextTimeStep() {
+std::pair<Link&, int> EventQueue::GetNextTimeStep() {
 	if (_timeStepQueue.empty()) {
 		throw std::logic_error("Queue is empty");
 	}
 	auto p = _timeStepQueue.top();
 	_timeStepQueue.pop();
-	return p.second;
+	return {p.second, -p.first};
 }

@@ -21,3 +21,4 @@ src/*/CMakeFiles
 settings.json
 *.txt
 *.exe
+build/
