@@ -10,6 +10,9 @@ project (networksim)
 # Set the name of the executable to be produced
 set(EXECUTABLE_NAME networksim)
 
+# Use C++17
+SET(CMAKE_CXX_STANDARD 17)
+
 # Add all .cpp - files under src/ directory
 #file(GLOB SOURCES src/*.cpp)
 file(GLOB SOURCES *.cpp)

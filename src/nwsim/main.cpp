@@ -7,7 +7,12 @@
 #include "node.hpp"
 #include "link.hpp"
 #include "eventqueue.hpp"
+<<<<<<< HEAD
 #include "dummy.hpp"
+=======
+#include "network.hpp"
+
+>>>>>>> master
 //print line
 void println(const std::string& s) {
     std::cout << s << std::endl;
@@ -110,6 +115,7 @@ int main(void) {
     std::cout << "Decremented ttl: " << (int)p2.DecrementTimeToLive() << std::endl;    
     std::cout << "Manual override size - 25: " << p2.SetSize(25) << std::endl;
     std::cout << "Manual override size - 0: " << p2.SetSize(0) << std::endl;
+<<<<<<< HEAD
     
 
     /*
@@ -155,6 +161,9 @@ int main(void) {
         std::cout << "\tPacket: " << p.GetData() << std::endl;
         packets.pop();
     }
+=======
+     
+>>>>>>> master
 
     // Testing node position
     println("=== Testing node position ===");
@@ -170,26 +179,76 @@ int main(void) {
     std::cout << "Moved pos: '" << NodePos1->GetPosition().posX << "," << NodePos1->GetPosition().posY << "'" << std::endl << std::endl;
     
 
-	// Testing eventqueue
-    println("=== Testing event queue ===");
-	println("Adding events");
-	EventQueue eq;
-	eq.AddEventTimeStep(1, link12);
-	eq.AddEventTimeStep(2, link12);
-	eq.AddEventTimeStep(3, link12);
+    /*
+     * Testing a Network of Nodes and Links
+     */
+    println("=== Testing Network of Nodes and Links ===");
 
-	println("Trying to retrieve events");
+    Network nw;
 
-	try {
-		while (true) {
-			auto temp = eq.GetNextTimeStep();
-			std::cout << "got next event\n";
-		}
-	}
-	catch (std::logic_error& e) {
-		std::cout << "got error: " << e.what() << std::endl;
-	}
+    // creating nodes
+    println("Attempt to create some valid nodes...");
+    std::shared_ptr<Node> nw_node1 = nw.CreateNode("192.168.0.1");
+    std::shared_ptr<Node> nw_node2 = nw.CreateNode("0.0.0.0");
+    std::shared_ptr<Node> nw_node3 = nw.CreateNode("123.123.123.123");
+    std::shared_ptr<Node> nw_node4 = nw.CreateNode("255.255.255.255");
+    std::cout << "Node count: " << nw.size() << std::endl;
+
+    println("Attempt to create a non-unique node.");
+    std::shared_ptr<Node> nw_node_nonunique = nw.CreateNode("192.168.0.1");
+    std::cout << "Node count: " << nw.size() << std::endl;
+    std::cout << std::boolalpha << "Ptr should be null: " << (nw_node_nonunique == nullptr) << std::endl;
+
+    println("Attempt to link nodes");
+    std::shared_ptr<Link> nw_link12 = nw.LinkNodes(nw_node1, nw_node2);
+    std::shared_ptr<Link> nw_link13 = nw.LinkNodes(nw_node1, nw_node3);
+    std::shared_ptr<Link> nw_link14 = nw.LinkNodes(nw_node1, nw_node4);
+    
+    std::cout << "Nodes 1,2 should be linked: " << nw_node1->IsConnectedTo(nw_node2) << std::endl;
+    std::cout << "Link works in both ways: " << nw_node2->IsConnectedTo(nw_node1) << std::endl;
+    
+    println("Removing link between nodes 1,2");
+    nw.RemoveLink(nw_node1,nw_node2);
+    std::cout << "Nodes 1,2 should not be linked: " << !nw_node1->IsConnectedTo(nw_node2) << std::endl;
+    std::cout << "Link removed both ways: " << !nw_node2->IsConnectedTo(nw_node1) << std::endl;
+
+    println("Removing link 13 removes the references in nodes as well");
+    std::cout << "before node count: " << nw.size() << std::endl;
+    std::cout << "before removal: 1,3 linked: " << nw_node1->IsConnectedTo(nw_node3) << std::endl;
+    std::cout << "before removal: 3,1 linked: " << nw_node3->IsConnectedTo(nw_node1) << std::endl;
+    nw.RemoveLink(nw_node1,nw_node3);
+    std::cout << "after node count should not change: " << nw.size() << std::endl;
+    std::cout << "after removal: 1,3 linked: " << nw_node1->IsConnectedTo(nw_node3) << std::endl;
+    std::cout << "after removal: 3,1 linked: " << nw_node3->IsConnectedTo(nw_node1) << std::endl;
+
+    println("Removing the node 4 removes the link between 1,4 and the references in node 1");
+    std::cout << "node count: " << nw.size() << std::endl;    
+    std::cout << "before removal: 1,4 linked: " << nw_node1->IsConnectedTo(nw_node4) << std::endl;
+    nw.RemoveNode(nw_node4);
+    std::cout << "after node count: " << nw.size() << std::endl;
+    std::cout << "after removal: 1,4 linked: " << nw_node1->IsConnectedTo(nw_node4) << std::endl;
+
+	// // Testing eventqueue
+    // println("=== Testing event queue ===");
+	// println("Adding events");
+	// EventQueue eq;
+	// eq.AddEventTimeStep(1, link12);
+	// eq.AddEventTimeStep(2, link12);
+	// eq.AddEventTimeStep(3, link12);
+
+	// println("Trying to retrieve events");
+
+	// try {
+	// 	while (true) {
+	// 		auto temp = eq.GetNextTimeStep();
+	// 		std::cout << "got next event\n";
+	// 	}
+	// }
+	// catch (std::logic_error& e) {
+	// 	std::cout << "got error: " << e.what() << std::endl;
+	// }
 	
+<<<<<<< HEAD
 	eq.ClearQueue();
 	println("adding 100 random events");
 	for (int i = 0; i < 100; ++i) {
@@ -227,6 +286,25 @@ int main(void) {
               << "\nApplication: " << "Paskaa"
               << "\nPosition: " << "(" << n2.GetPosition().posX << ", " << n2.GetPosition().posY << ")"
               << std::endl;
+=======
+	// eq.ClearQueue();
+	// println("adding 100 random events");
+	// for (int i = 0; i < 100; ++i) {
+	// 	eq.AddEventTimeStep(rand() % 100 + 1, link12);
+	// }
+
+	// int got = 0;
+	// try {
+	// 	while (true) {
+	// 		auto temp = eq.GetNextTimeStep();
+	// 		got++;
+	// 	}
+	// }
+	// catch (std::logic_error& e) {
+	// 	std::cout << "got error: " << e.what() << std::endl;
+	// 	std::cout << "before error got " << got << " events" << std::endl;
+	// }
+>>>>>>> master
 
     return 0;
 }
