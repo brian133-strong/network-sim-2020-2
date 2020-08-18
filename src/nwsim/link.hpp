@@ -24,6 +24,10 @@ public:
     // Naive way to transmit packets from nodes to link and link to nodes
     void TransmitPackets();
 
+    void WriteToJson(QJsonObject &json) const;
+    
+    void ReadFromJson(QJsonObject &json);
+
     ~Link() { }
 private:
     // Queue of currently transmitted packets.

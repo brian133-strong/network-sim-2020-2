@@ -25,7 +25,7 @@ void Node::AddTransmitPacket(Packet p, std::shared_ptr<Node> n)
     }
 }
 
-void Node::WriteToJSON(QJsonObject &json) const {
+void Node::WriteToJson(QJsonObject &json) const {
     const QString address = QString::fromStdString( this->network_interface.GetAddressStr() );
     //QString application = QString::fromStdString( _app._placeholder ); 
 
@@ -35,7 +35,7 @@ void Node::WriteToJSON(QJsonObject &json) const {
     
 }
 
-void Node::ReadFromJSON(QJsonObject &json) {
+void Node::ReadFromJson(QJsonObject &json) {
 
     if (json.contains("address") && json["address"].isString())
         this->network_interface.SetAddress( json["address"].toString().toStdString()); // TODO: Handle invalid input

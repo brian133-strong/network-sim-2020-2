@@ -40,10 +40,11 @@ public:
     // Set Node position on GUI
     void SetPosition(float posX, float posY) { _pos = {posX, posY}; }
 
-    // Get node as a JSON-object
-    void WriteToJSON(QJsonObject &json) const;
+    // Write node to a JSON-object
+    void WriteToJson(QJsonObject &json) const;
 
-    void ReadFromJSON(QJsonObject &json);
+    // Read node from a JSON-object
+    void ReadFromJson(QJsonObject &json);
 
     NetworkInterface network_interface;
 private:

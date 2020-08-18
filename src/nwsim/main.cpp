@@ -209,10 +209,24 @@ int main(void) {
 	}
     */
 
-    // Testing node to json
-    Dummy d(3, 2);
+    // Testing jSON
 
-    d.write();
+    Node n1(1, 2, "255.255.255.255");
+    QJsonObject json;
+    n1.WriteToJSON(json);
     
+    std::cout << "Address: " << json["address"].toString().toStdString() 
+              << "\nApplication: " << json["application"].toString().toStdString() << "\n"
+              << "Position: (" << json["position"].toObject()["x"].toInt()<< ", " << json["position"].toObject()["x"].toInt() << ")"
+              << std::endl;
+
+    Node n2;
+    n2.ReadFromJSON(json);
+
+    std::cout << "Address: " << n2.network_interface.GetAddressStr()
+              << "\nApplication: " << "Paskaa"
+              << "\nPosition: " << "(" << n2.GetPosition().posX << ", " << n2.GetPosition().posY << ")"
+              << std::endl;
+
     return 0;
 }
