@@ -3,6 +3,7 @@
 #include "link.hpp"
 #include "node.hpp"
 
+/* DEPRECATED
 Link::Link(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2, unsigned int transmission_speed, unsigned int propagation_delay) 
 {
     _nodes.first = n1;
@@ -10,17 +11,18 @@ Link::Link(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2, unsigned int tran
     _transmission_speed = transmission_speed;
     _propagation_delay = propagation_delay;
 }
-
+*/
+/* DEPRECATED. Functionality moved to Nodes.
 void Link::TransmitPackets()
 {
     // Get packets from nodes transmit queues
     // TODO: timing with _transmission_speed?
-    Packet p1 = _nodes.first->GetTransmitPacket();
+    Packet p1 = _nodes.first->GetNextTransmitPacket();
     if (p1.GetTimeToLive() > 0)
     {
         _transmission_queue.push(std::make_pair(_nodes.second,p1));
     }
-    Packet p2 = _nodes.second->GetTransmitPacket();
+    Packet p2 = _nodes.second->GetNextTransmitPacket();
     if (p2.GetTimeToLive() > 0)
     {
         _transmission_queue.push(std::make_pair(_nodes.first,p2));
@@ -44,4 +46,4 @@ void Link::TransmitPackets()
     }
     
 }
-
+*/

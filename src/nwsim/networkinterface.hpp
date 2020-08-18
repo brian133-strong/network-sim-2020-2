@@ -9,7 +9,8 @@ class NetworkInterface
 public:
     NetworkInterface() : _address(0) {}
     NetworkInterface(const std::string &adr);
-
+    // Set address, returns true if successful (valid address string).
+    // NOTE: Does not check for uniqueness in Network, do this check yourself or else undefined behaviour may happen when routing...
     bool SetAddress(const std::string &adr);
     const std::string GetAddressStr() const;
     const uint32_t GetAddressInt() const { return _address; }
