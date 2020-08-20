@@ -1,5 +1,6 @@
 #include <queue>
 #include "node.hpp"
+using namespace NWSim;
 
 Packet Node::GetNextTransmitPacket()
 {
@@ -11,8 +12,6 @@ Packet Node::GetNextTransmitPacket()
     }
     return p;
 }
-
-
 
 void Node::ReceivePacket(Packet p)
 {
@@ -75,5 +74,28 @@ void Node::DisconnectFromNode(std::shared_ptr<Node> n)
             _connected.erase(it);
             break; // no need to check further, only one connection to given node is possible
         }
+    }
+}
+
+
+std::priority_queue<ConnectedNode,std::vector<ConnectedNode>,CompareConnectedNodes> Node::GetConnectedNodes() const
+{
+    std::priority_queue<ConnectedNode,std::vector<ConnectedNode>,CompareConnectedNodes> nodes;
+    for (auto link : _connected)
+    {
+        nodes.push(link);
+    }
+    return nodes;
+}
+
+
+
+void Router::RunApplication() 
+{
+    // Go through all received packets
+    while(!_receive.empty())
+    {
+        
+
     }
 }

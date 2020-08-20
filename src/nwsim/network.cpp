@@ -2,7 +2,9 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <limits.h>
 
+using namespace NWSim;
 std::shared_ptr<Node> Network::CreateNode(const std::string &address)
 {
     std::cout << "Creating node: " << address << std::endl;
@@ -116,6 +118,36 @@ void Network::RemoveLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
         {
             _links.erase(it);
             break;
+        }
+    }
+}
+
+
+void Network::GenerateRoutingTable()
+{
+    // Collection of all target address / (intermediate) source node pairs
+    std::vector<std::pair<std::string, std::string>> targetSourcePairs;
+    for (auto source : _nodes)
+    {
+        auto sourceLinkedTo = source->_connected;
+
+        for (auto target : _nodes)
+        {
+            // not inserting self to self
+            if (target == source)
+                continue;
+            std::pair<std::string, std::string> targetSourcePair = std::make_pair(target->network_interface.GetAddressStr(), source->network_interface.GetAddressStr());
+
+            std::shared_ptr<Node> route = nullptr;
+
+            for (auto link : _links)
+            {
+                auto n1 = std::get<0>(link);
+                auto n2 = std::get<1>(link);
+                auto with = std::get<2>(link);
+
+                //_routingTable.insert(std::make_pair(targetSourcePair,route));
+            }
         }
     }
 }

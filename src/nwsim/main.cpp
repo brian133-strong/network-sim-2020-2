@@ -13,7 +13,7 @@
 void println(const std::string& s) {
     std::cout << s << std::endl;
 }
-
+using namespace NWSim;
 int main(void) {
     println("=== Testing NetworkInterface ===");
     std::cout << "Default constructor:" << std::endl;

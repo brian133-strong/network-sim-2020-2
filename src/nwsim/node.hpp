@@ -6,76 +6,151 @@
 #include "networkinterface.hpp"
 #include "application.hpp"
 #include "link.hpp"
-// Need to forward declare Link in order to compile
-class Link;
-
-
-// pixel position values
-struct Position
+namespace NWSim
 {
-    float posX;
-    float posY;
-};
-// Node as base class for end-hosts and routers.
-// Extends std::enable_shared_from_this to help with Network structure creation
-class Node
-{
-public:
-    Node() : _pos({0, 0}) {}
-    ~Node() {}
-    // Create node at position X,Y
-    Node(float posX, float posY) : _pos({posX, posY}) {}
-    // Create node at position X,Y with given IP
-    Node(float posX, float posY, std::string address) : _pos({posX, posY}), network_interface(address) {}
-    // Returns and pops the top Packet of _transmit.
-    // If _transmit is empty, returns default constructed one which should be dropped as TTL = 0
-    Packet GetNextTransmitPacket();
-    size_t GetTransmitQueueLength() const { return _transmit.size(); }
-    void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
-    void ReceivePacket(Packet p);
-    std::queue<Packet> GetReceivedPackets() const { return _receive; }
-    void ConnectToNode(std::shared_ptr<Node> n, std::shared_ptr<Link> l);
-    bool IsConnectedTo(std::shared_ptr<Node> n) const;
-    // Removes connection from _connected only.
-    void DisconnectFromNode(std::shared_ptr<Node> n);
+    // Need to forward declare Link in order to compile
+    class Link;
 
-    // comparison between two nodes facilitated by the IP address
-    friend bool operator==(const std::shared_ptr<Node> n1, const std::shared_ptr<Node> n2)
+    // pixel position values
+    struct Position
     {
-        return n1->network_interface.GetAddressInt() == n2->network_interface.GetAddressInt();
-    }
-    // Compare node directly against an IP address string
-    friend bool operator==(const std::shared_ptr<Node> n, const std::string &address)
+        float posX;
+        float posY;
+    };
+    typedef std::pair<std::weak_ptr<Link>, std::weak_ptr<Node>> ConnectedNode;
+    // https://www.geeksforgeeks.org/priority-queue-of-pairs-in-c-with-ordering-by-first-and-second-element/
+    // comparison for pair of link/node for the priority queue. Used with GetConnectedNodes()
+    struct CompareConnectedNodes
     {
-        try // check if address is valid format
-        {   
-            return Address::AddressStrToInt(address) == n->network_interface.GetAddressInt(); 
-        }
-        catch(const std::exception& e) // above throws logic_error if wrong string format for IP
+        constexpr bool operator()(
+            ConnectedNode const &a,
+            ConnectedNode const &b)
+            const noexcept
         {
-            std::cerr << e.what() << std::endl;
-            return false;
+            // returning smallest transmit cost first
+            return a.first.lock()->GetTransmitCost() <= b.first.lock()->GetTransmitCost();
         }
-        
-    }
-    // Get Node position on GUI
-    Position GetPosition() const { return _pos; }
-    // Set Node position on GUI
-    void SetPosition(float posX, float posY) { _pos = {posX, posY}; }
-    // Keep NetworkInterface public for now as it needs to be accessed to transmit packages.
-    // If address needs to be changed, check if it is unique against the Network's _nodes vector first.
-    NetworkInterface network_interface;
-    // Vector of connected nodes. Using std::weak_ptr to not end up with memory management issues.
-    std::vector<std::pair<std::weak_ptr<Link>, std::weak_ptr<Node>>> _connected;
-private:
-    // queue of packets to be sent to a link, keep track of where to send if multiple connected nodes
-    std::queue<std::pair<Packet, std::shared_ptr<Node>>> _transmit;
-    // queue of packets received from a link
-    std::queue<Packet> _receive;
-    // Application to be run on end-host/router
-    Application _app;
-    // positions for drawing the node on the GUI
-    Position _pos;
+    };
 
-};
+    // Node as base class for end-hosts and routers.
+    class Node
+    {
+    public:
+        Node(const std::string &type = "DEFAULT") : _pos({0, 0}), _nodetype(type) {}
+        ~Node() {}
+        // Create node at position X,Y
+        Node(float posX, float posY) : Node() { SetPosition(posX, posY); }
+        // Create node at position X,Y with given IP
+        Node(float posX, float posY, std::string address) : Node()
+        {
+            SetPosition(posX, posY);
+            network_interface.SetAddress(address);
+        }
+        /*
+         * GUI methods
+         */
+        const std::string GetNodeType() { return _nodetype; }
+        // Get Node position on GUI
+        Position GetPosition() const { return _pos; }
+        // Set Node position on GUI
+        void SetPosition(float posX, float posY) { _pos = {posX, posY}; }
+        /*
+         * Network helpers
+         */
+        void ConnectToNode(std::shared_ptr<Node> n, std::shared_ptr<Link> l);
+        bool IsConnectedTo(std::shared_ptr<Node> n) const;
+        // Removes connection from _connected only.
+        void DisconnectFromNode(std::shared_ptr<Node> n);
 
+        std::priority_queue<ConnectedNode, std::vector<ConnectedNode>, CompareConnectedNodes> GetConnectedNodes() const;
+
+        /*
+         * Comparisons 
+         */
+        // comparison between two nodes facilitated by the IP address
+        friend bool operator==(const std::shared_ptr<Node> n1, const std::shared_ptr<Node> n2)
+        {
+            return n1->network_interface.GetAddressInt() == n2->network_interface.GetAddressInt();
+        }
+        // Compare node directly against an IP address string
+        friend bool operator==(const std::shared_ptr<Node> n, const std::string &address)
+        {
+            try // check if address is valid format
+            {
+                return NWSim::AddressStrToInt(address) == n->network_interface.GetAddressInt();
+            }
+            catch (const std::exception &e) // above throws logic_error if wrong string format for IP
+            {
+                std::cerr << e.what() << std::endl;
+                return false;
+            }
+        }
+
+        virtual void RunApplication();
+        // Returns and pops the top Packet of _transmit.
+        // If _transmit is empty, returns default constructed one which should be dropped as TTL = 0
+        Packet GetNextTransmitPacket();
+        size_t GetTransmitQueueLength() const { return _transmit.size(); }
+        void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
+        void ReceivePacket(Packet p);
+        std::queue<Packet> GetReceivedPackets() const { return _receive; }
+
+        // If address needs to be changed, check if it is unique against the Network's _nodes vector first.
+        NetworkInterface network_interface;
+        // Vector of connected nodes. Using std::weak_ptr to not end up with memory management issues.
+        std::vector<std::pair<std::weak_ptr<Link>, std::weak_ptr<Node>>> _connected;
+
+    protected:
+        // queue of packets to be sent to a link, keep track of where to send if multiple connected nodes
+        std::queue<std::pair<Packet, std::shared_ptr<Node>>> _transmit;
+        // queue of packets received from a link
+        std::queue<Packet> _receive;
+    private:
+        const std::string _nodetype;
+        // positions for drawing the node on the GUI
+        Position _pos;
+    };
+
+    class Router : private Node
+    {
+    public:
+        Router() : Node("Router") {}
+        Router(float posX, float posY) : Router() { SetPosition(posX, posY); }
+        Router(float posX, float posY, std::string address) : Router()
+        {
+            SetPosition(posX, posY);
+            if (!network_interface.SetAddress(address))
+            {
+                delete this;
+            }
+        }
+        ~Router() {}
+        /*
+         * Router is supposed to route packets between end-hosts.
+         * Check's receive-queue for any packets:
+         *  - if packet is going to End-host that this Router is connected to, put to correct link.
+         *  - if not connected to correct End-host, refer to Routing Table for which Link to place packet on.
+         */
+        void RunApplication();
+
+    private:
+    };
+    class EndHost : private Node
+    {
+    public:
+        EndHost() : Node("EndHost") {}
+        EndHost(float posX, float posY) : EndHost() { SetPosition(posX, posY); }
+        EndHost(float posX, float posY, std::string address) : EndHost()
+        {
+            SetPosition(posX, posY);
+            if (!network_interface.SetAddress(address))
+            {
+                delete this;
+            }
+        }
+        ~EndHost() {}
+        void RunApplication();
+
+    private:
+    };
+} // namespace NWSim
