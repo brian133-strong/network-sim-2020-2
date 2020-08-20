@@ -1,17 +1,8 @@
 #include <queue>
+#include <random>
 #include "node.hpp"
 using namespace NWSim;
 
-Packet Node::GetNextTransmitPacket()
-{
-    Packet p;
-    if (GetTransmitQueueLength() > 0)
-    {
-        p = _transmit.front().first;
-        _transmit.pop();
-    }
-    return p;
-}
 
 void Node::ReceivePacket(Packet p)
 {
@@ -95,7 +86,71 @@ void Router::RunApplication()
     // Go through all received packets
     while(!_receive.empty())
     {
-        
+        auto p = _receive.front();
+        _receive.pop();
+        // Drop packets if their TTL drops to 0
+        if (p.DecrementTimeToLive() == 0) continue;
+
+        // See if router connected to the target address?
+        auto it_con = _connected.begin();
+        for (;it_con != _connected.end(); it_con++)
+        {
+            auto link = (*it_con);
+            if(link.second.lock() == NWSim::AddressIntToStr(p.GetTargetAddress()))
+            {
+                AddTransmitPacket(p, link.second.lock());
+                break;
+            }
+        }
+        // If we arent directly connected, should consult the routing table. TODO!!!
+        if (it_con == _connected.end())
+        {
+            // Just randomize for now.... Yes this might break everything...
+            AddTransmitPacket(p, _connected[rand() % _connected.size()].second.lock());
+        }       
 
     }
+}
+
+
+void EndHost::SetPacketCount(const uint32_t count) 
+{
+    if (count < MINPACKETS)
+    {
+        _packetCount = MINPACKETS;
+    }
+    else if (count > MAXPACKETS)
+    {
+        _packetCount = MAXPACKETS;
+    }
+    else
+    {
+        _packetCount = count;
+    }
+}
+
+std::list<Packet> EndHost::GenerateRandomPackets() const
+{
+    std::list<Packet> packets;
+    for (uint32_t i = 0; i < _packetCount; i++)
+    {
+        Packet p = Packet(_defaultMsg, NWSim::AddressStrToInt(_targetAddress), network_interface.GetAddressInt());
+        p.SetSize(rand() % p.MAXPACKETSIZE + p.GetSize()); // set random size for more interesting behaviour
+        packets.push_back(p);
+    }
+    return packets;
+    
+}
+
+std::list<Packet> EndHost::GeneratePackets() const
+{
+    // TODO add more stuff?
+    return GenerateRandomPackets();
+}
+
+
+void EndHost::RunApplication()
+{
+    // Generate some packets to a target address
+    
 }

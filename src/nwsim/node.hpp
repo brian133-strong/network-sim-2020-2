@@ -151,6 +151,23 @@ namespace NWSim
         ~EndHost() {}
         void RunApplication();
 
+        void SetTargetAddress(const std::string& address);
+        const std::string GetTargetAddress() const { return _targetAddress; }
+        void SetPacketCount(const uint32_t count);
+        const uint32_t GetPacketCount() const { return _packetCount; }
+        
     private:
+        std::string _targetAddress;
+        uint32_t _packetCount;
+        // Guards against dumb packet counts crashing the application
+        const uint32_t MAXPACKETS = 100;
+        const uint32_t MINPACKETS = 1;
+        const std::string _defaultMsg = "Test";
+
+        // Naive approach, simply generates n packets with varying packet size 
+        std::list<Packet> GenerateRandomPackets() const;
+        std::list<Packet> GeneratePackets() const;
+
+
     };
 } // namespace NWSim

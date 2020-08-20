@@ -22,7 +22,7 @@ namespace NWSim
         // "the time it takes for packet to travel across the link" in ms
         unsigned int GetPropagationDelay() const { return _propagation_delay; }
 
-        size_t GetTransmissionQueueSize() const { return _transmission_queue.size(); }
+        //size_t GetTransmissionQueueSize() const { return _transmission_queue.size(); }
         // Cost to transmit over this link.
         unsigned int GetTransmitCost() const { return _transmission_speed + _propagation_delay; }
         // Naive way to transmit packets from nodes to link and link to nodes
@@ -32,11 +32,9 @@ namespace NWSim
 
     private:
         // Queue of currently transmitted packets.
-        // structure: To, Data
-        std::queue<std::pair<std::weak_ptr<Node>, Packet>> _transmission_queue;
-
-        std::pair<std::queue<Packet>,std::weak_ptr<Node>> _transmissionQueue1;
-        std::pair<std::queue<Packet>,std::weak_ptr<Node>> _transmissionQueue2;
+        // structure: <targetNode -> packetQueue>
+        std::pair<std::weak_ptr<Node>, std::queue<Packet>> _transmissionQueue1;
+        std::pair<std::weak_ptr<Node>, std::queue<Packet>> _transmissionQueue2;
         
         // "determines the interval at which new packets can be transmitted to the link" in bytes/ms
         // Check Node Transmission QUeue every _transmission_speed;
