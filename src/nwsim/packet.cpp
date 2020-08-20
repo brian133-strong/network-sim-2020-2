@@ -4,7 +4,8 @@
 using namespace NWSim;
 Packet::Packet(const std::string &data,
                const uint32_t target_address,
-               const uint32_t source_address)
+               const uint32_t source_address,
+               const uint32_t packetID)
 {
     _data = data;
     _target_address = target_address;

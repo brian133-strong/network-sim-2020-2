@@ -101,7 +101,7 @@ int main(void) {
     std::cout << std::endl;
 
     std::cout << "Proper constructor" << std::endl;
-    Packet p2 = Packet("Hello World!", 0xFF000000, 0xFF000001);
+    Packet p2 = Packet("Hello World!", 0xFF000000, 0xFF000001,0);
     std::cout << "data: " << p2.GetData() << std::endl;
     std::cout << "target: " << p2.GetTargetAddress() << std::endl;
     std::cout << "source: " << p2.GetSourceAddress() << std::endl;

@@ -11,17 +11,19 @@ namespace NWSim
     {
     public:
         const uint32_t MAXPACKETSIZE = 1024; // arbitrary cutoff point
-        const uint32_t MINPACKETSIZE = 14;   // empty packet should be 14 bytes? addresses + ttl + size + empty string (data)
+        const uint32_t MINPACKETSIZE = 18;   // empty packet should be 14 bytes? addresses + packetID + ttl + size + empty string (data) 
         Packet() : _data(""),
                    _size(MINPACKETSIZE),
                    _timetolive(0), // set ttl to 0 so empty packets are dropped immediately when routed
                    _target_address(0),
-                   _source_address(0)
+                   _source_address(0),
+                   _packetID(0)
         {
         }
         Packet(const std::string &data,
                const uint32_t target_address,
-               const uint32_t source_address);
+               const uint32_t source_address,
+               const uint32_t packetID);
         ~Packet() {}
         uint32_t GetTargetAddress() const { return _target_address; }
         uint32_t GetSourceAddress() const { return _source_address; }
@@ -44,5 +46,6 @@ namespace NWSim
         uint32_t _target_address;
         uint32_t _source_address;
         std::string _data; // using string to represent packet content for now
+        uint32_t _packetID;
     };
 } // namespace NWSim
