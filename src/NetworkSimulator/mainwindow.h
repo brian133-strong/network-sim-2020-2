@@ -22,6 +22,11 @@ private slots:
     void on_quitBtn_clicked();
 
 
+
+    void on_plotBtn_clicked();
+
+    void on_startBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     QPushButton *button;

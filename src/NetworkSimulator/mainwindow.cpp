@@ -15,38 +15,15 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle("Network Simulator"); // title
 
 
-    connect(ui->plotBtn, SIGNAL(released()), this, SLOT(buttonPressed()));
-    connect(ui->startBtn, SIGNAL(released()), this, SLOT(buttonPressed()));
-    connect(ui->stopBtn, SIGNAL(released()), this, SLOT(buttonPressed()));
-    connect(ui->quitBtn, SIGNAL(released()), this, SLOT(buttonPressed()));
+    //connect(ui->plotBtn, SIGNAL(released()), this, SLOT(buttonPressed()));
+    //connect(ui->startBtn, SIGNAL(released()), this, SLOT(buttonPressed()));
+    //connect(ui->stopBtn, SIGNAL(released()), this, SLOT(buttonPressed()));
+    //connect(ui->quitBtn, SIGNAL(released()), this, SLOT(buttonPressed()));
 
      //DISPLAYING RECTANGLE
     scene = new  QGraphicsScene();
     ui->graphicsView->setScene(scene);
     scene->setSceneRect(0, 0, 400, 400);
-
-    QGraphicsRectItem *rect1 = new QGraphicsRectItem();
-    rect1->setFlag(QGraphicsItem::ItemIsMovable, true);
-    rect1->setRect(10, 50, 100, 50);
-    rect1->setBrush(QBrush(Qt::blue));
-    rect1->setPen(QPen(QBrush(Qt::black), 2));
-    scene->addItem(rect1);
-
-    QGraphicsRectItem *rect2 = new QGraphicsRectItem();
-    rect2->setFlag(QGraphicsItem::ItemIsMovable, true);
-    rect2->setRect(10, 50, 100, 50);
-    rect2->setBrush(QBrush(Qt::yellow));
-    rect2->setPen(QPen(QBrush(Qt::white), 2));
-    scene->addItem(rect2);
-
-    QGraphicsLineItem *line = new QGraphicsLineItem();
-    line->setFlag(QGraphicsItem::ItemIsMovable, true);
-    line->setVisible(true);
-    line->setPen(QPen(QBrush(Qt::red), 1));
-    line->setLine(10, 20, 40, 50);
-    scene->addItem(line);
-
-
 }
 
 MainWindow::~MainWindow()
@@ -56,45 +33,38 @@ MainWindow::~MainWindow()
 
 void MainWindow::buttonPressed() {
     qDebug() << "signal from pressed button";
-    button = new QPushButton();
 }
 
 
 void MainWindow::on_quitBtn_clicked()
 {
     QObject::connect(ui->quitBtn, SIGNAL(clicked()), this, SLOT(exitSlot()));
-
 }
 
 void MainWindow::exitSlot() {
     MainWindow::close();
 }
 
+void MainWindow::on_plotBtn_clicked() // draws a node everytime its clicked
+{
+    QGraphicsEllipseItem *item = new QGraphicsEllipseItem();
+    item->setFlag(QGraphicsItem::ItemIsMovable, true);
+    item->setRect(0, 0, 30, 30);
+    item->setVisible(true);
+    item->setBrush(QBrush(Qt::blue));
+    item->setPen(QPen(QBrush(Qt::white), 4));
+    scene->addItem(item);
+}
 
 
+void MainWindow::on_startBtn_clicked() // draws a link but the link does not connect nodes at yet
+{
+    QGraphicsLineItem *line = new QGraphicsLineItem();
+    line->setFlag(QGraphicsItem::ItemIsMovable, true);
+    line->setVisible(true);
+    line->rotation();
+    line->setPen(QPen(QBrush(Qt::red), 2));
+    line->setLine(0, 0, 100, 100);
+    scene->addItem(line);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
