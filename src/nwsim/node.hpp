@@ -90,7 +90,7 @@ namespace NWSim
         // Returns and pops the top Packet of _transmit.
         // If _transmit is empty, returns default constructed one which should be dropped as TTL = 0
         Packet GetNextTransmitPacket();
-        // Returns when this packet is ready to accessed from the other side. return 0 if no packets were moved.
+        // Returns time when next packet from this node can be added to the link, if 0, no packets exist.
         uint32_t MoveTopTransmitPacketToLink();
 
         size_t GetTransmitQueueLength() const { return _transmit.size(); }

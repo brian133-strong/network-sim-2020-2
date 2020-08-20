@@ -95,6 +95,7 @@ std::shared_ptr<Link> Network::LinkNodes(std::shared_ptr<Node> n1, std::shared_p
         throw std::logic_error("Error: Attempting to link already linked Nodes.");
     }
     std::shared_ptr<Link> link = std::make_shared<Link>();
+    link->InitTransmissionQueues(n1,n2);
     // References to this new link exist on both nodes and at the network
     n1->ConnectToNode(n2, link);
     n2->ConnectToNode(n1, link);

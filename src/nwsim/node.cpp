@@ -17,12 +17,12 @@ uint32_t Node::MoveTopTransmitPacketToLink()
         {
             if (t.second == l.second.lock())
             {
-                // WIP!
                 // Calculate the next event timestamp
                 auto link = l.first.lock();
                 auto packet = t.first;
-
+                auto node = t.second;
                 nextEvent = packet.GetSize() / link->GetTransmissionSpeed();
+                link->AddPacketToQueue(node,packet);
                 break;
             }
         }
