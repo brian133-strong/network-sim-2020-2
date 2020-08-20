@@ -10,9 +10,7 @@ namespace NWSim
     class Link
     {
     public:
-        Link() {}
-        //Link(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2, unsigned int transmission_speed, unsigned int propagation_delay);
-        Link(unsigned int transmission_speed, unsigned int propagation_delay) : _transmission_speed(transmission_speed), _propagation_delay(propagation_delay) {}
+        Link(unsigned int transmission_speed = 1, unsigned int propagation_delay = 1) : _transmission_speed(transmission_speed), _propagation_delay(propagation_delay) {}
         // Set new transmission speed in bytes/ms
         void SetTransmissionSpeed(unsigned int speed) { _transmission_speed = speed; }
         // Set new propagation delay in ms
@@ -39,7 +37,7 @@ namespace NWSim
         // "determines the interval at which new packets can be transmitted to the link" in bytes/ms
         // Check Node Transmission QUeue every _transmission_speed;
         unsigned int _transmission_speed;
-        // "the time it takes for packet to travel across the link" in ms
+        // "the time it takes for packet to travel across the link" in bytes/ms
         // Check this links transmission queue every _propagation_delay
         unsigned int _propagation_delay;
     };

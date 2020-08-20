@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
 #include <queue>
+#include <list>
 #include <memory>
 #include <iostream>
 #include "networkinterface.hpp"
-#include "application.hpp"
 #include "link.hpp"
 namespace NWSim
 {
@@ -90,6 +90,9 @@ namespace NWSim
         // Returns and pops the top Packet of _transmit.
         // If _transmit is empty, returns default constructed one which should be dropped as TTL = 0
         Packet GetNextTransmitPacket();
+        // Returns when this packet is ready to accessed from the other side. return 0 if no packets were moved.
+        uint32_t MoveTopTransmitPacketToLink();
+
         size_t GetTransmitQueueLength() const { return _transmit.size(); }
         void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
         void ReceivePacket(Packet p);
@@ -147,6 +150,8 @@ namespace NWSim
             {
                 delete this;
             }
+            SetTargetAddress(network_interface.GetAddressStr()); // set inital target address to self
+            SetPacketCount(MINPACKETS);
         }
         ~EndHost() {}
         void RunApplication();
@@ -167,7 +172,8 @@ namespace NWSim
         // Naive approach, simply generates n packets with varying packet size 
         std::list<Packet> GenerateRandomPackets() const;
         std::list<Packet> GeneratePackets() const;
-
+        // Gets target node for first jump out of this end-host
+        std::shared_ptr<Node> GetTargetNode() const;
 
     };
 } // namespace NWSim

@@ -1,8 +1,35 @@
 #include <queue>
 #include <random>
+#include <list>
 #include "node.hpp"
+#include "packet.hpp"
 using namespace NWSim;
 
+
+uint32_t Node::MoveTopTransmitPacketToLink()
+{
+    uint32_t nextEvent = 0;
+    if(!_transmit.empty())
+    {
+        auto t = _transmit.front();
+        _transmit.pop();
+        for (auto l : _connected)
+        {
+            if (t.second == l.second.lock())
+            {
+                // WIP!
+                // Calculate the next event timestamp
+                auto link = l.first.lock();
+                auto packet = t.first;
+
+                nextEvent = packet.GetSize() / link->GetTransmissionSpeed();
+                break;
+            }
+        }
+    }
+    return nextEvent;
+
+}
 
 void Node::ReceivePacket(Packet p)
 {
@@ -102,7 +129,7 @@ void Router::RunApplication()
                 break;
             }
         }
-        // If we arent directly connected, should consult the routing table. TODO!!!
+        // If we arent directly connected, should consult the routing table. TODO:
         if (it_con == _connected.end())
         {
             // Just randomize for now.... Yes this might break everything...
@@ -134,7 +161,7 @@ std::list<Packet> EndHost::GenerateRandomPackets() const
     std::list<Packet> packets;
     for (uint32_t i = 0; i < _packetCount; i++)
     {
-        Packet p = Packet(_defaultMsg, NWSim::AddressStrToInt(_targetAddress), network_interface.GetAddressInt());
+        Packet p = Packet(_defaultMsg, NWSim::AddressStrToInt(_targetAddress), network_interface.GetAddressInt(),i);
         p.SetSize(rand() % p.MAXPACKETSIZE + p.GetSize()); // set random size for more interesting behaviour
         packets.push_back(p);
     }
@@ -144,13 +171,24 @@ std::list<Packet> EndHost::GenerateRandomPackets() const
 
 std::list<Packet> EndHost::GeneratePackets() const
 {
-    // TODO add more stuff?
+    // TODO: add more complex transfer? 
+    // TODO: Testing needs access to these packets
     return GenerateRandomPackets();
 }
 
+std::shared_ptr<Node> EndHost::GetTargetNode() const
+{
+    // We always send to the first link, assume this is the gateway
+    // TODO: allow only 1 link for EndHost type nodes?
+    return _connected[0].second.lock();
+}
 
 void EndHost::RunApplication()
 {
-    // Generate some packets to a target address
-    
+    auto n = GetTargetNode();
+    // Generate some packets to the target address and put to nodes transmit queue
+    for(auto p : GeneratePackets())
+    {
+        _transmit.push(std::make_pair(p,n));
+    }
 }
