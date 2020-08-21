@@ -19,6 +19,7 @@ namespace NWSim
 
 
     // Node as base class for end-hosts and routers.
+    // TODO: Convert Node to abstract, only allow generating end-hosts and routers
     class Node
     {
     public:
@@ -69,11 +70,7 @@ namespace NWSim
                 return false;
             }
         }
-        // TODO: Handle virtual to compile
         void RunApplication();
-        // Returns and pops the top Packet of _transmit.
-        // If _transmit is empty, returns default constructed one which should be dropped as TTL = 0
-        Packet GetNextTransmitPacket();
         // Returns time when next packet from this node can be added to the link, if 0, no packets exist.
         uint32_t MoveTopTransmitPacketToLink();
 
@@ -98,7 +95,7 @@ namespace NWSim
         Position _pos;
     };
 
-    class Router : private Node
+    class Router : public Node
     {
     public:
         Router() : Node("Router") {}
@@ -106,6 +103,7 @@ namespace NWSim
         Router(float posX, float posY, std::string address) : Router()
         {
             SetPosition(posX, posY);
+            // TODO: does this break in GUI?
             if (!network_interface.SetAddress(address))
             {
                 delete this;
@@ -122,14 +120,28 @@ namespace NWSim
 
     private:
     };
-    class EndHost : private Node
+    class EndHost : public Node
     {
     public:
-        EndHost() : Node("EndHost") {}
-        EndHost(float posX, float posY) : EndHost() { SetPosition(posX, posY); }
+        // Guards against dumb packet counts crashing the application
+        const uint32_t MAXPACKETS = 100;
+        const uint32_t MINPACKETS = 1;
+
+        EndHost() : Node("EndHost") 
+        {
+            SetTargetAddress(network_interface.GetAddressStr()); // set inital target address to self
+            SetPacketCount(MINPACKETS);
+        }
+        EndHost(float posX, float posY) : EndHost() 
+        { 
+            SetPosition(posX, posY); 
+            SetTargetAddress(network_interface.GetAddressStr()); // set inital target address to self
+            SetPacketCount(MINPACKETS);
+        }
         EndHost(float posX, float posY, std::string address) : EndHost()
         {
             SetPosition(posX, posY);
+            // TODO: does this break in GUI?
             if (!network_interface.SetAddress(address))
             {
                 delete this;
@@ -139,8 +151,8 @@ namespace NWSim
         }
         ~EndHost() {}
         void RunApplication();
-
-        void SetTargetAddress(const std::string& address);
+        // returns true if succesfully changed adr (format can fail)
+        bool SetTargetAddress(const std::string& address);
         const std::string GetTargetAddress() const { return _targetAddress; }
         void SetPacketCount(const uint32_t count);
         const uint32_t GetPacketCount() const { return _packetCount; }
@@ -148,9 +160,6 @@ namespace NWSim
     private:
         std::string _targetAddress;
         uint32_t _packetCount;
-        // Guards against dumb packet counts crashing the application
-        const uint32_t MAXPACKETS = 100;
-        const uint32_t MINPACKETS = 1;
         const std::string _defaultMsg = "Test";
 
         // Naive approach, simply generates n packets with varying packet size 

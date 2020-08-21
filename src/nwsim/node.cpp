@@ -96,18 +96,6 @@ void Node::DisconnectFromNode(std::shared_ptr<Node> n)
 }
 
 
-// std::priority_queue<ConnectedNode,std::vector<ConnectedNode>,CompareConnectedNodes> Node::GetConnectedNodes() const
-// {
-//     std::priority_queue<ConnectedNode,std::vector<ConnectedNode>,CompareConnectedNodes> nodes;
-//     for (auto link : _connected)
-//     {
-//         nodes.push(link);
-//     }
-//     return nodes;
-// }
-
-
-
 void Router::RunApplication() 
 {
     // Go through all received packets
@@ -154,6 +142,21 @@ void EndHost::SetPacketCount(const uint32_t count)
     {
         _packetCount = count;
     }
+}
+
+bool EndHost::SetTargetAddress(const std::string& address)
+{
+    try
+    {
+        _targetAddress = AddressIntToStr(AddressStrToInt(address));
+        return true;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
+    
 }
 
 std::list<Packet> EndHost::GenerateRandomPackets() const
