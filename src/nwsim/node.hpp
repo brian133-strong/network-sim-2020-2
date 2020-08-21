@@ -10,27 +10,13 @@ namespace NWSim
 {
     // Need to forward declare Link in order to compile
     class Link;
-
     // pixel position values
     struct Position
     {
         float posX;
         float posY;
     };
-    typedef std::pair<std::weak_ptr<Link>, std::weak_ptr<Node>> ConnectedNode;
-    // https://www.geeksforgeeks.org/priority-queue-of-pairs-in-c-with-ordering-by-first-and-second-element/
-    // comparison for pair of link/node for the priority queue. Used with GetConnectedNodes()
-    struct CompareConnectedNodes
-    {
-        constexpr bool operator()(
-            ConnectedNode const &a,
-            ConnectedNode const &b)
-            const noexcept
-        {
-            // returning smallest transmit cost first
-            return a.first.lock()->GetTransmitCost() <= b.first.lock()->GetTransmitCost();
-        }
-    };
+
 
     // Node as base class for end-hosts and routers.
     class Node
@@ -62,8 +48,6 @@ namespace NWSim
         // Removes connection from _connected only.
         void DisconnectFromNode(std::shared_ptr<Node> n);
 
-        std::priority_queue<ConnectedNode, std::vector<ConnectedNode>, CompareConnectedNodes> GetConnectedNodes() const;
-
         /*
          * Comparisons 
          */
@@ -85,8 +69,8 @@ namespace NWSim
                 return false;
             }
         }
-
-        virtual void RunApplication();
+        // TODO: Handle virtual to compile
+        void RunApplication();
         // Returns and pops the top Packet of _transmit.
         // If _transmit is empty, returns default constructed one which should be dropped as TTL = 0
         Packet GetNextTransmitPacket();
@@ -176,4 +160,5 @@ namespace NWSim
         std::shared_ptr<Node> GetTargetNode() const;
 
     };
+
 } // namespace NWSim

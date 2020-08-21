@@ -96,15 +96,15 @@ void Node::DisconnectFromNode(std::shared_ptr<Node> n)
 }
 
 
-std::priority_queue<ConnectedNode,std::vector<ConnectedNode>,CompareConnectedNodes> Node::GetConnectedNodes() const
-{
-    std::priority_queue<ConnectedNode,std::vector<ConnectedNode>,CompareConnectedNodes> nodes;
-    for (auto link : _connected)
-    {
-        nodes.push(link);
-    }
-    return nodes;
-}
+// std::priority_queue<ConnectedNode,std::vector<ConnectedNode>,CompareConnectedNodes> Node::GetConnectedNodes() const
+// {
+//     std::priority_queue<ConnectedNode,std::vector<ConnectedNode>,CompareConnectedNodes> nodes;
+//     for (auto link : _connected)
+//     {
+//         nodes.push(link);
+//     }
+//     return nodes;
+// }
 
 
 
