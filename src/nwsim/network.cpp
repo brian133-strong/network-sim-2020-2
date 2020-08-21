@@ -127,7 +127,7 @@ void Network::RemoveLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
 void Network::GenerateRoutingTable()
 {
     // Collection of all target address / (intermediate) source node pairs
-    std::vector<std::pair<std::string, std::string>> targetSourcePairs;
+    /*std::vector<std::pair<std::string, std::string>> targetSourcePairs;
     for (auto source : _nodes)
     {
         auto sourceLinkedTo = source->_connected;
@@ -150,5 +150,52 @@ void Network::GenerateRoutingTable()
                 //_routingTable.insert(std::make_pair(targetSourcePair,route));
             }
         }
-    }
+    }*/
+
+	// new 
+
+	for (auto source : _nodes) {
+
+		std::map<Node, int> dist;
+		std::map<Node, bool> visited;
+		std::map<Node, Node> comes_from;
+
+		for (auto target : _nodes) dist[target] = 1e9;
+		dist[source] = 0;
+
+		std::priority_queue<Node, int> nxt;
+
+		nxt.push({ 0, source });
+
+		while (!nxt.empty()) {
+			Node a = nxt.top().second; 
+			nxt.pop();
+			if (visited[a]) continue;
+			visited[a] = true;
+
+			std::vector<std::pair<std::shared_ptr<Node>, std::shared_ptr<Link>>> next_nodes;
+
+			for (auto t : _links) {
+				if (std::get<0>(t)) {
+					next_nodes.push_back({ std::get<1>(t), std::get<2>(t) });
+				}
+			}
+
+			for (auto p : next_nodes) {
+				if (dist[a] + (int)p.second.GetTransmitCost() < dist[p.first]) {
+					dist[p.first] = dist[a] + (int)p.second.GetTransmitCost();
+					comes_from[p.first] = a;
+					q.push({ -dist[p.first] , p.first });
+				}
+			}
+
+			// Set the routingtable
+
+			for (auto x : comes_from) {
+				_routingTable[{x.first, a}] = x.second;
+			}
+
+		}
+
+	}
 }
