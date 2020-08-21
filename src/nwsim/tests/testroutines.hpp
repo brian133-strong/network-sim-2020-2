@@ -1,6 +1,8 @@
 #pragma once
 #include "../packet.hpp"
 #include "../address.hpp"
+#include "../networkinterface.hpp"
+#include "../node.hpp"
 #include <iostream>
 #include <limits>
 #include <random>
@@ -137,9 +139,41 @@ void AddressTestRoutine()
     {
         printassert("invalid address \"255.255.255.256\" throws: ", true);
     }
+    printline("Double wrapped:");
+    std::string tempwrap = "1.2.3.4";
+    printassert("Setting to " + tempwrap + ", converting to int, and back to str, matches: ",(NWSim::AddressIntToStr(NWSim::AddressStrToInt(tempwrap)) == tempwrap));
+
+}
+
+void NetworkInterfaceTestRoutine()
+{
+    printtitle("NWSim::NetworkInterface class");
+    printline("NOTE: Valid adddresses handled by NWSim::Address helpers!");
+    printline("Default constructed: ");
+    NWSim::NetworkInterface ni1 = NWSim::NetworkInterface();
+    printassert("address is 0: ",(ni1.GetAddressInt() == 0));
+    std::string adr1 = "1.2.3.4";
+    printassert("Possible to set address to valid one " + adr1 +": ",ni1.SetAddress(adr1));
+    printassert("Address string matches after setting: ",(adr1 == ni1.GetAddressStr()));
+    std::string adr2 = "invalid adr";
+    printassert("NOT Possible to set address to invalid one " + adr2 +": ",!ni1.SetAddress(adr2)); // not negate
+    printassert("Address string hasn't changed after setting to invalid: ",(adr1 == ni1.GetAddressStr()));
+    std::cout << "adr should be "+adr1+": " << ni1.GetAddressStr() << std::endl;
+
+    printline("Constructing with given VALID adr" + adr1 + ": ");
+    NWSim::NetworkInterface ni2 = NWSim::NetworkInterface(adr1);
+    printassert("Address string matches after constructing: ",(adr1 == ni2.GetAddressStr()));
+
+    printline("Constructing with given INVALID adr" + adr2 + ": ");
+    NWSim::NetworkInterface ni3 = NWSim::NetworkInterface(adr2);
+    printassert("Address string should be 0.0.0.0 after constructing: ",("0.0.0.0" == ni3.GetAddressStr()));
+
 }
 
 void NodeTestRoutine()
 {
     printtitle("NWSim::Node class");
+    printline("Can generate nodes:");
+    
+
 }
