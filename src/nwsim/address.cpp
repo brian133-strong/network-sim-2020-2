@@ -52,7 +52,7 @@ namespace NWSim
         uint32_t ret = 0;
         for (int i = 3; i >= 0; i--)
         {
-            ret += split[i] << i * 8;
+            ret += split[3 - i] << i * 8;
         }
         return ret;
     }
