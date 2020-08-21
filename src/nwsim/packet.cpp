@@ -14,6 +14,7 @@ Packet::Packet(const std::string &data,
     // assume data is ascii only and fits into 1 byte, TODO: proper way?
     // 14 bytes for: 2*address, size, ttl, \0 in data
     _size = MINPACKETSIZE + data.length();
+    _packetID = packetID;
 }
 
 unsigned char Packet::DecrementTimeToLive()

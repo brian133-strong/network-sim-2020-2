@@ -32,9 +32,10 @@ namespace NWSim
         // set packet size, forces minimum to MINPACKETSIZE
         uint32_t SetSize(uint32_t size)
         {
-            _size = (size < 14) ? 14 : size;
+            _size = (size < MINPACKETSIZE) ? MINPACKETSIZE : size;
             return _size;
         }
+        uint32_t GetPacketID() const { return _packetID; }
         unsigned char GetTimeToLive() const { return _timetolive; }
         // ttl decremented on each node hop (routers)
         unsigned char DecrementTimeToLive();
