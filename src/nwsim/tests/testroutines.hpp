@@ -257,3 +257,29 @@ void RouterTestRoutine()
     //printline("NOTE: Only checking Router specific functionality, check Node for shared, or Network for \"fuller\" functions.");
 }
 
+void LinkTestRoutine()
+{
+    printtitle("NWSim::Link class");
+    printline("NOTE: Methods that cannot be tested without network/link:");
+    printassert("InitTransmissionQueues,MoveTopTransmitPacketToNode,AddPacketToQueue","");
+    
+    printline("Default constructed:");
+    NWSim::Link l1 = NWSim::Link();
+    printassert("transmission speed is MIN",l1.GetTransmissionSpeed() == l1.MINTRANSMISSIONSPEED);
+    printassert("propagation delay is MIN", l1.GetPropagationDelay() == l1.MINPROPAGATIONDELAY);
+    l1.SetTransmissionSpeed(123);
+    l1.SetPropagationDelay(321);
+    printassert("transmission speed is set",l1.GetTransmissionSpeed() == 123);
+    printassert("propagation delay is set", l1.GetPropagationDelay() == 321);
+
+    printline("Constructed with 0,0:");
+    NWSim::Link l2 = NWSim::Link();
+    printassert("transmission speed is MIN",l2.GetTransmissionSpeed() == l2.MINTRANSMISSIONSPEED);
+    printassert("propagation delay is MIN", l2.GetPropagationDelay() == l2.MINPROPAGATIONDELAY);
+
+    printline("Constructed with 123,321:");
+    NWSim::Link l3 = NWSim::Link(123,321);
+    printassert("transmission speed is 123",l3.GetTransmissionSpeed() == 123);
+    printassert("propagation delay is 321", l3.GetPropagationDelay() == 321);
+    
+}
