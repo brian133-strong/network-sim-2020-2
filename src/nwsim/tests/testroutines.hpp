@@ -160,11 +160,11 @@ void NetworkInterfaceTestRoutine()
     printassert("Address string hasn't changed after setting to invalid: ",(adr1 == ni1.GetAddressStr()));
     std::cout << "adr should be "+adr1+": " << ni1.GetAddressStr() << std::endl;
 
-    printline("Constructing with given VALID adr" + adr1 + ": ");
+    printline("Constructing with given VALID adr '" + adr1 + "': ");
     NWSim::NetworkInterface ni2 = NWSim::NetworkInterface(adr1);
     printassert("Address string matches after constructing: ",(adr1 == ni2.GetAddressStr()));
 
-    printline("Constructing with given INVALID adr" + adr2 + ": ");
+    printline("Constructing with given INVALID adr '" + adr2 + "': ");
     NWSim::NetworkInterface ni3 = NWSim::NetworkInterface(adr2);
     printassert("Address string should be 0.0.0.0 after constructing: ",("0.0.0.0" == ni3.GetAddressStr()));
 
