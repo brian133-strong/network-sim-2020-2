@@ -154,6 +154,7 @@ void Network::GenerateRoutingTable()
 
 	// new 
 
+    /* This does not compile
 	for (auto source : _nodes) {
 
 		std::map<Node, int> dist;
@@ -198,4 +199,5 @@ void Network::GenerateRoutingTable()
 		}
 
 	}
+    */
 }

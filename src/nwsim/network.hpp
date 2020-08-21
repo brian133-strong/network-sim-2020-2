@@ -5,6 +5,8 @@
 #include "link.hpp"
 namespace NWSim
 {
+    //class Node;
+    //class Link;
     class Network
     {
     public:
