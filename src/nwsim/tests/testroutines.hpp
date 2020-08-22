@@ -4,6 +4,7 @@
 #include "../networkinterface.hpp"
 #include "../node.hpp"
 #include "../link.hpp"
+#include "../network.hpp"
 #include <iostream>
 #include <limits>
 #include <random>
@@ -27,8 +28,9 @@ void printline(const std::string &s)
 
 void printtitle(const std::string &s)
 {
+    printline();
     printline("==============================");
-    print("TESTING");
+    print("TESTING - ");
     printline(s);
     printline("==============================");
     printline();
@@ -254,7 +256,10 @@ void RouterTestRoutine()
     // TODO: RunApplication()
     printtitle("NWSim::Router class");
     printline("NONE YET, TODO, false");
-    //printline("NOTE: Only checking Router specific functionality, check Node for shared, or Network for \"fuller\" functions.");
+    //printline("NOTE: Only checking Router specific functionality, check Node for shared, or Network for \"fuller\" functions.")
+    NWSim::Router r = NWSim::Router();
+    printline("Default constructor");
+    printassert("Node type is Router",(r.GetNodeType() == "Router"));
 }
 
 void LinkTestRoutine()
@@ -282,4 +287,93 @@ void LinkTestRoutine()
     printassert("transmission speed is 123",l3.GetTransmissionSpeed() == 123);
     printassert("propagation delay is 321", l3.GetPropagationDelay() == 321);
     
+}
+
+void NetworkTestRoutine()
+{
+    printtitle("NWSim::Network class");
+    printline("NOTE: A deeper exploration of node/link specific functions in their respective tests.");
+
+    printline("Empty network tests");
+    NWSim::Network nw = NWSim::Network();
+    std::string adrh1 = "0.0.0.0";
+    std::string adrh2 = "1.2.3.4";
+    std::string adrr1 = "10.10.10.10";
+    printassert("New network is empty", nw.size() == 0);
+    printassert("A non-existent node can not be found and returns nullptr",nw.FindNode(adrh2) == nullptr);
+    auto host1 = nw.CreateEndHost();
+    bool defhost = 
+        host1->GetNodeType() == "EndHost" &&
+        host1->GetPosition().posX == (float)0.0 && 
+        host1->GetPosition().posY == (float)0.0 &&
+        host1 == adrh1 &&
+        host1->_connected.size() == 0;
+    printassert("Can add default EndHost",defhost);
+    printassert("Can find existing node",nw.FindNode(adrh1) == host1);
+    printassert("Can NOT add node with same IP again",(nw.CreateEndHost(adrh1) == nullptr));
+
+    printline("Linking nodes...");
+    auto host2 = nw.CreateEndHost(adrh2);
+    auto rout1 = nw.CreateRouter(adrr1);
+    printassert("After adding another host and router, size is 3",nw.size() == 3);
+    
+    auto link_h1r1 = nw.LinkNodes(host1,rout1);
+    bool link1check = host1->IsConnectedTo(rout1) && rout1->IsConnectedTo(host1);
+    printassert("Linking two nodes worked",link1check);
+
+    // attempt to relink?
+    try
+    {
+        auto link_h1r1_copy = nw.LinkNodes(host1,rout1);
+    }
+    catch(const std::exception& e)
+    {
+        printassert("Attempting to relink throws an exception",true);
+    }
+    try
+    {
+        auto link_h1r1_backwards = nw.LinkNodes(rout1,host1);
+    }
+    catch(const std::exception& e)
+    {
+        printassert("Attempting to backwards relink throws an exception",true);
+    }
+    
+
+    auto link_h2r1 = nw.LinkNodes(host2,rout1);
+    bool link2check = host2->IsConnectedTo(rout1) && rout1->IsConnectedTo(host2) && rout1->_connected.size() == 2;
+    printassert("Linking other two nodes worked",link2check);
+
+    printline("Removing node from network");
+    nw.RemoveNode(rout1);
+    bool link3check = 
+        !(host1->IsConnectedTo(rout1)) && 
+        !(host2->IsConnectedTo(rout1)) && 
+        host1->_connected.size() == 0 && 
+        host2->_connected.size() == 0;
+    printassert("Network size is 2 nodes",nw.size() == 2);
+    printassert("Removing the router between hosts severed all links","...");
+    printassert("\th1 -/- r1",!(host1->IsConnectedTo(rout1)));
+    printassert("\th2 -/- r1",!(host2->IsConnectedTo(rout1)));
+    printassert("\th1 size == 0", host1->_connected.size() == 0);
+    printassert("\th2 size == 0", host2->_connected.size() == 0);
+    rout1 = nullptr;
+    link_h1r1 = nullptr;
+    link_h2r1 = nullptr;
+
+    printline("Removing link from network");
+    std::string adrr2 = "4.3.2.1";
+    auto rout2 = nw.CreateRouter(adrr2);
+    auto link_h1r2 = nw.LinkNodes(host1,rout2);
+    auto link_h2r2 = nw.LinkNodes(host2,rout2);
+    nw.RemoveLink(host1,rout2);
+    printassert("Network size is 3 as no nodes removed",nw.size() == 3);
+    printassert("Removing a link between h1,r2 only removes that link","...");
+    printassert("\th1 -/- r2",!(host1->IsConnectedTo(rout2)));
+    printassert("\th2 --- r2",(host2->IsConnectedTo(rout2)));
+    printassert("\th1 size == 0", host1->_connected.size() == 0);
+    printassert("\th2 size == 1", host2->_connected.size() == 1);
+    
+    
+
 }

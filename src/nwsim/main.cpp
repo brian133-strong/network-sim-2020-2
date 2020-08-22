@@ -13,6 +13,7 @@ int main(void) {
     EndHostTestRoutine();
     RouterTestRoutine();
     LinkTestRoutine();
+    NetworkTestRoutine();
     return 0;
 }
 
