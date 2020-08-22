@@ -12,8 +12,11 @@ namespace NWSim
     public:
         Network() {}
         ~Network() {}
-        // Creates new node. If non-unique IP is used, a nullptr is returned and nothing is added to _nodes.
-        std::shared_ptr<Node> CreateNode(const std::string &address);
+        /* 
+         * Creates new nodes. If non-unique IP is used, a nullptr is returned and nothing is added to _nodes.
+         */
+        std::shared_ptr<Node> CreateEndHost(const std::string &address = "0.0.0.0", float posX = 0.0, float posY = 0.0);
+        std::shared_ptr<Node> CreateRouter (const std::string &address = "0.0.0.0", float posX = 0.0, float posY = 0.0);
         // Returns nullptr if node was not found
         std::shared_ptr<Node> FindNode(const std::string &address) const;
         void RemoveNode(std::shared_ptr<Node> n);

@@ -5,17 +5,49 @@
 #include <limits.h>
 
 using namespace NWSim;
-std::shared_ptr<Node> Network::CreateNode(const std::string &address)
+std::shared_ptr<Node> Network::CreateEndHost(const std::string &address, float posX, float posY)
 {
-    std::cout << "Creating node: " << address << std::endl;
+    std::cout << "Attempting to create EndHost: " << address << " ... ";
     std::shared_ptr<Node> n = nullptr;
     // Check if address is already used?
     if (!FindNode(address))
     {
-        n = std::make_shared<Node>(0.0, 0.0, address);
+        n = std::make_shared<EndHost>(0.0, 0.0, address);
         _nodes.push_back(n);
-        std::cout << "pushed to _nodes" << std::endl;
+        std::cout << "Success!" << std::endl;
     }
+    else
+    {
+        std::cout << "Fail!" << std::endl;
+    }
+    return n;
+}
+
+std::shared_ptr<Node> Network::CreateRouter(const std::string &address, float posX, float posY)
+{
+    std::cout << "Attempting to create Router: " << address << " ... ";
+    std::shared_ptr<Node> n = nullptr;
+    try
+    {
+        /* code */
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
+    // Check if address is already used?
+    if (!FindNode(address))
+    {
+        n = std::make_shared<Router>(0.0, 0.0, address);
+        _nodes.push_back(n);
+        std::cout << "Success!" << std::endl;
+    }
+    else
+    {
+        std::cout << "Fail!" << std::endl;
+    }
+    
     return n;
 }
 
@@ -38,7 +70,7 @@ void Network::RemoveNode(std::shared_ptr<Node> node)
     // Need to delete all references to this node first.
     // Find if node is used for any links?
     auto it_link = _links.begin();
-    for (; it_link != _links.end(); it_link++)
+    while (it_link != _links.end())
     {
         // grab the nodes as shared_ptr from tuple
         auto n1 = std::get<0>(*it_link);
@@ -50,27 +82,25 @@ void Network::RemoveNode(std::shared_ptr<Node> node)
             if (n1 == node)
             {
                 n2->DisconnectFromNode(node);
-                // it_link now holds the proper reference
-                break;
+                // it_link now holds the proper reference, delete and jump up one
+                it_link = _links.erase(it_link);
+                continue;
             }
             if (n2 == node)
             {
                 n1->DisconnectFromNode(node);
-                // it_link now holds the proper reference
-                break;
+                // it_link now holds the proper reference, delete and jump up one
+                it_link = _links.erase(it_link);
+                continue;
             }
+
         }
         else
         {
             throw std::logic_error("Error: null Node pointers in Network::_links.");
         }
+        it_link++; // since nothing was found, advance up
     }
-    // drop the tuple, removes link, shared_ptr nodes and also the links (possibly non-empty) packet queue which holds weak_ptr to Node
-    if (it_link != _links.end())
-    {
-        _links.erase(it_link);
-    }
-
     // Find and erase the node in _nodes.
     auto it_node = std::find_if(_nodes.begin(), _nodes.end(),
                                 [node](const std::shared_ptr<Node> n) {
@@ -117,8 +147,9 @@ void Network::RemoveLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
         if (n1 == std::get<0>(*it) && n2 == std::get<1>(*it) ||
             n2 == std::get<0>(*it) && n1 == std::get<1>(*it))
         {
+            auto l = std::get<2>(*it);
+            l->RemoveNodeReferences();
             _links.erase(it);
-            break;
         }
     }
 }
