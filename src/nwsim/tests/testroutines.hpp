@@ -374,6 +374,15 @@ void NetworkTestRoutine()
     printassert("\th1 size == 0", host1->_connected.size() == 0);
     printassert("\th2 size == 1", host2->_connected.size() == 1);
     
-    
+    //TODO: Routing table, packet handling in network
+    NWSim::Network nw_routing = NWSim::Network();
+    auto h1 = nw_routing.CreateEndHost("0.0.0.11");
+    auto h2 = nw_routing.CreateEndHost("0.0.0.33");
+    auto r1 = nw_routing.CreateRouter("0.0.0.22");
 
+    auto l_h1r1 = nw_routing.LinkNodes(h1,r1);
+    auto l_h2r1 = nw_routing.LinkNodes(h2,r1);
+
+    nw_routing.GenerateRoutingTable();
+    nw_routing.PrintRoutingTable();
 }
