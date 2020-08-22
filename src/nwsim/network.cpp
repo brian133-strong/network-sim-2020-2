@@ -8,10 +8,10 @@
 #include <limits.h>
 
 using namespace NWSim;
-std::shared_ptr<Node> Network::CreateEndHost(const std::string &address, float posX, float posY)
+std::shared_ptr<EndHost> Network::CreateEndHost(const std::string &address, float posX, float posY)
 {
     std::cout << "Attempting to create EndHost: " << address << " ... ";
-    std::shared_ptr<Node> n = nullptr;
+    std::shared_ptr<EndHost> n = nullptr;
     // Check if address is already used?
     if (!FindNode(address))
     {
@@ -26,10 +26,10 @@ std::shared_ptr<Node> Network::CreateEndHost(const std::string &address, float p
     return n;
 }
 
-std::shared_ptr<Node> Network::CreateRouter(const std::string &address, float posX, float posY)
+std::shared_ptr<Router> Network::CreateRouter(const std::string &address, float posX, float posY)
 {
     std::cout << "Attempting to create Router: " << address << " ... ";
-    std::shared_ptr<Node> n = nullptr;
+    std::shared_ptr<Router> n = nullptr;
     try
     {
         /* code */
@@ -117,7 +117,7 @@ void Network::RemoveNode(std::shared_ptr<Node> node)
 std::shared_ptr<Link> Network::LinkNodes(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
 {
     // Only work with valid nodes
-    if (n1 == nullptr || n2 == nullptr)
+    if (n1 == nullptr || n2 == nullptr || n1 == n2)
     {
         throw std::logic_error("Error: Attempting to link invalid Nodes.");
     }

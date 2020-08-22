@@ -34,15 +34,16 @@ namespace NWSim
             else if (delay >= MAXPROPAGATIONDELAY) _propagation_delay = MAXPROPAGATIONDELAY;
             else _propagation_delay = delay;
         }
-        // "determines the interval at which new packets can be transmitted to the link" in bytes/ms
+        // "determines the interval at which new packets can be transmitted to the link"
         uint32_t GetTransmissionSpeed() const { return _transmission_speed; }
-        // "the time it takes for packet to travel across the link" in ms
+        // "the time it takes for packet to travel across the link"
         uint32_t GetPropagationDelay() const { return _propagation_delay; }
         // Cost to transmit over this link.
         uint32_t GetTransmitCost() const { return _transmission_speed + _propagation_delay; }
-        // Naive way to transmit packets from nodes to link and link to nodes.
         // Returns time when next packet can be accessed from this link
+        // TODO: Needs better way to call this, cant call blind
         uint32_t MoveTopTransmitPacketToNode(std::shared_ptr<Node>);
+        size_t size() const { return _transmissionQueue1.second.size() + _transmissionQueue2.second.size();}
         void AddPacketToQueue(std::shared_ptr<Node>, Packet p);
         ~Link() {}
 
@@ -52,10 +53,10 @@ namespace NWSim
         std::pair<std::weak_ptr<Node>, std::queue<Packet>> _transmissionQueue1; // Going one way
         std::pair<std::weak_ptr<Node>, std::queue<Packet>> _transmissionQueue2; // Going the other way
 
-        // "determines the interval at which new packets can be transmitted to the link" in bytes/ms
+        // "determines the interval at which new packets can be transmitted to the link" in bytes/us
         // Check Node Transmission QUeue every _transmission_speed;
         uint32_t _transmission_speed;
-        // "the time it takes for packet to travel across the link" in bytes/ms
+        // "the time it takes for packet to travel across the link" in bytes/us
         // Check this links transmission queue every _propagation_delay
         uint32_t _propagation_delay;
     };

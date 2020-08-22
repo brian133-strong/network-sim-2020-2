@@ -15,8 +15,8 @@ namespace NWSim
         /* 
          * Creates new nodes. If non-unique IP is used, a nullptr is returned and nothing is added to _nodes.
          */
-        std::shared_ptr<Node> CreateEndHost(const std::string &address = "0.0.0.0", float posX = 0.0, float posY = 0.0);
-        std::shared_ptr<Node> CreateRouter (const std::string &address = "0.0.0.0", float posX = 0.0, float posY = 0.0);
+        std::shared_ptr<EndHost> CreateEndHost(const std::string &address = "0.0.0.0", float posX = 0.0, float posY = 0.0);
+        std::shared_ptr<Router> CreateRouter (const std::string &address = "0.0.0.0", float posX = 0.0, float posY = 0.0);
         // Returns nullptr if node was not found
         std::shared_ptr<Node> FindNode(const std::string &address) const;
         void RemoveNode(std::shared_ptr<Node> n);
@@ -25,7 +25,6 @@ namespace NWSim
         void RemoveLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2);
 
         size_t size() const { return _nodes.size(); }
-
 
         // There needs to be some preprocessing done before we can simulate the network (i.e. routing table)
         bool IsRunnable() const;

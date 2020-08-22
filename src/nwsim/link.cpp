@@ -36,30 +36,34 @@ void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)
 u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
 {
     uint32_t nextEvent = 0;
-    std::unique_ptr<std::queue<Packet>> packets = nullptr;
-
     // Pick which is our transmission direction
     if (target == _transmissionQueue1.first.lock() && !_transmissionQueue1.second.empty())
     {
-        packets = std::make_unique<std::queue<Packet>>(_transmissionQueue1.second);
+        // transfer packet
+        auto p = _transmissionQueue1.second.front();
+        _transmissionQueue1.second.pop();
+        target->ReceivePacket(p);
+        // re check if empty...
+        if (!_transmissionQueue1.second.empty())
+        {
+            // Calculate the next event timestamp
+            auto ts = (uint32_t) 1.0 / (((double) GetPropagationDelay()) / _transmissionQueue1.second.front().GetSize());
+            nextEvent = (ts == 0) ? 1 : ts; // clamp to 1
+        }
     }
     else if (target == _transmissionQueue2.first.lock() && !_transmissionQueue2.second.empty())
     {
-        packets = std::make_unique<std::queue<Packet>>(_transmissionQueue2.second);
-    }
-
-    if (!packets)
-    {
         // transfer packet
-        target->ReceivePacket(packets->front());
-        packets->pop();
+        auto p = _transmissionQueue2.second.front();
+        _transmissionQueue2.second.pop();
+        target->ReceivePacket(p);
         // re check if empty...
-        if (!packets->empty())
+        if (!_transmissionQueue2.second.empty())
         {
             // Calculate the next event timestamp
-            nextEvent = packets->front().GetSize() / GetPropagationDelay();
+            auto ts = (uint32_t) 1.0 / (((double) GetPropagationDelay()) / _transmissionQueue2.second.front().GetSize());
+            nextEvent = (ts == 0) ? 1 : ts; // clamp to 1
         }
     }
-
     return nextEvent;
 }

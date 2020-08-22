@@ -12,17 +12,20 @@ uint32_t Node::MoveTopTransmitPacketToLink()
     if(!_transmit.empty())
     {
         auto t = _transmit.front();
+        auto packet = t.first;
+        auto targetnode = t.second;
         _transmit.pop();
         for (auto l : _connected)
         {
-            if (t.second == l.second.lock())
+            auto linkednode = l.second.lock();
+            auto link = l.first.lock();
+            if (targetnode == linkednode)
             {
                 // Calculate the next event timestamp
-                auto link = l.first.lock();
-                auto packet = t.first;
-                auto node = t.second;
-                nextEvent = packet.GetSize() / link->GetTransmissionSpeed();
-                link->AddPacketToQueue(node,packet);
+                //nextEvent = packet.GetSize() / link->GetTransmissionSpeed();
+                auto ts = (uint32_t) 1.0 / ((double) link->GetTransmissionSpeed() / packet.GetSize());
+                nextEvent = (ts == 0) ? 1 : ts; // clamp to
+                link->AddPacketToQueue(targetnode,packet);
                 break;
             }
         }
