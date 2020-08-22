@@ -1,6 +1,8 @@
 #pragma once
 #include <stdint.h>
 #include <string>
+#include <ostream>
+#include "address.hpp"
 
 /* Packet that gets transmitted between nodes
  * TODO: how to represent _data?
@@ -40,6 +42,16 @@ namespace NWSim
         // ttl decremented on each node hop (routers)
         unsigned char DecrementTimeToLive();
 
+        friend std::ostream& operator<<(std::ostream& os, const Packet &p) 
+        {
+            return os << 
+                "Source: " << NWSim::AddressIntToStr(p.GetSourceAddress()) <<
+                "\tTarget: " << NWSim::AddressIntToStr(p.GetTargetAddress()) <<
+                "\tSize: " << p.GetSize() << 
+                "\tTTL: " << (int)p.GetTimeToLive() <<
+                "\tID: " << p.GetPacketID() <<
+                "\tData: " << p.GetData();
+        }
     private:
         // size in bytes of the whole packet
         uint32_t _size;
