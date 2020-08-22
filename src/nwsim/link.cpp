@@ -11,6 +11,13 @@ void Link::InitTransmissionQueues(std::shared_ptr<Node> n1, std::shared_ptr<Node
     _transmissionQueue2 = std::make_pair(n2, temp);
 }
 
+void Link::RemoveNodeReferences()
+{
+    _transmissionQueue1.first.lock() = nullptr;
+    _transmissionQueue2.first.lock() = nullptr;
+    
+}
+
 void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)
 {
     // This is kinda ugly, TODO: refactor

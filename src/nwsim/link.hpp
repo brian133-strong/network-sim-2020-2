@@ -18,6 +18,8 @@ namespace NWSim
         Link(uint32_t transmission_speed = 1, uint32_t propagation_delay = 1) : _transmission_speed(transmission_speed), _propagation_delay(propagation_delay) {}
         // Set transmission queue directions. This will clear packet queues if they exist before.
         void InitTransmissionQueues(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2);
+        // Called when link is removed in Network
+        void RemoveNodeReferences();
         // Capped by MINTRANSMISSIONSPEED - MAXTRANSMISSIONSPEED
         void SetTransmissionSpeed(uint32_t speed)
         {
