@@ -31,9 +31,10 @@ namespace NWSim
         bool IsRunnable() const;
         // 
         void GenerateRoutingTable();
+        void PrintRoutingTable();
     private:
-        // Routing table of <<TargetAddress, CurrentNode>, IntermediateTargetNode>
-        // Keeping TargetAddress and CurrentNode as strings for readability
+        // Routing table of <<CurrentNode, TargetAddress>, IntermediateTargetNode>
+        // Keeping CurrentNode and TargetAddress as strings for readability
         std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>> _routingTable;
         std::vector<std::shared_ptr<Node>> _nodes;
         // Vector of links with the nodes that it binds together.
