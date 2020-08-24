@@ -169,6 +169,15 @@ void Network::GenerateRoutingTable()
             return n1.cost < n2.cost;
         }
     };
+    // Initialize routing table to nullptr
+    for (auto s : _nodes)
+    {
+        for (auto t : _nodes)
+        {
+            _routingTable[{s->network_interface.GetAddressStr(),t->network_interface.GetAddressStr()}] = nullptr;
+        }
+    }
+
     std::cout << "Generating routing table..." << std::endl;
     for (auto source : _nodes)
     {
@@ -184,9 +193,7 @@ void Network::GenerateRoutingTable()
             if (source != target)
             {
                 dist[target] = INT_MAX;
-                // TODO: Should initially fill _routingtable with nullptr? If so, should self-self be set to nullptr too?
             }
-            _routingTable[{source->network_interface.GetAddressStr(),target->network_interface.GetAddressStr()}] = nullptr;
              
         }
         dist[source] = 0;
