@@ -1,18 +1,38 @@
 #include <queue>
+#include <random>
+#include <list>
 #include "node.hpp"
+#include "packet.hpp"
+using namespace NWSim;
 
-Packet Node::GetNextTransmitPacket()
+
+uint32_t Node::MoveTopTransmitPacketToLink()
 {
-    Packet p;
-    if (GetTransmitQueueLength() > 0)
+    uint32_t nextEvent = 0;
+    if(!_transmit.empty())
     {
-        p = _transmit.front().first;
+        auto t = _transmit.front();
+        auto packet = t.first;
+        auto targetnode = t.second;
         _transmit.pop();
+        for (auto l : _connected)
+        {
+            auto linkednode = l.second.lock();
+            auto link = l.first.lock();
+            if (targetnode == linkednode)
+            {
+                // Calculate the next event timestamp
+                //nextEvent = packet.GetSize() / link->GetTransmissionSpeed();
+                auto ts = (uint32_t) 1.0 / ((double) link->GetTransmissionSpeed() / packet.GetSize());
+                nextEvent = (ts == 0) ? 1 : ts; // clamp to
+                link->AddPacketToQueue(targetnode,packet);
+                break;
+            }
+        }
     }
-    return p;
+    return nextEvent;
+
 }
-
-
 
 void Node::ReceivePacket(Packet p)
 {
@@ -75,5 +95,106 @@ void Node::DisconnectFromNode(std::shared_ptr<Node> n)
             _connected.erase(it);
             break; // no need to check further, only one connection to given node is possible
         }
+    }
+}
+
+
+void Router::RunApplication() 
+{
+    // Go through all received packets
+    while(!_receive.empty())
+    {
+        auto p = _receive.front();
+        _receive.pop();
+        // Drop packets if their TTL drops to 0
+        if (p.DecrementTimeToLive() == 0) continue;
+
+        // See if router connected to the target address?
+        auto it_con = _connected.begin();
+        for (;it_con != _connected.end(); it_con++)
+        {
+            auto link = (*it_con);
+            if(link.second.lock() == NWSim::AddressIntToStr(p.GetTargetAddress()))
+            {
+                AddTransmitPacket(p, link.second.lock());
+                break;
+            }
+        }
+        // If we arent directly connected, should consult the routing table. TODO:
+        if (it_con == _connected.end())
+        {
+            // Just randomize for now.... Yes this might break everything...
+            AddTransmitPacket(p, _connected[rand() % _connected.size()].second.lock());
+        }       
+
+    }
+}
+
+
+void EndHost::SetPacketCount(const uint32_t count) 
+{
+    if (count < MINPACKETS)
+    {
+        _packetCount = MINPACKETS;
+    }
+    else if (count > MAXPACKETS)
+    {
+        _packetCount = MAXPACKETS;
+    }
+    else
+    {
+        _packetCount = count;
+    }
+}
+
+bool EndHost::SetTargetAddress(const std::string& address)
+{
+    try
+    {
+        _targetAddress = AddressIntToStr(AddressStrToInt(address));
+        return true;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << std::endl;
+        return false;
+    }
+    
+}
+
+std::list<Packet> EndHost::GenerateRandomPackets() const
+{
+    std::list<Packet> packets;
+    for (uint32_t i = 0; i < _packetCount; i++)
+    {
+        Packet p = Packet(_defaultMsg, NWSim::AddressStrToInt(_targetAddress), network_interface.GetAddressInt(),i);
+        p.SetSize(rand() % p.MAXPACKETSIZE + p.GetSize()); // set random size for more interesting behaviour
+        packets.push_back(p);
+    }
+    return packets;
+    
+}
+
+std::list<Packet> EndHost::GeneratePackets() const
+{
+    // TODO: add more complex transfer? 
+    // TODO: Testing needs access to these packets
+    return GenerateRandomPackets();
+}
+
+std::shared_ptr<Node> EndHost::GetTargetNode() const
+{
+    // We always send to the first link, assume this is the gateway
+    // TODO: allow only 1 link for EndHost type nodes?
+    return _connected[0].second.lock();
+}
+
+void EndHost::RunApplication()
+{
+    auto n = GetTargetNode();
+    // Generate some packets to the target address and put to nodes transmit queue
+    for(auto p : GeneratePackets())
+    {
+        _transmit.push(std::make_pair(p,n));
     }
 }

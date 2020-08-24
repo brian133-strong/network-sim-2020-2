@@ -6,7 +6,7 @@
  * Helper functions to handle IP's
  */
 
-namespace Address
+namespace NWSim
 {
     // Convert ip address str: 'xxx.yyy.zzz.www' to 32-bit uint
     // Throws std::logic_error on invalid address
@@ -14,4 +14,4 @@ namespace Address
     // Convert 32-bit uint to ip address str: 'xxx.yyy.zzz.www'
     //
     std::string AddressIntToStr(const uint32_t adr);
-} // namespace Address
+} // namespace NWSim

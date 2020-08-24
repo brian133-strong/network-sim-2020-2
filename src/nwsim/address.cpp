@@ -9,7 +9,7 @@
 /*
  * Helper functions to deal with (IP) addresses
  */
-namespace Address
+namespace NWSim
 {
     std::vector<unsigned char> AddressStrToOctets(const std::string &adr)
     {
@@ -52,7 +52,7 @@ namespace Address
         uint32_t ret = 0;
         for (int i = 3; i >= 0; i--)
         {
-            ret += split[i] << i * 8;
+            ret += split[3 - i] << i * 8;
         }
         return ret;
     }
@@ -92,4 +92,4 @@ namespace Address
     //     }
     //     return masks;
     // }
-} // namespace Address
+} // namespace NWSim

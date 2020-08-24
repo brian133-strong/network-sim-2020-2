@@ -1,12 +1,12 @@
 #include "networkinterface.hpp"
 #include <exception>
 #include <iostream>
-
+using namespace NWSim;
 NetworkInterface::NetworkInterface(const std::string &adr)
 {
     try
     {
-        _address = Address::AddressStrToInt(adr);
+        _address = NWSim::AddressStrToInt(adr);
     }
     catch (const std::logic_error &e)
     {
@@ -17,14 +17,14 @@ NetworkInterface::NetworkInterface(const std::string &adr)
 
 const std::string NetworkInterface::GetAddressStr() const
 {
-    return Address::AddressIntToStr(_address);
+    return NWSim::AddressIntToStr(_address);
 }
 
 bool NetworkInterface::SetAddress(const std::string &adr)
 {
     try
     {
-        _address = Address::AddressStrToInt(adr);
+        _address = NWSim::AddressStrToInt(adr);
         return true;
     }
     catch (const std::logic_error &e)
