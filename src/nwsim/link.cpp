@@ -1,49 +1,69 @@
-#include <tuple>
-#include <memory>
+#include <queue>
+#include <list>
 #include "link.hpp"
-#include "node.hpp"
+#include "packet.hpp"
+using namespace NWSim;
 
-/* DEPRECATED
-Link::Link(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2, unsigned int transmission_speed, unsigned int propagation_delay) 
+void Link::InitTransmissionQueues(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
 {
-    _nodes.first = n1;
-    _nodes.second = n2;
-    _transmission_speed = transmission_speed;
-    _propagation_delay = propagation_delay;
+    std::queue<Packet> temp;
+    _transmissionQueue1 = std::make_pair(n1, temp);
+    _transmissionQueue2 = std::make_pair(n2, temp);
 }
-*/
-/* DEPRECATED. Functionality moved to Nodes.
-void Link::TransmitPackets()
+
+void Link::RemoveNodeReferences()
 {
-    // Get packets from nodes transmit queues
-    // TODO: timing with _transmission_speed?
-    Packet p1 = _nodes.first->GetNextTransmitPacket();
-    if (p1.GetTimeToLive() > 0)
-    {
-        _transmission_queue.push(std::make_pair(_nodes.second,p1));
-    }
-    Packet p2 = _nodes.second->GetNextTransmitPacket();
-    if (p2.GetTimeToLive() > 0)
-    {
-        _transmission_queue.push(std::make_pair(_nodes.first,p2));
-    }
-    // Get top packet from the links queue
-    if (GetTransmissionQueueSize() > 0) 
-    {
-        auto t = _transmission_queue.front();
-        _transmission_queue.pop();
-        // Check if packet at correct address
-        if (t.first->network_interface.GetAddressInt() == t.second.GetTargetAddress())
-        {
-            t.first->ReceivePacket(t.second);
-        }
-        else 
-        {
-            // TODO: This is where routing should happen... 
-            // Simply add to transmission queue of the Node, but target Node requires some algorithm to determine
-        }
-        
-    }
+    _transmissionQueue1.first.lock() = nullptr;
+    _transmissionQueue2.first.lock() = nullptr;
     
 }
-*/
+
+void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)
+{
+    // This is kinda ugly, TODO: refactor
+    // Determine with the node which queue this packet should go to:
+    if (_transmissionQueue1.first.lock() == n)
+    {
+        _transmissionQueue1.second.push(p);
+    }
+    else if (_transmissionQueue2.first.lock() == n)
+    {
+        _transmissionQueue2.second.push(p);
+    }
+    // else drop packet as it's invalid
+}
+
+u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
+{
+    uint32_t nextEvent = 0;
+    // Pick which is our transmission direction
+    if (target == _transmissionQueue1.first.lock() && !_transmissionQueue1.second.empty())
+    {
+        // transfer packet
+        auto p = _transmissionQueue1.second.front();
+        _transmissionQueue1.second.pop();
+        target->ReceivePacket(p);
+        // re check if empty...
+        if (!_transmissionQueue1.second.empty())
+        {
+            // Calculate the next event timestamp
+            auto ts = (uint32_t) 1.0 / (((double) GetPropagationDelay()) / _transmissionQueue1.second.front().GetSize());
+            nextEvent = (ts == 0) ? 1 : ts; // clamp to 1
+        }
+    }
+    else if (target == _transmissionQueue2.first.lock() && !_transmissionQueue2.second.empty())
+    {
+        // transfer packet
+        auto p = _transmissionQueue2.second.front();
+        _transmissionQueue2.second.pop();
+        target->ReceivePacket(p);
+        // re check if empty...
+        if (!_transmissionQueue2.second.empty())
+        {
+            // Calculate the next event timestamp
+            auto ts = (uint32_t) 1.0 / (((double) GetPropagationDelay()) / _transmissionQueue2.second.front().GetSize());
+            nextEvent = (ts == 0) ? 1 : ts; // clamp to 1
+        }
+    }
+    return nextEvent;
+}
