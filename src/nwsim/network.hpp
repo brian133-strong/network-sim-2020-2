@@ -19,6 +19,8 @@ namespace NWSim
         std::shared_ptr<Router> CreateRouter (const std::string &address = "0.0.0.0", float posX = 0.0, float posY = 0.0);
         // Returns nullptr if node was not found
         std::shared_ptr<Node> FindNode(const std::string &address) const;
+        // Returns nullptr if link was not found
+        std::shared_ptr<Link> FindLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2);
         void RemoveNode(std::shared_ptr<Node> n);
         // Links two nodes with a bidirectional link, link objects ptr added in _links as well.
         std::shared_ptr<Link> LinkNodes(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2);

@@ -61,6 +61,25 @@ std::shared_ptr<Node> Network::FindNode(const std::string &address) const
     return node;
 }
 
+std::shared_ptr<Link> Network::FindLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
+{
+    std::shared_ptr<Link> ret = nullptr;
+    for(auto l : _links)
+    {
+        auto node1 = std::get<0>(l);
+        auto node2 = std::get<1>(l);
+        auto link = std::get<2>(l);
+        // link can be found in either "orientation" in _links
+        if (node1 == n1 && node2 == n2 ||
+            node1 == n2 && node2 == n1)
+        {
+            ret = link;
+            break;
+        }
+    }
+    return ret;
+}
+
 void Network::RemoveNode(std::shared_ptr<Node> node)
 {
     _isready = false; // we are not ready to simulate
