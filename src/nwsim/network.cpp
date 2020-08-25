@@ -10,7 +10,7 @@
 using namespace NWSim;
 std::shared_ptr<EndHost> Network::CreateEndHost(const std::string &address, float posX, float posY)
 {
-    std::cout << "Attempting to create EndHost: " << address << " ... ";
+    //std::cout << "Attempting to create EndHost: " << address << " ... ";
     std::shared_ptr<EndHost> n = nullptr;
     // Check if address is already used?
     if (!FindNode(address))
@@ -18,18 +18,18 @@ std::shared_ptr<EndHost> Network::CreateEndHost(const std::string &address, floa
         _isready = false; // we are not ready to simulate
         n = std::make_shared<EndHost>(0.0, 0.0, address);
         _nodes.push_back(n);
-        std::cout << "Success!" << std::endl;
+        //std::cout << "Success!" << std::endl;
     }
     else
     {
-        std::cout << "Fail!" << std::endl;
+        //std::cout << "Fail!" << std::endl;
     }
     return n;
 }
 
 std::shared_ptr<Router> Network::CreateRouter(const std::string &address, float posX, float posY)
 {
-    std::cout << "Attempting to create Router: " << address << " ... ";
+    //std::cout << "Attempting to create Router: " << address << " ... ";
     std::shared_ptr<Router> n = nullptr;
     // Check if address is already used?
     if (!FindNode(address))
@@ -37,11 +37,11 @@ std::shared_ptr<Router> Network::CreateRouter(const std::string &address, float 
         _isready = false; // we are not ready to simulate
         n = std::make_shared<Router>(0.0, 0.0, address);
         _nodes.push_back(n);
-        std::cout << "Success!" << std::endl;
+        //std::cout << "Success!" << std::endl;
     }
     else
     {
-        std::cout << "Fail!" << std::endl;
+        //std::cout << "Fail!" << std::endl;
     }
 
     return n;

@@ -48,6 +48,15 @@ void Node::AddTransmitPacket(Packet p, std::shared_ptr<Node> n)
     if (p.GetTimeToLive() > 0)
     {
         _transmit.push_back(std::make_pair(p, n));
+        for(int i = 0; i < _connected.size(); i++)
+        {
+            auto node = _connected[i].second.lock();
+            if(node = n)
+            {
+                // Set time to 1 so it gets caught on the next Simulate run.
+                SetEventTime(1,i);
+            }
+        }
     }
 }
 
@@ -192,13 +201,8 @@ void EndHost::RunApplication()
     // Generate some packets to the target address and put to nodes transmit queue
     for (auto p : GeneratePackets())
     {
-        _transmit.push_back(std::make_pair(p, n));
-    }
-    auto et = GetEventTimes();
-    for(int i = 0; i < et.size(); i++)
-    {
-        // This is the initial time on initialization, set time to 1 
-        SetEventTime(1,i);
+        // AddTransmitPacket handles setting event time
+        AddTransmitPacket(p,n);
     }
 }
 

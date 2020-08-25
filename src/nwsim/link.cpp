@@ -31,7 +31,6 @@ void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)
         if (_transmissionQueue1.second.size() == 1){
             // Set simulation time
             auto t = GetPropagationDelay() * p.GetSize();
-            std::cout << "Adding packet to queue 1, time to: " << t << std::endl;
             SetEventTime(t,0);
         }
         
@@ -43,7 +42,6 @@ void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)
         if (_transmissionQueue2.second.size() == 1){
             // Set simulation time
             auto t = GetPropagationDelay() * p.GetSize();
-            std::cout << "Adding packet to queue 2, time to: " << t << std::endl;
             SetEventTime(t,1);
         }
     }
