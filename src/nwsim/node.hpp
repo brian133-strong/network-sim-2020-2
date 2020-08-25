@@ -6,10 +6,6 @@
 #include <memory>
 #include "networkinterface.hpp"
 #include "link.hpp"
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QJsonValue>
-#include <QString>
 
 namespace NWSim
 {
@@ -83,12 +79,6 @@ namespace NWSim
         void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
         void ReceivePacket(Packet p);
         std::queue<Packet> GetReceivedPackets() const { return _receive; }
-
-        // Write node to a JSON-object
-        void WriteToJson(QJsonObject &json) const;
-
-        // Read node from a JSON-object
-        void ReadFromJson(QJsonObject &json);
 
         // If address needs to be changed, check if it is unique against the Network's _nodes vector first.
         NetworkInterface network_interface;

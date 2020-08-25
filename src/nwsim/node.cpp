@@ -47,6 +47,9 @@ void Node::AddTransmitPacket(Packet p, std::shared_ptr<Node> n)
     }
 }
 
+/*
+// DEPRECATED
+
 void Node::WriteToJson(QJsonObject &json) const {
     const QString address = QString::fromStdString( this->network_interface.GetAddressStr() );
     //QString application = QString::fromStdString( _app._placeholder ); 
@@ -73,15 +76,18 @@ void Node::ReadFromJson(QJsonObject &json) {
     if (json.contains("address") && json["address"].isString())
         this->network_interface.SetAddress( json["address"].toString().toStdString()); // TODO: Handle invalid input
 
-    if (json.contains("application") && json["application"].isString())
-        // Set node application
-        ;
+    if (json.contains("application") && json["application"].isString()) {
+        
+    }
+
 
     if (json.contains("position") && json["position"].isObject()) {
         QJsonObject pos = json["position"].toObject();
         this->SetPosition(pos["x"].toInt(), pos["y"].toInt());
     }
 }
+
+*/
 
 void Node::ConnectToNode(std::shared_ptr<Node> n, std::shared_ptr<Link> l)
 {

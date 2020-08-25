@@ -3,10 +3,15 @@
 #include <map>
 #include "node.hpp"
 #include "link.hpp"
+
+#include <QJsonObject>
+
 namespace NWSim
 {
     //class Node;
     //class Link;
+    enum fileType {binary, Json};
+
     class Network
     {
     public:
@@ -31,6 +36,14 @@ namespace NWSim
         // 
         void GenerateRoutingTable();
         void PrintRoutingTable();
+
+
+        void Read(const QJsonObject &json);
+        void Write(QJsonObject &json);
+
+        bool Load(const std::string &fileName, fileType saveFormat);
+        bool Save(std::string &fileName, fileType saveFormat);
+
     private:
         // Routing table of <<CurrentNode, TargetAddress>, IntermediateTargetNode>
         // Keeping CurrentNode and TargetAddress as strings for readability

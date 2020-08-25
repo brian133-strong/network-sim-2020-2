@@ -7,6 +7,15 @@
 #include <algorithm>
 #include <limits.h>
 
+#include <QFile>
+#include <QSaveFile>
+#include <QJsonDocument>
+#include <QString>
+#include <QJsonArray>
+#include <QJsonValue>
+#include <QByteArray>
+#include <QIODevice>
+
 using namespace NWSim;
 std::shared_ptr<EndHost> Network::CreateEndHost(const std::string &address, float posX, float posY)
 {
@@ -291,4 +300,125 @@ void Network::PrintRoutingTable()
         auto sendto = (route.second == nullptr) ? "nullptr" : route.second->network_interface.GetAddressStr();
         std::cout << "\tWhen at: " << current << "\tand target: " << target << "\tsend to: " << sendto << std::endl;
     }
+}
+
+void Network::Read(const QJsonObject &json) {
+    if (json.contains("nodes") && json["nodes"].isObject()) {
+        for (auto n : json["nodes"].toArray()) {
+            QJsonObject node = n.toObject();
+            if (node.contains("address") && node["address"].isString() &&
+                node.contains("type") && node["type"].isString() &&
+                node.contains("position") && node["position"].isDouble()) 
+            {
+                std::string address = node["address"].toString().toStdString();
+                std::string type = node["type"].toString().toStdString();
+                QJsonObject pos = node["position"].toObject();
+
+                if (type == "endHost")
+                    CreateEndHost(address, pos["x"].toDouble(), pos["y"].toDouble());
+                else if (type == "router")
+                    CreateRouter(address, pos["x"].toDouble(), pos["y"].toDouble());
+            }
+        }
+    }
+
+    if (json.contains("links") && json["links"].isString()) {
+        for (auto l : json["links"].toArray()) {
+            QJsonObject link = l.toObject();
+            if (link.contains("address_1") && link["address_1"].isString() &&
+                link.contains("address_2") && link["taddress_2"].isString() &&
+                link.contains("transmissionSpeed") &&
+                link.contains("propagationDelay")) 
+            {
+                std::string address_1 = link["address_1"].toString().toStdString();
+                std::string address_2 = link["address_2"].toString().toStdString();
+                uint32_t transmission_speed = link["transmissionSpeed"].toInt();
+                uint32_t propagation_delay = link["propagationDelay"].toInt();
+
+                std::shared_ptr<Node> n1 = FindNode(address_1);
+                std::shared_ptr<Node> n2 = FindNode(address_2);
+                std::shared_ptr<Link> link = LinkNodes(n1, n2);
+                link->SetTransmissionSpeed(transmission_speed);
+                link->SetPropagationDelay(propagation_delay);   
+            }
+        }
+    }
+}
+
+void Network::Write(QJsonObject &json) {
+    QJsonArray nodes_arr;
+    QJsonArray links_arr;
+
+    for (auto n : _nodes) {
+        QJsonObject nodeObject;
+        const QString address = QString::fromStdString(n->network_interface.GetAddressStr());
+        const QString type = QString::fromStdString(n->GetNodeType()); 
+        Position pos = n->GetPosition();
+
+        nodeObject["address"] = address; // has to be unique
+        nodeObject["application"] = type;
+        nodeObject["position"] = QJsonObject {{"x", pos.posX }, {"y", pos.posY }};
+        nodes_arr.push_back(nodeObject);
+    }
+
+    for (auto l : _links) {
+        std::shared_ptr node_1 = std::get<0>(l);
+        std::shared_ptr node_2 = std::get<1>(l);
+        std::shared_ptr link = std::get<2>(l);
+        QJsonObject linkObject;
+
+        const QString address_1 = QString::fromStdString(node_1->network_interface.GetAddressStr());
+        const QString address_2 = QString::fromStdString(node_2->network_interface.GetAddressStr());
+        
+        linkObject["address_1"] = address_1;
+        linkObject["address_2"] = address_2;
+        linkObject["transmissionSpeed"] = (int)link->GetTransmissionSpeed();
+        linkObject["propagationDelay"] = (int)link ->GetPropagationDelay();
+        links_arr.push_back(linkObject);
+    }
+
+    json["nodes"] = nodes_arr;
+    json["links"] = links_arr;
+}
+
+bool Network::Load(const std::string &fileName, fileType saveFormat) {
+    QString fn = QString::fromStdString(saveFormat == Json
+        ? fileName + ".json"
+        : fileName + ".dat");
+    QFile lf(fn);
+
+    if (!lf.open(QIODevice::ReadOnly)) {
+        return false;
+    }
+
+    QByteArray data = lf.readAll();
+    QJsonDocument loadDoc(saveFormat == Json
+        ? QJsonDocument::fromJson(data)
+        : QJsonDocument::fromBinaryData(data));
+    Read(loadDoc.object());
+
+    return true;
+}
+
+bool Network::Save(std::string &fileName, fileType saveFormat) {
+
+    QString fn = QString::fromStdString(saveFormat == Json
+    ? fileName + ".json"
+    : fileName + ".dat");
+
+    QSaveFile sf(fn);
+
+    if (!sf.open(QIODevice::WriteOnly)) {
+        return false;
+    }
+
+    QJsonObject networkObject;
+    Write(networkObject);
+    QJsonDocument saveDoc(networkObject);
+    sf.write(saveFormat == Json
+        ? saveDoc.toJson()
+        : saveDoc.toBinaryData());
+    sf.commit();
+
+    return true;
 }
