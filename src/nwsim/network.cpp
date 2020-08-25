@@ -298,3 +298,32 @@ void Network::RouteAllCurrentPackets()
         }
     }
 }
+
+void Network::SimulateAllNodesAndLinks()
+{
+    if(IsRunnable())
+    {
+        for(auto node : _nodes)
+        {
+            node->Simulate();
+        }
+        for(auto l : _links)
+        {
+            auto link = std::get<2>(l);
+            link->Simulate();
+        }
+        RouteAllCurrentPackets();
+    }
+}
+
+void Network::StartAllEndHosts()
+{
+    for(auto node : _nodes)
+    {
+        if(node->GetNodeType() == "EndHost")
+        {
+            auto eh = std::static_pointer_cast<EndHost>(node);
+            eh->RunApplication();
+        }
+    }
+}

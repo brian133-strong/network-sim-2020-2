@@ -7,10 +7,10 @@ public:
     // Advance time till next event can happen. 
     std::vector<int> AdvanceTime() 
     {
-        for (auto t : evt_times)
+        for (int i = 0; i < evt_times.size(); i++)
         {
-            t--;
-            if (t < 0) t = -1;
+            evt_times[i]--;
+            if (evt_times[i] < 0) evt_times[i] = -1;
         }
         return evt_times;
     }

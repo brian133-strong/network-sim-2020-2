@@ -6,6 +6,7 @@
 #include "../link.hpp"
 #include "../network.hpp"
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <random>
 #include <time.h>
@@ -39,6 +40,25 @@ template <class T>
 void printassert(const std::string &msg, T arg)
 {
     std::cout << std::boolalpha << "\t" << msg << ": " << arg << std::endl;
+}
+
+void printpacketcounts(std::shared_ptr<NWSim::Node> n)
+{
+    if(n == nullptr) return;
+    std::cout << std::left << std::setw(8) << n->GetNodeType();
+    std::cout << std::left << std::setw(16) << n->network_interface.GetAddressStr();
+    std::cout << std::left << " - transmit: " << std::setw(6) << n->GetTransmitQueueLength();
+    std::cout << std::left << " receive: " << std::setw(6) << n->GetReceivedPackets().size() << std::endl;
+}
+
+void printlinkpacketcounts(const std::string &from, const std::string &to, std::shared_ptr<NWSim::Link> link)
+{
+    if(link == nullptr) return;
+    std::cout << std::left << std::setw(16) << from << " - ";
+    std::cout << std::left << std::setw(16) << to << " : ";
+    std::cout << std::left << std::setw(6) << link->size();
+    std::cout << std::left << std::setw(12) << 
+        "waiting: (" << link->GetEventTimes()[0] << "," << link->GetEventTimes()[1] << ")" << std::endl;
 }
 
 void PacketTestRoutine()
@@ -456,7 +476,78 @@ void NetworkTestRoutine()
 
     // Sims
     printline("**** Testing Simulatable runs ****");
+    NWSim::Network nw_sim = NWSim::Network();
+    std::string addresses[] = {"1.1.1.1","2.2.2.2","3.3.3.3","4.4.4.4","5.5.5.5"};
+    auto e1 = nw_sim.CreateEndHost(addresses[0]);
+    auto e2 = nw_sim.CreateEndHost(addresses[1]);
+    auto e5 = nw_sim.CreateEndHost(addresses[4]);
+    auto r3 = nw_sim.CreateRouter(addresses[2]);
+    auto r4 = nw_sim.CreateRouter(addresses[3]);
+    
+    auto l13 = nw_sim.LinkNodes(e1,r3);
+    auto l23 = nw_sim.LinkNodes(e2,r3);
+    auto l34 = nw_sim.LinkNodes(r3,r4);
+    auto l45 = nw_sim.LinkNodes(r4,e5);
 
+    // Setting arbitrary parameters
 
+    l13->SetPropagationDelay(1);
+    l23->SetPropagationDelay(1);
+    l34->SetPropagationDelay(1);
+    l45->SetPropagationDelay(1);
+
+    l13->SetTransmissionSpeed(1);
+    l23->SetTransmissionSpeed(1);
+    l34->SetTransmissionSpeed(1);
+    l45->SetTransmissionSpeed(1);
+
+    e1->SetTargetAddress(addresses[4]);
+    e2->SetTargetAddress(addresses[4]);
+    e5->SetTargetAddress(addresses[0]);
+
+    e1->SetPacketCount(100);
+    e2->SetPacketCount(50);
+    e5->SetPacketCount(10);
+
+    printassert("Set up network, can not run yet",!nw_sim.IsRunnable());
+    nw_sim.InitializeForSimulation();
+    printassert("Initialized network for running",nw_sim.IsRunnable());
+    printassert("Check below routing table...","");
+    nw_sim.PrintRoutingTable();
+    printline("Actual simulation ---");
+
+    nw_sim.StartAllEndHosts();
+
+    std::cout << "Packet counts before simulation:" << std::endl;
+    printpacketcounts(e1);
+    printpacketcounts(e2);
+    printpacketcounts(r3);
+    printpacketcounts(r4);
+    printpacketcounts(e5);
+    
+    for(int timestamp = 1; timestamp <= 500; timestamp++)
+    {
+        nw_sim.SimulateAllNodesAndLinks();
+        // printlinkpacketcounts("e1","r3",l13);
+        // printlinkpacketcounts("e2","r3",l23);
+        // printlinkpacketcounts("r3","r4",l34);
+        // // printlinkpacketcounts("r4","e5",l45);
+        // printlinkpacketcounts(e1->network_interface.GetAddressStr(),r3->network_interface.GetAddressStr(),l13);
+        // printlinkpacketcounts(e2->network_interface.GetAddressStr(),r3->network_interface.GetAddressStr(),l23);
+        // printlinkpacketcounts(r3->network_interface.GetAddressStr(),r4->network_interface.GetAddressStr(),l34);
+        // printlinkpacketcounts(r4->network_interface.GetAddressStr(),e5->network_interface.GetAddressStr(),l45);
+    }
+
+    std::cout << "Packet counts after simulation:" << std::endl;
+    printlinkpacketcounts(e1->network_interface.GetAddressStr(),r3->network_interface.GetAddressStr(),l13);
+    printlinkpacketcounts(e2->network_interface.GetAddressStr(),r3->network_interface.GetAddressStr(),l23);
+    printlinkpacketcounts(r3->network_interface.GetAddressStr(),r4->network_interface.GetAddressStr(),l34);
+    printlinkpacketcounts(r4->network_interface.GetAddressStr(),e5->network_interface.GetAddressStr(),l45);
+    printpacketcounts(e1);
+    printpacketcounts(e2);
+    printpacketcounts(r3);
+    printpacketcounts(r4);
+    printpacketcounts(e5);
 
 }
+

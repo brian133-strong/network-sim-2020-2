@@ -12,7 +12,7 @@ namespace NWSim
     class Packet
     {
     public:
-        const uint32_t MAXPACKETSIZE = 1024; // arbitrary cutoff point
+        const uint32_t MAXPACKETSIZE = 20; // arbitrary cutoff point
         const uint32_t MINPACKETSIZE = 18;   // empty packet should be 14 bytes? addresses + packetID + ttl + size + empty string (data) 
         Packet() : _data(""),
                    _size(MINPACKETSIZE),

@@ -194,6 +194,12 @@ void EndHost::RunApplication()
     {
         _transmit.push_back(std::make_pair(p, n));
     }
+    auto et = GetEventTimes();
+    for(int i = 0; i < et.size(); i++)
+    {
+        // This is the initial time on initialization, set time to 1 
+        SetEventTime(1,i);
+    }
 }
 
 void Node::Simulate()

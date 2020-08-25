@@ -30,9 +30,13 @@ namespace NWSim
         bool IsRunnable() const { return _isready; }
         // Must be run before simulation can be run, sets _isready
         void InitializeForSimulation();
-
+        // For all EndHosts in _nodes, do RunApplication()
+        void StartAllEndHosts();
         // For all Routers in _nodes, do RunApplication()
         void RouteAllCurrentPackets();
+        // For all node in _nodes and link in _links do Simulate()
+        void SimulateAllNodesAndLinks();
+
         void PrintRoutingTable(bool showAll = false) const;
     private:
         // Dijkstra from each source to each target
