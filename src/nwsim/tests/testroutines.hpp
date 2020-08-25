@@ -384,9 +384,9 @@ void NetworkTestRoutine()
     auto l_h2r1 = nw_routing.LinkNodes(h2,r1);
 
     printline("**** Manually see below routing table if it makes sense... ****");
-    nw_routing.GenerateRoutingTable();
+    printassert("New print table should not be simulatable out of the box",!nw_routing.IsRunnable());
+    nw_routing.InitializeForSimulation();
     nw_routing.PrintRoutingTable();
-
     printline("Testing packet transfer in network");
     int pc = 5;
     h1->SetPacketCount(pc);
@@ -405,7 +405,7 @@ void NetworkTestRoutine()
 
 
     printassert("Link is empty and can not move any packets",(0 == l_h1r1->MoveTopTransmitPacketToNode(r1)));
-    auto h1time = h1->MoveTopTransmitPacketToLink();
+    auto h1time = h1->MoveTopTransmitPacketToLink(r1);
     bool h1check = h1->GetTransmitQueueLength() == h1->GetPacketCount() - 1 && h1time > 0;
     printassert("Moving packet from node h1 to link is succesful",h1check);
     printassert("Link h1-r1 now has 1 packet",l_h1r1->size() == 1);
@@ -418,7 +418,7 @@ void NetworkTestRoutine()
     // routing packet...
     r1->RunApplication();
     printassert("After running router, receive queue is 0 and transmit is 1",(r1->GetReceivedPackets().size() == 0 && r1->GetTransmitQueueLength() == 1));
-    auto r1time = r1->MoveTopTransmitPacketToLink();
+    auto r1time = r1->MoveTopTransmitPacketToLink(h2);
     bool r1check = r1->GetTransmitQueueLength() == 0 && r1time > 0;
     printassert("After moving from the router, transmit q is empty",r1check);
 
@@ -428,21 +428,9 @@ void NetworkTestRoutine()
     printassert("Next link l2 timestamp should be 0 as no other packets exist",0 == l2time);
 
     printline("Moving the remaining packets...");
-    while(0 < h1->MoveTopTransmitPacketToLink());
+    while(0 < h1->MoveTopTransmitPacketToLink(r1));
     while(0 < l_h1r1->MoveTopTransmitPacketToNode(r1));
-    // while(h1->GetTransmitQueueLength() > 0)
-    // {
-    //     std::cout << "currently " << h1->GetTransmitQueueLength() << " packets remain in h1" << std::endl;
-    //     auto ts = h1->MoveTopTransmitPacketToLink();
-    // }
-    // int i = 0;
-    // while(l_h1r1->size() > 0)
-    // {
-    //     std::cout << "currently " << l_h1r1->size() << " packets remain in l1" << std::endl;
-    //     auto ts = l_h1r1->MoveTopTransmitPacketToNode(r1);
-    //     i++; if (i > l_h1r1->size()) break;
-    // }
-    
+
     printassert("Before run - h1 and l1 are empty",h1->GetTransmitQueueLength() == 0 && l_h1r1->size() == 0);
     printassert("Before run - Router reveived holds rest of the packets",r1->GetReceivedPackets().size() == pc - 1);
     auto q = r1->GetReceivedPackets();
@@ -454,7 +442,7 @@ void NetworkTestRoutine()
 
     r1->RunApplication(); // moves everything from routers received to transmit queue
     printassert("After run - Router transmit holds rest of the packets",r1->GetTransmitQueueLength() == pc - 1);
-    while(0 < r1->MoveTopTransmitPacketToLink());
+    while(0 < r1->MoveTopTransmitPacketToLink(h2));
     while(0 < l_h2r1->MoveTopTransmitPacketToNode(h2));
     printassert("All packets found on endhost",h2->GetReceivedPackets().size() == pc);
     q = h2->GetReceivedPackets();
@@ -463,4 +451,12 @@ void NetworkTestRoutine()
         std::cout << q.front() << std::endl;
         q.pop();
     }
+
+
+
+    // Sims
+    printline("**** Testing Simulatable runs ****");
+
+
+
 }
