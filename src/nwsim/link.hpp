@@ -3,6 +3,7 @@
 #include <memory>
 #include "packet.hpp"
 #include "node.hpp"
+
 // Need to forward declare Node in order to compile
 class Node;
 class Link {
@@ -24,9 +25,9 @@ public:
     // Naive way to transmit packets from nodes to link and link to nodes
     //void TransmitPackets();
 
-    void WriteToJson(QJsonObject &json) const;
+    //void WriteToJson(QJsonObject &json) const;
     
-    void ReadFromJson(QJsonObject &json);
+    //void ReadFromJson(QJsonObject &json);
 
     ~Link() { }
 private:

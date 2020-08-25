@@ -7,12 +7,13 @@
 #include "node.hpp"
 #include "link.hpp"
 #include "eventqueue.hpp"
-<<<<<<< HEAD
-#include "dummy.hpp"
-=======
 #include "network.hpp"
 
->>>>>>> master
+#include <QSaveFile>
+#include <QJsonDocument>
+#include <QIODevice>
+
+
 //print line
 void println(const std::string& s) {
     std::cout << s << std::endl;
@@ -115,55 +116,7 @@ int main(void) {
     std::cout << "Decremented ttl: " << (int)p2.DecrementTimeToLive() << std::endl;    
     std::cout << "Manual override size - 25: " << p2.SetSize(25) << std::endl;
     std::cout << "Manual override size - 0: " << p2.SetSize(0) << std::endl;
-<<<<<<< HEAD
-    
-
-    /*
-     * Testing Nodes and Links, transmitting packets over links
-     */
-    /*
-    println("=== Testing nodes, links and packet transfer ===");
-    std::string adr1,adr2;
-    adr1 = "10.0.0.1";
-    adr2 = "10.0.0.2";
-    std::shared_ptr<Node> node1 = std::make_shared<Node>();
-    std::shared_ptr<Node> node2 = std::make_shared<Node>();
-    node1->network_interface.SetAddress(adr1);
-    node2->network_interface.SetAddress(adr2);
-
-    Packet pck1("Test Packet 1",Address::AddressStrToInt(adr2), Address::AddressStrToInt(adr1));
-    Packet pck2("Test Packet 2",Address::AddressStrToInt(adr2), Address::AddressStrToInt(adr1));
-    Packet pck3("Test Packet 3",Address::AddressStrToInt(adr2), Address::AddressStrToInt(adr1));
-    
-    Link link12 = Link(node1, node2, 1, 1);
-    std::cout << "nodes and links created, current lengths: " << std::endl;
-    std::cout << "\tqueue lengths: node1: " << node1->GetTransmitQueueLength() << ", node2: " << node2->GetTransmitQueueLength() << ", link: " << link12.GetTransmissionQueueSize() << std::endl;
-    std::cout << "Attempting to transmit packets with empty queues, all should remain 0:" << std::endl;
-    link12.TransmitPackets();
-    std::cout << "\tqueue lengths: node1: " << node1->GetTransmitQueueLength() << ", node2: " << node2->GetTransmitQueueLength() << ", link: " << link12.GetTransmissionQueueSize() << std::endl;
-
-    std::cout << "Adding packets to node1 queue:" << std::endl;
-    node1->AddTransmitPacket(pck1,node2);
-    node1->AddTransmitPacket(pck2,node2);
-    node1->AddTransmitPacket(pck3,node2);
-    std::cout << "\tqueue lengths: node1: " << node1->GetTransmitQueueLength() << ", node2: " << node2->GetTransmitQueueLength() << ", link: " << link12.GetTransmissionQueueSize() << std::endl;
-
-    std::cout << "Attempting to transmit all 3 packets from node1 to node2:" << std::endl;
-    link12.TransmitPackets();
-    link12.TransmitPackets();
-    link12.TransmitPackets();
-    std::cout << "\tqueue lengths: node1: " << node1->GetTransmitQueueLength() << ", node2: " << node2->GetTransmitQueueLength() << ", link: " << link12.GetTransmissionQueueSize() << std::endl;
-    auto packets = node2->GetReceivedPackets();
-    std::cout << "\treceived queue: size: " << packets.size() << std::endl;
-    while(!packets.empty())
-    {
-        auto p = packets.front();
-        std::cout << "\tPacket: " << p.GetData() << std::endl;
-        packets.pop();
-    }
-=======
      
->>>>>>> master
 
     // Testing node position
     println("=== Testing node position ===");
@@ -182,51 +135,51 @@ int main(void) {
     /*
      * Testing a Network of Nodes and Links
      */
-    println("=== Testing Network of Nodes and Links ===");
+    // println("=== Testing Network of Nodes and Links ===");
 
-    Network nw;
+    // Network nw;
 
-    // creating nodes
-    println("Attempt to create some valid nodes...");
-    std::shared_ptr<Node> nw_node1 = nw.CreateNode("192.168.0.1");
-    std::shared_ptr<Node> nw_node2 = nw.CreateNode("0.0.0.0");
-    std::shared_ptr<Node> nw_node3 = nw.CreateNode("123.123.123.123");
-    std::shared_ptr<Node> nw_node4 = nw.CreateNode("255.255.255.255");
-    std::cout << "Node count: " << nw.size() << std::endl;
+    // // creating nodes
+    // println("Attempt to create some valid nodes...");
+    // std::shared_ptr<Node> nw_node1 = nw.CreateNode("192.168.0.1");
+    // std::shared_ptr<Node> nw_node2 = nw.CreateNode("0.0.0.0");
+    // std::shared_ptr<Node> nw_node3 = nw.CreateNode("123.123.123.123");
+    // std::shared_ptr<Node> nw_node4 = nw.CreateNode("255.255.255.255");
+    // std::cout << "Node count: " << nw.size() << std::endl;
 
-    println("Attempt to create a non-unique node.");
-    std::shared_ptr<Node> nw_node_nonunique = nw.CreateNode("192.168.0.1");
-    std::cout << "Node count: " << nw.size() << std::endl;
-    std::cout << std::boolalpha << "Ptr should be null: " << (nw_node_nonunique == nullptr) << std::endl;
+    // println("Attempt to create a non-unique node.");
+    // std::shared_ptr<Node> nw_node_nonunique = nw.CreateNode("192.168.0.1");
+    // std::cout << "Node count: " << nw.size() << std::endl;
+    // std::cout << std::boolalpha << "Ptr should be null: " << (nw_node_nonunique == nullptr) << std::endl;
 
-    println("Attempt to link nodes");
-    std::shared_ptr<Link> nw_link12 = nw.LinkNodes(nw_node1, nw_node2);
-    std::shared_ptr<Link> nw_link13 = nw.LinkNodes(nw_node1, nw_node3);
-    std::shared_ptr<Link> nw_link14 = nw.LinkNodes(nw_node1, nw_node4);
+    // println("Attempt to link nodes");
+    // std::shared_ptr<Link> nw_link12 = nw.LinkNodes(nw_node1, nw_node2);
+    // std::shared_ptr<Link> nw_link13 = nw.LinkNodes(nw_node1, nw_node3);
+    // std::shared_ptr<Link> nw_link14 = nw.LinkNodes(nw_node1, nw_node4);
     
-    std::cout << "Nodes 1,2 should be linked: " << nw_node1->IsConnectedTo(nw_node2) << std::endl;
-    std::cout << "Link works in both ways: " << nw_node2->IsConnectedTo(nw_node1) << std::endl;
+    // std::cout << "Nodes 1,2 should be linked: " << nw_node1->IsConnectedTo(nw_node2) << std::endl;
+    // std::cout << "Link works in both ways: " << nw_node2->IsConnectedTo(nw_node1) << std::endl;
     
-    println("Removing link between nodes 1,2");
-    nw.RemoveLink(nw_node1,nw_node2);
-    std::cout << "Nodes 1,2 should not be linked: " << !nw_node1->IsConnectedTo(nw_node2) << std::endl;
-    std::cout << "Link removed both ways: " << !nw_node2->IsConnectedTo(nw_node1) << std::endl;
+    // println("Removing link between nodes 1,2");
+    // nw.RemoveLink(nw_node1,nw_node2);
+    // std::cout << "Nodes 1,2 should not be linked: " << !nw_node1->IsConnectedTo(nw_node2) << std::endl;
+    // std::cout << "Link removed both ways: " << !nw_node2->IsConnectedTo(nw_node1) << std::endl;
 
-    println("Removing link 13 removes the references in nodes as well");
-    std::cout << "before node count: " << nw.size() << std::endl;
-    std::cout << "before removal: 1,3 linked: " << nw_node1->IsConnectedTo(nw_node3) << std::endl;
-    std::cout << "before removal: 3,1 linked: " << nw_node3->IsConnectedTo(nw_node1) << std::endl;
-    nw.RemoveLink(nw_node1,nw_node3);
-    std::cout << "after node count should not change: " << nw.size() << std::endl;
-    std::cout << "after removal: 1,3 linked: " << nw_node1->IsConnectedTo(nw_node3) << std::endl;
-    std::cout << "after removal: 3,1 linked: " << nw_node3->IsConnectedTo(nw_node1) << std::endl;
+    // println("Removing link 13 removes the references in nodes as well");
+    // std::cout << "before node count: " << nw.size() << std::endl;
+    // std::cout << "before removal: 1,3 linked: " << nw_node1->IsConnectedTo(nw_node3) << std::endl;
+    // std::cout << "before removal: 3,1 linked: " << nw_node3->IsConnectedTo(nw_node1) << std::endl;
+    // nw.RemoveLink(nw_node1,nw_node3);
+    // std::cout << "after node count should not change: " << nw.size() << std::endl;
+    // std::cout << "after removal: 1,3 linked: " << nw_node1->IsConnectedTo(nw_node3) << std::endl;
+    // std::cout << "after removal: 3,1 linked: " << nw_node3->IsConnectedTo(nw_node1) << std::endl;
 
-    println("Removing the node 4 removes the link between 1,4 and the references in node 1");
-    std::cout << "node count: " << nw.size() << std::endl;    
-    std::cout << "before removal: 1,4 linked: " << nw_node1->IsConnectedTo(nw_node4) << std::endl;
-    nw.RemoveNode(nw_node4);
-    std::cout << "after node count: " << nw.size() << std::endl;
-    std::cout << "after removal: 1,4 linked: " << nw_node1->IsConnectedTo(nw_node4) << std::endl;
+    // println("Removing the node 4 removes the link between 1,4 and the references in node 1");
+    // std::cout << "node count: " << nw.size() << std::endl;    
+    // std::cout << "before removal: 1,4 linked: " << nw_node1->IsConnectedTo(nw_node4) << std::endl;
+    // nw.RemoveNode(nw_node4);
+    // std::cout << "after node count: " << nw.size() << std::endl;
+    // std::cout << "after removal: 1,4 linked: " << nw_node1->IsConnectedTo(nw_node4) << std::endl;
 
 	// // Testing eventqueue
     // println("=== Testing event queue ===");
@@ -248,45 +201,6 @@ int main(void) {
 	// 	std::cout << "got error: " << e.what() << std::endl;
 	// }
 	
-<<<<<<< HEAD
-	eq.ClearQueue();
-	println("adding 100 random events");
-	for (int i = 0; i < 100; ++i) {
-		eq.AddEventTimeStep(rand() % 100 + 1, link12);
-	}
-
-	int got = 0;
-	try {
-		while (true) {
-			auto temp = eq.GetNextTimeStep();
-			got++;
-		}
-	}
-	catch (std::logic_error& e) {
-		std::cout << "got error: " << e.what() << std::endl;
-		std::cout << "before error got " << got << " events" << std::endl;
-	}
-    */
-
-    // Testing jSON
-
-    Node n1(1, 2, "255.255.255.255");
-    QJsonObject json;
-    n1.WriteToJSON(json);
-    
-    std::cout << "Address: " << json["address"].toString().toStdString() 
-              << "\nApplication: " << json["application"].toString().toStdString() << "\n"
-              << "Position: (" << json["position"].toObject()["x"].toInt()<< ", " << json["position"].toObject()["x"].toInt() << ")"
-              << std::endl;
-
-    Node n2;
-    n2.ReadFromJSON(json);
-
-    std::cout << "Address: " << n2.network_interface.GetAddressStr()
-              << "\nApplication: " << "Paskaa"
-              << "\nPosition: " << "(" << n2.GetPosition().posX << ", " << n2.GetPosition().posY << ")"
-              << std::endl;
-=======
 	// eq.ClearQueue();
 	// println("adding 100 random events");
 	// for (int i = 0; i < 100; ++i) {
@@ -304,7 +218,28 @@ int main(void) {
 	// 	std::cout << "got error: " << e.what() << std::endl;
 	// 	std::cout << "before error got " << got << " events" << std::endl;
 	// }
->>>>>>> master
+
+    Network nw;
+    std::shared_ptr<Node> nw_node1 = nw.CreateNode("192.168.0.1");
+    std::shared_ptr<Node> nw_node2 = nw.CreateNode("0.0.0.0");
+    std::shared_ptr<Node> nw_node3 = nw.CreateNode("123.123.123.123");
+    std::shared_ptr<Node> nw_node4 = nw.CreateNode("255.255.255.255");
+
+    std::shared_ptr<Link> nw_link12 = nw.LinkNodes(nw_node1, nw_node2);
+    std::shared_ptr<Link> nw_link13 = nw.LinkNodes(nw_node1, nw_node3);
+    std::shared_ptr<Link> nw_link14 = nw.LinkNodes(nw_node1, nw_node4);
+
+    QSaveFile sf(QStringLiteral("test.json"));
+
+    if (!sf.open(QIODevice::WriteOnly)) {
+        std::cout << "Saving to json failed." << std::endl;
+    }
+
+    QJsonObject nodeObject;
+    nw_node1->WriteToJson(nodeObject);
+    QJsonDocument doc(nodeObject);
+    sf.write(doc.toJson());
+    sf.commit();
 
     return 0;
 }
