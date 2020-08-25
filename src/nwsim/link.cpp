@@ -1,5 +1,6 @@
 #include <queue>
 #include <list>
+#include <limits.h>
 #include "link.hpp"
 #include "packet.hpp"
 using namespace NWSim;
@@ -20,17 +21,31 @@ void Link::RemoveNodeReferences()
 
 void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)
 {
+    
     // This is kinda ugly, TODO: refactor
     // Determine with the node which queue this packet should go to:
     if (_transmissionQueue1.first.lock() == n)
     {
         _transmissionQueue1.second.push(p);
+        // -1 implies no previous packets
+        if (_transmissionQueue1.second.size() == 1){
+            // Set simulation time
+            auto t = GetPropagationDelay() * p.GetSize();
+            SetEventTime(t,0);
+        }
+        
     }
     else if (_transmissionQueue2.first.lock() == n)
     {
         _transmissionQueue2.second.push(p);
+        // -1 implies no previous packets
+        if (_transmissionQueue2.second.size() == 1){
+            // Set simulation time
+            auto t = GetPropagationDelay() * p.GetSize();
+            SetEventTime(t,1);
+        }
     }
-    // else drop packet as it's invalid
+    // else drop packet as it's invalid target
 }
 
 u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
@@ -47,8 +62,9 @@ u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
         if (!_transmissionQueue1.second.empty())
         {
             // Calculate the next event timestamp
-            auto ts = (uint32_t) 1.0 / (((double) GetPropagationDelay()) / _transmissionQueue1.second.front().GetSize());
-            nextEvent = (ts == 0) ? 1 : ts; // clamp to 1
+            auto ts = GetPropagationDelay() * p.GetSize();
+            SetEventTime(ts,0);
+            nextEvent = ts;
         }
     }
     else if (target == _transmissionQueue2.first.lock() && !_transmissionQueue2.second.empty())
@@ -61,9 +77,25 @@ u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
         if (!_transmissionQueue2.second.empty())
         {
             // Calculate the next event timestamp
-            auto ts = (uint32_t) 1.0 / (((double) GetPropagationDelay()) / _transmissionQueue2.second.front().GetSize());
-            nextEvent = (ts == 0) ? 1 : ts; // clamp to 1
+            // prop delay is us / byte
+            auto ts = GetPropagationDelay() * p.GetSize();
+            SetEventTime(ts,1);
+            nextEvent = ts;
         }
     }
     return nextEvent;
+}
+
+void Link::Simulate()
+{
+    std::vector<int> times = AdvanceTime();
+    // All links have size 2, one for each direction
+    if(times[0] == 0)
+    {
+        MoveTopTransmitPacketToNode(_transmissionQueue1.first.lock());
+    }
+    if(times[1] == 0)
+    {
+        MoveTopTransmitPacketToNode(_transmissionQueue2.first.lock());
+    }
 }

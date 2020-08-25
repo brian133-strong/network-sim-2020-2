@@ -6,6 +6,7 @@
 #include "../link.hpp"
 #include "../network.hpp"
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <random>
 #include <time.h>
@@ -39,6 +40,25 @@ template <class T>
 void printassert(const std::string &msg, T arg)
 {
     std::cout << std::boolalpha << "\t" << msg << ": " << arg << std::endl;
+}
+
+void printpacketcounts(std::shared_ptr<NWSim::Node> n)
+{
+    if(n == nullptr) return;
+    std::cout << std::left << std::setw(8) << n->GetNodeType();
+    std::cout << std::left << std::setw(16) << n->network_interface.GetAddressStr();
+    std::cout << std::left << " - transmit: " << std::setw(6) << n->GetTransmitQueueLength();
+    std::cout << std::left << " receive: " << std::setw(6) << n->GetReceivedPackets().size() << std::endl;
+}
+
+void printlinkpacketcounts(const std::string &from, const std::string &to, std::shared_ptr<NWSim::Link> link)
+{
+    if(link == nullptr) return;
+    std::cout << std::left << std::setw(16) << from << " - ";
+    std::cout << std::left << std::setw(16) << to << " : ";
+    std::cout << std::left << std::setw(6) << link->size();
+    std::cout << std::left << std::setw(12) << 
+        "waiting: (" << link->GetEventTimes()[0] << "," << link->GetEventTimes()[1] << ")" << std::endl;
 }
 
 void PacketTestRoutine()
@@ -384,9 +404,9 @@ void NetworkTestRoutine()
     auto l_h2r1 = nw_routing.LinkNodes(h2,r1);
 
     printline("**** Manually see below routing table if it makes sense... ****");
-    nw_routing.GenerateRoutingTable();
+    printassert("New print table should not be simulatable out of the box",!nw_routing.IsRunnable());
+    nw_routing.InitializeForSimulation();
     nw_routing.PrintRoutingTable();
-
     printline("Testing packet transfer in network");
     int pc = 5;
     h1->SetPacketCount(pc);
@@ -405,7 +425,7 @@ void NetworkTestRoutine()
 
 
     printassert("Link is empty and can not move any packets",(0 == l_h1r1->MoveTopTransmitPacketToNode(r1)));
-    auto h1time = h1->MoveTopTransmitPacketToLink();
+    auto h1time = h1->MoveTopTransmitPacketToLink(r1);
     bool h1check = h1->GetTransmitQueueLength() == h1->GetPacketCount() - 1 && h1time > 0;
     printassert("Moving packet from node h1 to link is succesful",h1check);
     printassert("Link h1-r1 now has 1 packet",l_h1r1->size() == 1);
@@ -418,7 +438,7 @@ void NetworkTestRoutine()
     // routing packet...
     r1->RunApplication();
     printassert("After running router, receive queue is 0 and transmit is 1",(r1->GetReceivedPackets().size() == 0 && r1->GetTransmitQueueLength() == 1));
-    auto r1time = r1->MoveTopTransmitPacketToLink();
+    auto r1time = r1->MoveTopTransmitPacketToLink(h2);
     bool r1check = r1->GetTransmitQueueLength() == 0 && r1time > 0;
     printassert("After moving from the router, transmit q is empty",r1check);
 
@@ -428,21 +448,9 @@ void NetworkTestRoutine()
     printassert("Next link l2 timestamp should be 0 as no other packets exist",0 == l2time);
 
     printline("Moving the remaining packets...");
-    while(0 < h1->MoveTopTransmitPacketToLink());
+    while(0 < h1->MoveTopTransmitPacketToLink(r1));
     while(0 < l_h1r1->MoveTopTransmitPacketToNode(r1));
-    // while(h1->GetTransmitQueueLength() > 0)
-    // {
-    //     std::cout << "currently " << h1->GetTransmitQueueLength() << " packets remain in h1" << std::endl;
-    //     auto ts = h1->MoveTopTransmitPacketToLink();
-    // }
-    // int i = 0;
-    // while(l_h1r1->size() > 0)
-    // {
-    //     std::cout << "currently " << l_h1r1->size() << " packets remain in l1" << std::endl;
-    //     auto ts = l_h1r1->MoveTopTransmitPacketToNode(r1);
-    //     i++; if (i > l_h1r1->size()) break;
-    // }
-    
+
     printassert("Before run - h1 and l1 are empty",h1->GetTransmitQueueLength() == 0 && l_h1r1->size() == 0);
     printassert("Before run - Router reveived holds rest of the packets",r1->GetReceivedPackets().size() == pc - 1);
     auto q = r1->GetReceivedPackets();
@@ -454,7 +462,7 @@ void NetworkTestRoutine()
 
     r1->RunApplication(); // moves everything from routers received to transmit queue
     printassert("After run - Router transmit holds rest of the packets",r1->GetTransmitQueueLength() == pc - 1);
-    while(0 < r1->MoveTopTransmitPacketToLink());
+    while(0 < r1->MoveTopTransmitPacketToLink(h2));
     while(0 < l_h2r1->MoveTopTransmitPacketToNode(h2));
     printassert("All packets found on endhost",h2->GetReceivedPackets().size() == pc);
     q = h2->GetReceivedPackets();
@@ -463,4 +471,83 @@ void NetworkTestRoutine()
         std::cout << q.front() << std::endl;
         q.pop();
     }
+
+
+
+    // Sims
+    printline("**** Testing Simulatable runs ****");
+    NWSim::Network nw_sim = NWSim::Network();
+    std::string addresses[] = {"1.1.1.1","2.2.2.2","3.3.3.3","4.4.4.4","5.5.5.5"};
+    auto e1 = nw_sim.CreateEndHost(addresses[0]);
+    auto e2 = nw_sim.CreateEndHost(addresses[1]);
+    auto e5 = nw_sim.CreateEndHost(addresses[4]);
+    auto r3 = nw_sim.CreateRouter(addresses[2]);
+    auto r4 = nw_sim.CreateRouter(addresses[3]);
+    
+    auto l13 = nw_sim.LinkNodes(e1,r3);
+    auto l23 = nw_sim.LinkNodes(e2,r3);
+    auto l34 = nw_sim.LinkNodes(r3,r4);
+    auto l45 = nw_sim.LinkNodes(r4,e5);
+
+    // Setting arbitrary parameters
+
+    l13->SetPropagationDelay(1);
+    l23->SetPropagationDelay(1);
+    l34->SetPropagationDelay(1);
+    l45->SetPropagationDelay(1);
+
+    l13->SetTransmissionSpeed(1);
+    l23->SetTransmissionSpeed(1);
+    l34->SetTransmissionSpeed(1);
+    l45->SetTransmissionSpeed(1);
+
+    e1->SetTargetAddress(addresses[4]);
+    e2->SetTargetAddress(addresses[4]);
+    e5->SetTargetAddress(addresses[0]);
+
+    e1->SetPacketCount(100);
+    e2->SetPacketCount(50);
+    e5->SetPacketCount(10);
+
+    printassert("Set up network, can not run yet",!nw_sim.IsRunnable());
+    nw_sim.InitializeForSimulation();
+    printassert("Initialized network for running",nw_sim.IsRunnable());
+    printassert("Check below routing table...","");
+    nw_sim.PrintRoutingTable();
+    printline("Actual simulation ---");
+
+    nw_sim.StartAllEndHosts();
+
+    std::cout << "Packet counts before simulation:" << std::endl;
+    printpacketcounts(e1);
+    printpacketcounts(e2);
+    printpacketcounts(r3);
+    printpacketcounts(r4);
+    printpacketcounts(e5);
+    
+    for(int timestamp = 1; timestamp <= 500; timestamp++)
+    {
+        nw_sim.SimulateAllNodesAndLinks();
+        // printlinkpacketcounts("e1","r3",l13);
+        // printlinkpacketcounts("e2","r3",l23);
+        // printlinkpacketcounts("r3","r4",l34);
+        // // printlinkpacketcounts("r4","e5",l45);
+        // printlinkpacketcounts(e1->network_interface.GetAddressStr(),r3->network_interface.GetAddressStr(),l13);
+        // printlinkpacketcounts(e2->network_interface.GetAddressStr(),r3->network_interface.GetAddressStr(),l23);
+        // printlinkpacketcounts(r3->network_interface.GetAddressStr(),r4->network_interface.GetAddressStr(),l34);
+        // printlinkpacketcounts(r4->network_interface.GetAddressStr(),e5->network_interface.GetAddressStr(),l45);
+    }
+
+    std::cout << "Packet counts after simulation:" << std::endl;
+    printlinkpacketcounts(e1->network_interface.GetAddressStr(),r3->network_interface.GetAddressStr(),l13);
+    printlinkpacketcounts(e2->network_interface.GetAddressStr(),r3->network_interface.GetAddressStr(),l23);
+    printlinkpacketcounts(r3->network_interface.GetAddressStr(),r4->network_interface.GetAddressStr(),l34);
+    printlinkpacketcounts(r4->network_interface.GetAddressStr(),e5->network_interface.GetAddressStr(),l45);
+    printpacketcounts(e1);
+    printpacketcounts(e2);
+    printpacketcounts(r3);
+    printpacketcounts(r4);
+    printpacketcounts(e5);
+
 }
+
