@@ -4,6 +4,7 @@
 #include <list>
 #include <memory>
 #include <iostream>
+#include <map>
 #include "networkinterface.hpp"
 #include "link.hpp"
 namespace NWSim
@@ -20,7 +21,7 @@ namespace NWSim
 
     // Node as base class for end-hosts and routers.
     // TODO: Convert Node to abstract, only allow generating end-hosts and routers
-    class Node
+    class Node : public Simulatable
     {
     public:
         Node(const std::string &type = "DEFAULT") : _pos({0, 0}), _nodetype(type) {}
@@ -70,9 +71,10 @@ namespace NWSim
                 return false;
             }
         }
+        void Simulate();
         void RunApplication();
         // Returns time when next packet from this node can be added to the link, if 0, no packets exist.
-        uint32_t MoveTopTransmitPacketToLink();
+        uint32_t MoveTopTransmitPacketToLink(std::shared_ptr<Node> n);
 
         size_t GetTransmitQueueLength() const { return _transmit.size(); }
         void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
@@ -86,7 +88,7 @@ namespace NWSim
 
     protected:
         // queue of packets to be sent to a link, keep track of where to send if multiple connected nodes
-        std::queue<std::pair<Packet, std::shared_ptr<Node>>> _transmit;
+        std::list<std::pair<Packet, std::shared_ptr<Node>>> _transmit;
         // queue of packets received from a link
         std::queue<Packet> _receive;
     private:
@@ -117,8 +119,11 @@ namespace NWSim
          *  - if not connected to correct End-host, refer to Routing Table for which Link to place packet on.
          */
         void RunApplication();
+        void SetRoutingTable(std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>>  rt) { routingTable = rt; }
 
     private:
+        // copy of the one from Network.. TODO: this node specific table?
+        std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>> routingTable;
     };
     class EndHost : public Node
     {
@@ -156,7 +161,7 @@ namespace NWSim
         const std::string GetTargetAddress() const { return _targetAddress; }
         void SetPacketCount(const uint32_t count);
         const uint32_t GetPacketCount() const { return _packetCount; }
-        
+
     private:
         std::string _targetAddress;
         uint32_t _packetCount;

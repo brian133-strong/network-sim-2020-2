@@ -27,11 +27,22 @@ namespace NWSim
         size_t size() const { return _nodes.size(); }
 
         // There needs to be some preprocessing done before we can simulate the network (i.e. routing table)
-        bool IsRunnable() const;
-        // 
-        void GenerateRoutingTable();
-        void PrintRoutingTable();
+        bool IsRunnable() const { return _isready; }
+        // Must be run before simulation can be run, sets _isready
+        void InitializeForSimulation();
+
+        // For all Routers in _nodes, do RunApplication()
+        void RouteAllCurrentPackets();
+        void PrintRoutingTable(bool showAll = false) const;
     private:
+        // Dijkstra from each source to each target
+        void GenerateRoutingTable();
+        // Naive copy to all router nodes
+        void AttachRoutingTable();
+        // Go through all nodes and links and set their respective Simulatable::evt_times size
+        void SetEventTimeSizes();
+
+        bool _isready = false;
         // Routing table of <<CurrentNode, TargetAddress>, IntermediateTargetNode>
         // Keeping CurrentNode and TargetAddress as strings for readability
         std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>> _routingTable;

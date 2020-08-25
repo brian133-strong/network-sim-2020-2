@@ -1,5 +1,6 @@
 #include <queue>
 #include <list>
+#include <limits.h>
 #include "link.hpp"
 #include "packet.hpp"
 using namespace NWSim;
@@ -25,12 +26,25 @@ void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)
     if (_transmissionQueue1.first.lock() == n)
     {
         _transmissionQueue1.second.push(p);
+        // -1 implies no previous packets
+        if (GetEventTimes()[0] > -1){
+            // Set simulation time
+            auto t = GetPropagationDelay() * p.GetSize();
+            SetEventTime(t,0);
+        }
+        
     }
     else if (_transmissionQueue2.first.lock() == n)
     {
         _transmissionQueue2.second.push(p);
+        // -1 implies no previous packets
+        if (GetEventTimes()[1] > -1){
+            // Set simulation time
+            auto t = GetPropagationDelay() * p.GetSize();
+            SetEventTime(t,0);
+        }
     }
-    // else drop packet as it's invalid
+    // else drop packet as it's invalid target
 }
 
 u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
@@ -47,7 +61,7 @@ u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
         if (!_transmissionQueue1.second.empty())
         {
             // Calculate the next event timestamp
-            auto ts = (uint32_t) 1.0 / (((double) GetPropagationDelay()) / _transmissionQueue1.second.front().GetSize());
+            auto ts = GetPropagationDelay() * p.GetSize();
             nextEvent = (ts == 0) ? 1 : ts; // clamp to 1
         }
     }
@@ -61,9 +75,36 @@ u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
         if (!_transmissionQueue2.second.empty())
         {
             // Calculate the next event timestamp
-            auto ts = (uint32_t) 1.0 / (((double) GetPropagationDelay()) / _transmissionQueue2.second.front().GetSize());
+            // prop delay is us / byte
+            auto ts = GetPropagationDelay() * p.GetSize();
             nextEvent = (ts == 0) ? 1 : ts; // clamp to 1
         }
     }
     return nextEvent;
+}
+
+void Link::Simulate()
+{
+    std::vector<int> times = AdvanceTime();
+    // All links have size 2, one for each direction
+    for(int direction = 0; direction == 1; direction++)
+    {
+        // All events happen at a time of 0
+        if(times[direction] == 0)
+        {
+            int newtime = -1;
+            if(direction == 0)
+            {
+                newtime = MoveTopTransmitPacketToNode(_transmissionQueue1.first.lock());
+            }
+            if(direction == 1)
+            {
+                newtime = MoveTopTransmitPacketToNode(_transmissionQueue2.first.lock());
+            }
+            // set new time to -1 if no new events available for this link.
+            // If a new packet is added to the link with AddPacketToQueue(), the new time is set there, 
+            SetEventTime(((newtime <= 0) ? -1 : newtime), direction);
+        } 
+    }
+
 }

@@ -1,13 +1,14 @@
 #pragma once
 #include <queue>
 #include <memory>
+#include "simulatable.hpp"
 #include "packet.hpp"
 #include "node.hpp"
 namespace NWSim
 {
     // Need to forward declare Node in order to compile
     class Node;
-    class Link
+    class Link : public Simulatable
     {
     public:
         const uint32_t MINTRANSMISSIONSPEED = 1;
@@ -47,16 +48,18 @@ namespace NWSim
         void AddPacketToQueue(std::shared_ptr<Node>, Packet p);
         ~Link() {}
 
+
+        void Simulate();
+
     private:
         // Queue of currently transmitted packets.
         // structure: <targetNode -> packetQueue>. pointers generated when this link is created. This is kinda ugly, TODO: refactor
         std::pair<std::weak_ptr<Node>, std::queue<Packet>> _transmissionQueue1; // Going one way
         std::pair<std::weak_ptr<Node>, std::queue<Packet>> _transmissionQueue2; // Going the other way
-
-        // "determines the interval at which new packets can be transmitted to the link" in bytes/us
+        // "determines the interval at which new packets can be transmitted to the link" in "just" us
         // Check Node Transmission QUeue every _transmission_speed;
         uint32_t _transmission_speed;
-        // "the time it takes for packet to travel across the link" in bytes/us
+        // "the time it takes for packet to travel across the link" in us/byte
         // Check this links transmission queue every _propagation_delay
         uint32_t _propagation_delay;
     };

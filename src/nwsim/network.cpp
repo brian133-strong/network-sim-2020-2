@@ -15,6 +15,7 @@ std::shared_ptr<EndHost> Network::CreateEndHost(const std::string &address, floa
     // Check if address is already used?
     if (!FindNode(address))
     {
+        _isready = false; // we are not ready to simulate
         n = std::make_shared<EndHost>(0.0, 0.0, address);
         _nodes.push_back(n);
         std::cout << "Success!" << std::endl;
@@ -30,18 +31,10 @@ std::shared_ptr<Router> Network::CreateRouter(const std::string &address, float 
 {
     std::cout << "Attempting to create Router: " << address << " ... ";
     std::shared_ptr<Router> n = nullptr;
-    try
-    {
-        /* code */
-    }
-    catch (const std::exception &e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-
     // Check if address is already used?
     if (!FindNode(address))
     {
+        _isready = false; // we are not ready to simulate
         n = std::make_shared<Router>(0.0, 0.0, address);
         _nodes.push_back(n);
         std::cout << "Success!" << std::endl;
@@ -70,6 +63,7 @@ std::shared_ptr<Node> Network::FindNode(const std::string &address) const
 
 void Network::RemoveNode(std::shared_ptr<Node> node)
 {
+    _isready = false; // we are not ready to simulate
     // Need to delete all references to this node first.
     // Find if node is used for any links?
     auto it_link = _links.begin();
@@ -126,6 +120,7 @@ std::shared_ptr<Link> Network::LinkNodes(std::shared_ptr<Node> n1, std::shared_p
     {
         throw std::logic_error("Error: Attempting to link already linked Nodes.");
     }
+    _isready = false; // we are not ready to simulate
     std::shared_ptr<Link> link = std::make_shared<Link>();
     link->InitTransmissionQueues(n1, n2);
     // References to this new link exist on both nodes and at the network
@@ -142,6 +137,7 @@ void Network::RemoveLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
     {
         throw std::logic_error("Error: Attempting to link invalid Nodes.");
     }
+    _isready = false; // we are not ready to simulate
     n1->DisconnectFromNode(n2);
     n2->DisconnectFromNode(n1);
     for (auto it = _links.begin(); it != _links.end(); it++)
@@ -178,11 +174,11 @@ void Network::GenerateRoutingTable()
         }
     }
 
-    std::cout << "Generating routing table..." << std::endl;
+    // std::cout << "Generating routing table..." << std::endl;
     for (auto source : _nodes)
     {
 
-        std::cout << "Handling source: " << source->network_interface.GetAddressStr();
+        // std::cout << "Handling source: " << source->network_interface.GetAddressStr();
 
         std::map<std::shared_ptr<Node>, int> dist;
         std::map<std::shared_ptr<Node>, bool> visited;
@@ -197,16 +193,16 @@ void Network::GenerateRoutingTable()
              
         }
         dist[source] = 0;
-        std::cout << " - has " << dist.size() << " possible targets." << std::endl;
+        // std::cout << " - has " << dist.size() << " possible targets." << std::endl;
         
         std::priority_queue<sortableNode, std::vector<sortableNode>, smallerSortableNode> nxt;
         nxt.push({0,source});
-        std::cout << "Starting nxt loop..." << std::endl;
+        // std::cout << "Starting nxt loop..." << std::endl;
         while (!nxt.empty())
         {
             auto current = nxt.top().node;
             nxt.pop();
-            std::cout << "\tCurrent: " << current->network_interface.GetAddressStr() << std::endl;
+            // std::cout << "\tCurrent: " << current->network_interface.GetAddressStr() << std::endl;
             if (visited[current]) continue;
             visited[current] = true;
 
@@ -220,9 +216,9 @@ void Network::GenerateRoutingTable()
             {
                 auto candidate_newdist = dist[current] + (int)candidate.first->GetTransmitCost();
                 auto candidate_node = candidate.second;
-                std::cout << "\t\tneighbor: " << candidate_node->network_interface.GetAddressStr() << 
-                    "\twith newcost: " << candidate_newdist << 
-                    "\t and oldcost: " << dist[candidate_node] << std::endl;
+                // std::cout << "\t\tneighbor: " << candidate_node->network_interface.GetAddressStr() << 
+                //     "\twith newcost: " << candidate_newdist << 
+                //     "\t and oldcost: " << dist[candidate_node] << std::endl;
                 if (candidate_newdist < dist[candidate_node])
                 {
                     dist[candidate_node] = candidate_newdist;
@@ -237,51 +233,45 @@ void Network::GenerateRoutingTable()
             }
         }
     }
-    // for (auto source : _nodes) {
-
-    // 	std::map<std::shared_ptr<Node>, int> dist;
-    // 	std::map<std::shared_ptr<Node>, bool> visited;
-    // 	std::map<std::shared_ptr<Node>, std::shared_ptr<Node>> comes_from;
-
-    // 	for (auto target : _nodes) dist[target] = INT_MAX;
-    // 	dist[source] = 0;
-
-    // 	std::priority_queue<int, std::shared_ptr<Node>,std::less<int>> nxt;
-
-    // 	nxt.push({ 0, source });
-
-    // 	while (!nxt.empty()) {
-    // 		std::shared_ptr<Node> a = nxt.top().second;
-    // 		nxt.pop();
-    // 		if (visited[a]) continue;
-    // 		visited[a] = true;
-
-    // 		std::vector<std::pair<std::shared_ptr<Node>, std::shared_ptr<Link>>> next_nodes;
-
-    // 		for (auto t : _links) {
-    // 			if (std::get<0>(t)) {
-    // 				next_nodes.push_back({ std::get<1>(t), std::get<2>(t) });
-    // 			}
-    // 		}
-
-    // 		for (auto p : next_nodes) {
-    // 			if (dist[a] + (int)p.second->GetTransmitCost() < dist[p.first]) {
-    // 				dist[p.first] = dist[a] + (int)p.second->GetTransmitCost();
-    // 				comes_from[p.first] = a;
-    // 				q.push({ -dist[p.first] , p.first });
-    // 			}
-    // 		}
-
-    // 		// Set the routingtable
-
-    // 		for (auto x : comes_from) {
-    // 			_routingTable[{x.first->network_interface.GetAddressStr(), a->network_interface.GetAddressStr()}] = x.second;
-    // 		}
-    // 	}
-    // }
 }
 
-void Network::PrintRoutingTable()
+void Network::AttachRoutingTable()
+{
+    for (auto node : _nodes)
+    {
+        if(node->GetNodeType() == "Router")
+        {
+            auto router = std::static_pointer_cast<Router>(node);
+            router->SetRoutingTable(_routingTable);
+        }
+    }
+}
+
+void Network::SetEventTimeSizes()
+{
+    for(auto node : _nodes)
+    {
+        auto size = node->_connected.size();
+        auto sim = std::static_pointer_cast<Simulatable>(node);
+        sim->SetSize(size); // All nodes can have different sizes
+    }
+    for(auto l : _links)
+    {
+        auto link = std::get<2>(l);
+        auto sim = std::static_pointer_cast<Simulatable>(link);
+        sim->SetSize(2); // All links have event size 2, both packet directions of the link
+    }
+}
+
+void Network::InitializeForSimulation()
+{
+    GenerateRoutingTable();
+    AttachRoutingTable();
+    SetEventTimeSizes();
+    _isready = true; // we are finally ready to simulate
+}
+
+void Network::PrintRoutingTable(bool showAll) const
 {
     std::cout << "Current routing table size: " << _routingTable.size() << std::endl;
     for (auto route : _routingTable)
@@ -289,6 +279,22 @@ void Network::PrintRoutingTable()
         auto current = route.first.first;
         auto target = route.first.second;
         auto sendto = (route.second == nullptr) ? "nullptr" : route.second->network_interface.GetAddressStr();
+        if (!showAll)
+        {
+            if(route.second == nullptr) continue; // skip nullptrs
+        }
         std::cout << "\tWhen at: " << current << "\tand target: " << target << "\tsend to: " << sendto << std::endl;
+    }
+}
+
+void Network::RouteAllCurrentPackets()
+{
+    for (auto node : _nodes)
+    {
+        if (node->GetNodeType() == "Router")
+        {
+            auto router = std::static_pointer_cast<Router>(node);
+            router->RunApplication();
+        }
     }
 }
