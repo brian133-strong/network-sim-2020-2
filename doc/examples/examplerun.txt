@@ -1,0 +1,58 @@
+=== nwsim v1 ===
+>Added EndHost 1.1.1.1
+[Edit EndHost]>>Added Router 2.2.2.2
+[Edit Router]>>Added EndHost 3.3.3.3
+[Edit EndHost]>address - 3.3.3.3              - Current IP address.
+ target - 3.3.3.3              - Simulation target address.
+  count - 1                    - Simulation packet count to be sent to target address.
+                                 Clamped between 1 and 100.
+[Edit EndHost]>Successfully changed target address to 1.1.1.1
+[Edit EndHost]>Successfully changed packet count to 20
+[Edit EndHost]>>[Edit EndHost]>Successfully changed target address to 3.3.3.3
+[Edit EndHost]>Successfully changed packet count to 10
+[Edit EndHost]>> EndHost 1.1.1.1         linked to: 
+
+  Router 2.2.2.2         linked to: 
+
+ EndHost 3.3.3.3         linked to: 
+
+>Linked nodes 1.1.1.1 - 2.2.2.2
+[Edit Link]>     ts - 1                    - Transmission speed (ts) determines the interval at which new packets can be transmitted to the link.
+     pd - 1                    - Propagation delay (pd) determines the time it takes for a packet to travel accross the link.
+                                 time = propagation_delay * packet_size
+[Edit Link]>Successfully changed transmission speed to 100
+[Edit Link]>Successfully changed propagation delay to 2
+[Edit Link]>>Linked nodes 2.2.2.2 - 3.3.3.3
+[Edit Link]>Successfully changed transmission speed to 50
+[Edit Link]>>[Sim]>1.1.1.1         sends 10    to: 3.3.3.3        
+3.3.3.3         sends 20    to: 1.1.1.1        
+[Sim]>Generating routing table... Done!
+Current routing table size: 9
+	When at: 1.1.1.1	and target: 2.2.2.2	send to: 2.2.2.2
+	When at: 1.1.1.1	and target: 3.3.3.3	send to: 2.2.2.2
+	When at: 2.2.2.2	and target: 1.1.1.1	send to: 1.1.1.1
+	When at: 2.2.2.2	and target: 3.3.3.3	send to: 3.3.3.3
+	When at: 3.3.3.3	and target: 1.1.1.1	send to: 2.2.2.2
+	When at: 3.3.3.3	and target: 2.2.2.2	send to: 2.2.2.2
+[Sim]>Generating endhost packets... Done!
+Packet counts before simulation:
+NODES:
+	 EndHost 1.1.1.1         TX: 10    RX: 0    
+	  Router 2.2.2.2         TX: 0     RX: 0    
+	 EndHost 3.3.3.3         TX: 20    RX: 0    
+LINKS:
+	        1.1.1.1 - 2.2.2.2         TX: 0    
+	        2.2.2.2 - 3.3.3.3         TX: 0    
+===========
+Starting sim...
+Stopping sim. Runtime: 9ms.
+===========
+Packet counts after simulation:
+NODES:
+	 EndHost 1.1.1.1         TX: 0     RX: 20   
+	  Router 2.2.2.2         TX: 0     RX: 0    
+	 EndHost 3.3.3.3         TX: 0     RX: 10   
+LINKS:
+	        1.1.1.1 - 2.2.2.2         TX: 0    
+	        2.2.2.2 - 3.3.3.3         TX: 0    
+[Sim]>>Exiting, any unsaved changes are lost.
