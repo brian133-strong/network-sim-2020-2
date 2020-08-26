@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <chrono>
 #include "network.hpp"
 #include "node.hpp"
 #include "link.hpp"
@@ -17,7 +18,7 @@ std::map<std::string, std::vector<std::string>> ValidCommands(const std::string 
 {
     std::map<std::string, std::vector<std::string>> ret;
     ret["help"] = {"", "edit", "sim"};
-    ret["list"] = {"v"};
+    ret["list"] = {};
     ret["exit"] = {};
     ret["quit"] = {};
     ret["q"] = {};
@@ -31,6 +32,7 @@ std::map<std::string, std::vector<std::string>> ValidCommands(const std::string 
         ret["unlink"] = {};
         ret["edit"] = {};
         ret["tests"] = {};
+        ret["sim"] = {};
     }
     if (type == "editnode")
     {
@@ -40,6 +42,12 @@ std::map<std::string, std::vector<std::string>> ValidCommands(const std::string 
     {
         ret["set"] = {"ts", "pd"};
     }
+    if (type == "sim")
+    {
+        ret["routes"] = {};
+        ret["run"] = {};
+    }
+
     return ret;
 }
 
@@ -51,7 +59,7 @@ void println(const std::string &s)
 
 void PrintUsageLine(const std::string &cmd, const std::string &options, const std::string &desc)
 {
-    int W_CMD = 8;
+    int W_CMD = 10;
     int W_PAR = 20;
     std::string sep = " - ";
     if (cmd == "" && options == "")
@@ -77,7 +85,6 @@ void PrintUsage(const std::string &mode = "")
         println("");
 
         PrintUsageLine("list", "", "Lists all current nodes and what other nodes they are linked to.");
-        PrintUsageLine("", "v", "Verbose print of all parameters");
         println("");
 
         PrintUsageLine("add", "e|r <address>", "Adds an [e]ndhost or [r]outer with given address.");
@@ -95,6 +102,9 @@ void PrintUsage(const std::string &mode = "")
 
         PrintUsageLine("edit", "<address>", "Enter node (endhost, router) edit mode.");
         PrintUsageLine("", "<address> <address>", "Enter link edit mode.");
+        println("");
+
+        PrintUsageLine("sim","","Enter simulation mode.");
         println("");
 
         PrintUsageLine("tests", "", "Prinst result of all tests and exit program.");
@@ -135,7 +145,17 @@ void PrintUsage(const std::string &mode = "")
     }
     else if (mode == "sim")
     {
-        println("sim help TODO");
+        PrintUsageLine("help", "", "Print this help for sim mode.");
+        println("");
+
+        PrintUsageLine("list", "", "Lists all endhosts that are configured to send packets to other endhosts.");
+        println("");
+
+        PrintUsageLine("routes", "", "Prints current network routing table.");
+        println("");
+
+        PrintUsageLine("run", "", "Starts simulation.");
+        println("");
     }
     else
     {
@@ -176,12 +196,14 @@ std::vector<std::string> ParseUserInput(std::string userin, const std::string &t
 
 void PrintParameterLine(const std::string &param, const std::string &value, const std::string &desc)
 {
-    int W_PAR = 8;
+    int W_PAR = 10;
     int W_VAL = 20;
     std::string sep = " - ";
     if (param == "" && value == "")
+    {
         sep = "   ";
-    std::cout << std::right << std::setw(W_PAR) << param + ": " << std::left << std::setw(W_VAL) << value << sep << desc << std::endl;
+    }
+    std::cout << std::right << std::setw(W_PAR) << param + sep << std::left << std::setw(W_VAL) << value << sep << desc << std::endl;
 }
 void EditNodeProcedure(std::shared_ptr<NWSim::Node> node, std::shared_ptr<NWSim::Network> nw)
 {
@@ -259,9 +281,14 @@ void EditNodeProcedure(std::shared_ptr<NWSim::Node> node, std::shared_ptr<NWSim:
                     continue;
                 }
                 auto tmp = nw->FindNode(parsed[2]);
-                if (tmp != nullptr)
+                if (tmp != nullptr && parsed[1] == "address")
                 {
                     printline("Node with that address already exists.");
+                    continue;
+                }
+                else if (tmp == nullptr && parsed[1] == "target")
+                {
+                    printline("No node with that address.");
                     continue;
                 }
                 // checks end
@@ -384,6 +411,95 @@ void EditLinkProcedure(std::shared_ptr<NWSim::Link> link)
                 link->SetTransmissionSpeed(val);
                 printline("Successfully changed transmission speed to " + parsed[2]);
             }
+        }
+    }
+}
+
+void SimulationProcedure(std::shared_ptr<NWSim::Network> nw)
+{
+    auto commands = ValidCommands("sim");
+    if (nw == nullptr)
+        return;
+    std::string userin = "";
+    while (true)
+    {
+        std::cout << "[Sim]>";
+        std::getline(std::cin, userin);
+        if (userin.length() == 0)
+            continue;
+        auto parsed = ParseUserInput(userin, "sim");
+        if (parsed.size() != 1) // all sim commands are one word
+        {
+            PrintInvalidCommand();
+            continue;
+        }
+        // no need to get the options, none for sim
+        //auto options = commands[parsed[0]];
+        if (parsed[0] == "exit" || parsed[0] == "quit" || parsed[0] == "q")
+            break;
+        if (parsed[0] == "help")
+        {
+            PrintUsage("sim");
+        }
+        if (parsed[0] == "list")
+        {
+            nw->PrintSimPlan();
+            continue;
+        }
+        if (parsed[0] == "routes")
+        {
+            if (!nw->IsRunnable())
+            {
+                std::cout << "Generating routing table... ";
+                nw->InitializeForSimulation();
+                std::cout << "Done!" << std::endl;
+            }
+            nw->PrintRoutingTable();
+            continue;
+        }
+        if (parsed[0] == "run")
+        {
+            if (!nw->IsRunnable())
+            {
+                std::cout << "Initializing network... ";
+                nw->InitializeForSimulation();
+                std::cout << "Done!" << std::endl;
+            }
+            std::cout << "Generating endhost packets... ";
+            nw->StartAllEndHosts();
+            std::cout << "Done!" << std::endl;
+            printline("Packet counts before simulation:");
+            nw->PrintPacketQueueStatuses();
+            printline("===========");
+            printline("Starting sim...");
+            size_t ts = 0;
+
+            // Introduce a timeout incase loop wont end..
+            uint64_t start_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                      std::chrono::system_clock::now().time_since_epoch())
+                                      .count();
+
+            uint64_t cur_time = start_time;
+            uint64_t to_time = start_time + 10000;
+            while (nw->SimulateAllNodesAndLinks())
+            {
+                ts++;
+                cur_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                               std::chrono::system_clock::now().time_since_epoch())
+                               .count();
+                if (cur_time >= to_time)
+                {
+                    printline("Sorry, simulation timed out...");
+                    break;
+                }
+                //std::cout << "current timestep: " << ts << std::endl;
+                // TODO: printing current situation.
+            }
+
+            printline("Stopping sim. Runtime: " + std::to_string(cur_time - start_time) + "ms.");
+            printline("===========");
+            printline("Packet counts after simulation:");
+            nw->PrintPacketQueueStatuses();
         }
     }
 }
@@ -637,8 +753,8 @@ int main(void)
         }
         else if (parsed[0] == "sim")
         {
-            // TODO: the actual simulation program...
-            printline("TODO");
+            SimulationProcedure(nw);
+            continue;
         }
     }
 
