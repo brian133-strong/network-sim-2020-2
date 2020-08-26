@@ -364,3 +364,21 @@ void Network::PrintNetwork() const
         std::cout << std::endl;
     }
 }
+
+void Network::PrintSimPlan() const
+{
+    for(auto node : _nodes)
+    {
+        if (node->GetNodeType() == "EndHost")
+        {
+            auto eh = std::static_pointer_cast<EndHost>(node);
+            if(eh->network_interface.GetAddressStr() != eh->GetTargetAddress())
+            {
+                std::cout << std::left  << std::setw(15) << eh->network_interface.GetAddressStr();
+                std::cout << std::left << std::setw(15) << " sends " << eh->GetPacketCount() << " to: ";
+                std::cout << std::left  << std::setw(15) << eh->GetTargetAddress();
+                std::cout << std::endl;
+            }
+        }
+    }
+}
