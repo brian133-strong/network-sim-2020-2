@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <chrono>
+#include <unistd.h>
 #include "network.hpp"
 #include "node.hpp"
 #include "link.hpp"
@@ -473,14 +474,14 @@ void SimulationProcedure(std::shared_ptr<NWSim::Network> nw)
             printline("===========");
             printline("Starting sim...");
             size_t ts = 0;
-
+            size_t backtrack = 0;
             // Introduce a timeout incase loop wont end..
             uint64_t start_time = std::chrono::duration_cast<std::chrono::milliseconds>(
                                       std::chrono::system_clock::now().time_since_epoch())
                                       .count();
 
             uint64_t cur_time = start_time;
-            uint64_t to_time = start_time + 10000;
+            uint64_t to_time = start_time + 5*60000;
             while (nw->SimulateAllNodesAndLinks())
             {
                 ts++;
@@ -492,14 +493,12 @@ void SimulationProcedure(std::shared_ptr<NWSim::Network> nw)
                     printline("Sorry, simulation timed out...");
                     break;
                 }
-                //std::cout << "current timestep: " << ts << std::endl;
-                // TODO: printing current situation.
+                backtrack = nw->PrintPacketQueueStatuses(backtrack,ts);
+                usleep(500); // sleep for n microseconds
             }
 
             printline("Stopping sim. Runtime: " + std::to_string(cur_time - start_time) + "ms.");
             printline("===========");
-            printline("Packet counts after simulation:");
-            nw->PrintPacketQueueStatuses();
         }
     }
 }
