@@ -80,7 +80,8 @@ namespace NWSim
         void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
         void ReceivePacket(Packet p);
         std::queue<Packet> GetReceivedPackets() const { return _receive; }
-
+        void ClearReceivedQueue() { while(!_receive.empty()) _receive.pop(); }
+        void ClearTransmitQueue() { _transmit.clear(); }
         // If address needs to be changed, check if it is unique against the Network's _nodes vector first.
         NetworkInterface network_interface;
         // Vector of connected nodes. Using std::weak_ptr to not end up with memory management issues.

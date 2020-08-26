@@ -47,8 +47,8 @@ namespace NWSim
         // Naive copy to all router nodes
         void AttachRoutingTable();
         // Go through all nodes and links and set their respective Simulatable::evt_times size
+        // Also empties all Received queues.
         void SetEventTimeSizes();
-
         bool _isready = false;
         // Routing table of <<CurrentNode, TargetAddress>, IntermediateTargetNode>
         // Keeping CurrentNode and TargetAddress as strings for readability

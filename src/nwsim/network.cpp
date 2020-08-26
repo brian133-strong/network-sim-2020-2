@@ -271,6 +271,8 @@ void Network::SetEventTimeSizes()
 {
     for(auto node : _nodes)
     {
+        node->ClearReceivedQueue();
+        node->ClearTransmitQueue();
         auto size = node->_connected.size();
         auto sim = std::static_pointer_cast<Simulatable>(node);
         sim->SetSize(size); // All nodes can have different sizes
