@@ -86,7 +86,7 @@ u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
     return nextEvent;
 }
 
-void Link::Simulate()
+bool Link::Simulate()
 {
     std::vector<int> times = AdvanceTime();
     // All links have size 2, one for each direction
@@ -98,4 +98,5 @@ void Link::Simulate()
     {
         MoveTopTransmitPacketToNode(_transmissionQueue2.first.lock());
     }
+    return ContainsEvents();
 }

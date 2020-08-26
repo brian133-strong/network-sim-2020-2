@@ -3,7 +3,7 @@
 class Simulatable
 {
 public:
-    void Simulate();
+    bool Simulate();
     // Advance time till next event can happen. 
     std::vector<int> AdvanceTime() 
     {
@@ -21,6 +21,16 @@ public:
         if(idx < evt_times.size()) evt_times[idx] = (t < 0) ? -1 : t;
     }
     std::vector<int> GetEventTimes() const { return evt_times; }
+    
+    // If all evt times are -1, then no events contained.
+    bool ContainsEvents() const { 
+        int m = -1;
+        for(auto t : evt_times)
+        {
+            if(t > m) m = t;
+        }
+        return (m == -1) ? false : true;
+    }
 private:
     // Every object may have different number of simulatable points, 
     // e.g. Router is connected to multiple links and passing data to each 

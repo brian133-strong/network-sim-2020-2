@@ -321,21 +321,29 @@ void Network::RouteAllCurrentPackets()
     }
 }
 
-void Network::SimulateAllNodesAndLinks()
+bool Network::SimulateAllNodesAndLinks()
 {
     if(IsRunnable())
     {
+        // keep track of possible events
+        bool ret = false;
+        RouteAllCurrentPackets();
         for(auto node : _nodes)
         {
-            node->Simulate();
+            ret = (node->Simulate()) ? true : ret;
         }
         for(auto l : _links)
         {
             auto link = std::get<2>(l);
-            link->Simulate();
+            ret = (link->Simulate()) ? true : ret;
         }
-        RouteAllCurrentPackets();
+        return ret;
     }
+    else
+    {
+        return false;
+    }
+    
 }
 
 void Network::StartAllEndHosts()
@@ -382,5 +390,34 @@ void Network::PrintSimPlan() const
                 std::cout << std::endl;
             }
         }
+    }
+}
+
+void Network::PrintPacketQueueStatuses() const 
+{
+    std::cout << "NODES:" << std::endl;
+    for(auto node : _nodes)
+    {
+        // EndHost 123.123.123.123
+        // Router
+        std::cout << "\t";
+        std::cout << std::right << std::setw(8)  << node->GetNodeType() << " ";
+        std::cout << std::left  << std::setw(15) << node->network_interface.GetAddressStr();
+        std::cout << std::left  << std::setw(10) << " TX: " << node->GetTransmitQueueLength();
+        std::cout << std::left  << std::setw(10) << " RX: " << node->GetReceivedQueueLength();
+        std::cout << std::endl;       
+    }
+    std::cout << "LINKS:" << std::endl;
+    for(auto l : _links)
+    {
+        auto n1   = std::get<0>(l);
+        auto n2   = std::get<1>(l); 
+        auto link = std::get<2>(l);
+        std::cout << "\t";
+        std::cout << std::right << std::setw(15) << n1->network_interface.GetAddressStr();
+        std::cout << " - ";
+        std::cout << std::left  << std::setw(15) << n2->network_interface.GetAddressStr();
+        std::cout << std::left  << std::setw(10) << " TX: " << link->GetTransmissionQueueLength();
+        std::cout << std::endl;  
     }
 }

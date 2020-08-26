@@ -71,7 +71,7 @@ namespace NWSim
                 return false;
             }
         }
-        void Simulate();
+        bool Simulate();
         void RunApplication();
         // Returns time when next packet from this node can be added to the link, if 0, no packets exist.
         uint32_t MoveTopTransmitPacketToLink(std::shared_ptr<Node> n);
@@ -80,6 +80,8 @@ namespace NWSim
         void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
         void ReceivePacket(Packet p);
         std::queue<Packet> GetReceivedPackets() const { return _receive; }
+        size_t GetReceivedQueueLength() const { return _receive.size(); }
+
         void ClearReceivedQueue() { while(!_receive.empty()) _receive.pop(); }
         void ClearTransmitQueue() { _transmit.clear(); }
         // If address needs to be changed, check if it is unique against the Network's _nodes vector first.
