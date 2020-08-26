@@ -41,8 +41,8 @@ namespace NWSim
         void Read(const QJsonObject &json);
         void Write(QJsonObject &json);
 
-        bool Load(const std::string &fileName, fileType saveFormat);
-        bool Save(std::string &fileName, fileType saveFormat);
+        bool Load(const std::string fileName, fileType saveFormat);
+        bool Save(std::string fileName, fileType saveFormat);
 
     private:
         // Routing table of <<CurrentNode, TargetAddress>, IntermediateTargetNode>

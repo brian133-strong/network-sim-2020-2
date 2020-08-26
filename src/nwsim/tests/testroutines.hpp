@@ -464,3 +464,26 @@ void NetworkTestRoutine()
         q.pop();
     }
 }
+
+void TestNetworkSave() {
+    printtitle("NWSim::Network Save()) test");
+    printline("See if a Network can be successfully saved to JSON-format.");
+
+    NWSim::Network nw = NWSim::Network();
+    std::string addr1 = "0.0.0.0";
+    std::string addr2 = "1.2.3.4";
+    std::string addr3 = "10.10.10.10";
+
+    auto host1 = nw.CreateEndHost(addr1);
+    auto host2 = nw.CreateEndHost(addr2);
+    auto rout1 = nw.CreateRouter(addr3);
+
+    auto link_h1r1 = nw.LinkNodes(host1, rout1);
+    auto link_h2r1 = nw.LinkNodes(host2, rout1);
+
+    QJsonObject nwObject;
+    nw.Write(nwObject);
+    bool saveRes = nw.Save("saveTest", NWSim::Json);
+
+    printassert("After creating nodes and links, saving to Json-file should return true. ", saveRes);
+}

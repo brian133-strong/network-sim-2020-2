@@ -314,9 +314,12 @@ void Network::Read(const QJsonObject &json) {
                 std::string type = node["type"].toString().toStdString();
                 QJsonObject pos = node["position"].toObject();
 
-                if (type == "endHost")
-                    CreateEndHost(address, pos["x"].toDouble(), pos["y"].toDouble());
-                else if (type == "router")
+                if (type == "EndHost") {
+                    std::shared_ptr<EndHost> host = CreateEndHost(address, pos["x"].toDouble(), pos["y"].toDouble());
+                    host->SetTargetAddress(node["targetAddress"].toString().toStdString());
+                    host->SetPacketCount(node["packetCount"].toInt());
+                }
+                else if (type == "Router") 
                     CreateRouter(address, pos["x"].toDouble(), pos["y"].toDouble());
             }
         }
@@ -354,10 +357,19 @@ void Network::Write(QJsonObject &json) {
         const QString address = QString::fromStdString(n->network_interface.GetAddressStr());
         const QString type = QString::fromStdString(n->GetNodeType()); 
         Position pos = n->GetPosition();
+        const QString target = (type == "EndHost") 
+            ? QString::fromStdString(std::static_pointer_cast<EndHost>(n)->GetTargetAddress())
+            : QString("null");
+        int count = (type == "EndHost") 
+            ? std::static_pointer_cast<EndHost>(n)->GetPacketCount()
+            : 0;
 
         nodeObject["address"] = address; // has to be unique
         nodeObject["application"] = type;
         nodeObject["position"] = QJsonObject {{"x", pos.posX }, {"y", pos.posY }};
+        nodeObject["targetAddress"] = target;
+        nodeObject["packetCount"] = count;
+
         nodes_arr.push_back(nodeObject);
     }
 
@@ -381,7 +393,7 @@ void Network::Write(QJsonObject &json) {
     json["links"] = links_arr;
 }
 
-bool Network::Load(const std::string &fileName, fileType saveFormat) {
+bool Network::Load(std::string fileName, fileType saveFormat) {
     QString fn = QString::fromStdString(saveFormat == Json
         ? fileName + ".json"
         : fileName + ".dat");
@@ -400,7 +412,7 @@ bool Network::Load(const std::string &fileName, fileType saveFormat) {
     return true;
 }
 
-bool Network::Save(std::string &fileName, fileType saveFormat) {
+bool Network::Save(const std::string fileName, fileType saveFormat) {
 
     QString fn = QString::fromStdString(saveFormat == Json
     ? fileName + ".json"
