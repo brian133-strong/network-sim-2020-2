@@ -15,8 +15,9 @@ void Link::InitTransmissionQueues(std::shared_ptr<Node> n1, std::shared_ptr<Node
 void Link::RemoveNodeReferences()
 {
     _transmissionQueue1.first.lock() = nullptr;
+    while(!_transmissionQueue1.second.empty()) _transmissionQueue1.second.pop();
     _transmissionQueue2.first.lock() = nullptr;
-    
+    while(!_transmissionQueue2.second.empty()) _transmissionQueue2.second.pop();    
 }
 
 void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)

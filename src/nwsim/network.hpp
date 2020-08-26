@@ -11,7 +11,9 @@ namespace NWSim
     {
     public:
         Network() {}
-        ~Network() {}
+        ~Network() {
+            _routingTable.clear();
+        }
         /* 
          * Creates new nodes. If non-unique IP is used, a nullptr is returned and nothing is added to _nodes.
          */
@@ -53,7 +55,7 @@ namespace NWSim
         bool _isready = false;
         // Routing table of <<CurrentNode, TargetAddress>, IntermediateTargetNode>
         // Keeping CurrentNode and TargetAddress as strings for readability
-        std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>> _routingTable;
+        std::map<std::pair<std::string,std::string>, std::weak_ptr<Node>> _routingTable;
         std::vector<std::shared_ptr<Node>> _nodes;
         // Vector of links with the nodes that it binds together.
         std::vector<std::tuple<

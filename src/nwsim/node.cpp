@@ -122,7 +122,7 @@ void Router::RunApplication()
             continue;
         auto current = network_interface.GetAddressStr();
         auto target = NWSim::AddressIntToStr(packet.GetTargetAddress());
-        auto sendto = routingTable[{current, target}];
+        auto sendto = routingTable[{current, target}].lock();
         // drop if there is nowhere to send to
         if (sendto != nullptr)
         {

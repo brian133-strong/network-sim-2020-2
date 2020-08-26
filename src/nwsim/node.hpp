@@ -122,11 +122,12 @@ namespace NWSim
          *  - if not connected to correct End-host, refer to Routing Table for which Link to place packet on.
          */
         void RunApplication();
-        void SetRoutingTable(std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>>  rt) { routingTable = rt; }
+        void SetRoutingTable(std::map<std::pair<std::string,std::string>, std::weak_ptr<Node>>  rt) { routingTable = rt; }
+        void ClearRoutingTable() {routingTable.clear(); }
 
     private:
         // copy of the one from Network.. TODO: this node specific table?
-        std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>> routingTable;
+        std::map<std::pair<std::string,std::string>, std::weak_ptr<Node>> routingTable;
     };
     class EndHost : public Node
     {

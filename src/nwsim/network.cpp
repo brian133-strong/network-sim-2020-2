@@ -84,6 +84,13 @@ std::shared_ptr<Link> Network::FindLink(std::shared_ptr<Node> n1, std::shared_pt
 void Network::RemoveNode(std::shared_ptr<Node> node)
 {
     _isready = false; // we are not ready to simulate
+    node->ClearReceivedQueue();
+    node->ClearTransmitQueue();
+    if(node->GetNodeType() == "Router")
+    {
+        auto r = std::static_pointer_cast<Router>(node);
+        r->ClearRoutingTable();
+    }
     // Need to delete all references to this node first.
     // Find if node is used for any links?
     auto it_link = _links.begin();
@@ -190,7 +197,7 @@ void Network::GenerateRoutingTable()
     {
         for (auto t : _nodes)
         {
-            _routingTable[{s->network_interface.GetAddressStr(),t->network_interface.GetAddressStr()}] = nullptr;
+            _routingTable[{s->network_interface.GetAddressStr(),t->network_interface.GetAddressStr()}].lock() = nullptr;
         }
     }
 
@@ -300,10 +307,10 @@ void Network::PrintRoutingTable(bool showAll) const
     {
         auto current = route.first.first;
         auto target = route.first.second;
-        auto sendto = (route.second == nullptr) ? "nullptr" : route.second->network_interface.GetAddressStr();
+        auto sendto = (route.second.lock() == nullptr) ? "nullptr" : route.second.lock()->network_interface.GetAddressStr();
         if (!showAll)
         {
-            if(route.second == nullptr) continue; // skip nullptrs
+            if(route.second.lock() == nullptr) continue; // skip nullptrs
         }
         std::cout << "\tWhen at: " << current << "\tand target: " << target << "\tsend to: " << sendto << std::endl;
     }
