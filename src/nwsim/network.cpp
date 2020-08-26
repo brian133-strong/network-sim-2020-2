@@ -4,6 +4,7 @@
 #include <queue>
 #include <map>
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <limits.h>
 
@@ -154,7 +155,7 @@ void Network::RemoveLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
     // Only work with valid nodes
     if (n1 == nullptr || n2 == nullptr)
     {
-        throw std::logic_error("Error: Attempting to link invalid Nodes.");
+        throw std::logic_error("Error: Attempting to unlink invalid Nodes.");
     }
     _isready = false; // we are not ready to simulate
     n1->DisconnectFromNode(n2);
@@ -344,5 +345,22 @@ void Network::StartAllEndHosts()
             auto eh = std::static_pointer_cast<EndHost>(node);
             eh->RunApplication();
         }
+    }
+}
+
+void Network::PrintNetwork() const
+{
+    for(auto node : _nodes)
+    {
+        // EndHost 123.123.123.123
+        // Router
+        std::cout << std::right << std::setw(8) << node->GetNodeType() << " ";
+        std::cout << std::left  << std::setw(15) << node->network_interface.GetAddressStr();
+        std::cout << " linked to: ";
+        for(auto neighbor : node->_connected)
+        {
+            std::cout << std::right << std::setw(25) << node->GetNodeType() << " " << node->network_interface.GetAddressStr() << std::endl;
+        }
+        std::cout << std::endl;
     }
 }

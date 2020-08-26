@@ -38,7 +38,7 @@ namespace NWSim
         void RouteAllCurrentPackets();
         // For all node in _nodes and link in _links do Simulate()
         void SimulateAllNodesAndLinks();
-
+        void PrintNetwork() const;
         void PrintRoutingTable(bool showAll = false) const;
     private:
         // Dijkstra from each source to each target
