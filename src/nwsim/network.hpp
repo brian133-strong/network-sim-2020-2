@@ -42,7 +42,8 @@ namespace NWSim
         bool SimulateAllNodesAndLinks();
         void PrintNetwork() const;
         void PrintSimPlan() const;
-        void PrintPacketQueueStatuses() const;
+        // Prints node and link queue packet counts. parameter tells how many chars backwards to \b to reprint. Returns charcount
+        size_t PrintPacketQueueStatuses(const size_t backtrack = 0, const size_t timestep = 0) const;
         void PrintRoutingTable(bool showAll = false) const;
     private:
         // Dijkstra from each source to each target

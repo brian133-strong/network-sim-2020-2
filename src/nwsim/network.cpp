@@ -5,6 +5,7 @@
 #include <map>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include <algorithm>
 #include <limits.h>
 
@@ -16,7 +17,6 @@ std::shared_ptr<EndHost> Network::CreateEndHost(const std::string &address, floa
     // Check if address is already used?
     if (!FindNode(address))
     {
-        _isready = false; // we are not ready to simulate
         n = std::make_shared<EndHost>(0.0, 0.0, address);
         _nodes.push_back(n);
         //std::cout << "Success!" << std::endl;
@@ -65,7 +65,7 @@ std::shared_ptr<Node> Network::FindNode(const std::string &address) const
 std::shared_ptr<Link> Network::FindLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
 {
     std::shared_ptr<Link> ret = nullptr;
-    for(auto l : _links)
+    for (auto l : _links)
     {
         auto node1 = std::get<0>(l);
         auto node2 = std::get<1>(l);
@@ -86,7 +86,7 @@ void Network::RemoveNode(std::shared_ptr<Node> node)
     _isready = false; // we are not ready to simulate
     node->ClearReceivedQueue();
     node->ClearTransmitQueue();
-    if(node->GetNodeType() == "Router")
+    if (node->GetNodeType() == "Router")
     {
         auto r = std::static_pointer_cast<Router>(node);
         r->ClearRoutingTable();
@@ -181,13 +181,14 @@ void Network::RemoveLink(std::shared_ptr<Node> n1, std::shared_ptr<Node> n2)
 
 void Network::GenerateRoutingTable()
 {
-    struct sortableNode {
+    struct sortableNode
+    {
         int cost;
         std::shared_ptr<Node> node;
-
     };
-    struct smallerSortableNode {
-        bool operator() (const sortableNode& n1, const sortableNode& n2)
+    struct smallerSortableNode
+    {
+        bool operator()(const sortableNode &n1, const sortableNode &n2)
         {
             return n1.cost < n2.cost;
         }
@@ -197,7 +198,7 @@ void Network::GenerateRoutingTable()
     {
         for (auto t : _nodes)
         {
-            _routingTable[{s->network_interface.GetAddressStr(),t->network_interface.GetAddressStr()}].lock() = nullptr;
+            _routingTable[{s->network_interface.GetAddressStr(), t->network_interface.GetAddressStr()}].lock() = nullptr;
         }
     }
 
@@ -217,24 +218,24 @@ void Network::GenerateRoutingTable()
             {
                 dist[target] = INT_MAX;
             }
-             
         }
         dist[source] = 0;
         // std::cout << " - has " << dist.size() << " possible targets." << std::endl;
-        
+
         std::priority_queue<sortableNode, std::vector<sortableNode>, smallerSortableNode> nxt;
-        nxt.push({0,source});
+        nxt.push({0, source});
         // std::cout << "Starting nxt loop..." << std::endl;
         while (!nxt.empty())
         {
             auto current = nxt.top().node;
             nxt.pop();
             // std::cout << "\tCurrent: " << current->network_interface.GetAddressStr() << std::endl;
-            if (visited[current]) continue;
+            if (visited[current])
+                continue;
             visited[current] = true;
 
             std::vector<std::pair<std::shared_ptr<Link>, std::shared_ptr<Node>>> next_nodes;
-            
+
             for (auto tmp : current->_connected) // checking current nodes connected nodes over networks _links, faster and avoid "criss cross" issue
             {
                 next_nodes.push_back(std::make_pair(tmp.first.lock(), tmp.second.lock()));
@@ -243,20 +244,20 @@ void Network::GenerateRoutingTable()
             {
                 auto candidate_newdist = dist[current] + (int)candidate.first->GetTransmitCost();
                 auto candidate_node = candidate.second;
-                // std::cout << "\t\tneighbor: " << candidate_node->network_interface.GetAddressStr() << 
-                //     "\twith newcost: " << candidate_newdist << 
+                // std::cout << "\t\tneighbor: " << candidate_node->network_interface.GetAddressStr() <<
+                //     "\twith newcost: " << candidate_newdist <<
                 //     "\t and oldcost: " << dist[candidate_node] << std::endl;
                 if (candidate_newdist < dist[candidate_node])
                 {
                     dist[candidate_node] = candidate_newdist;
                     comes_from[candidate_node] = current;
-                    nxt.push({ -dist[candidate_node], candidate_node});
+                    nxt.push({-dist[candidate_node], candidate_node});
                 }
             }
             // Set routing table
             for (auto x : comes_from)
             {
-                _routingTable[std::make_pair(x.first->network_interface.GetAddressStr(),source->network_interface.GetAddressStr())] = x.second;
+                _routingTable[std::make_pair(x.first->network_interface.GetAddressStr(), source->network_interface.GetAddressStr())] = x.second;
             }
         }
     }
@@ -266,7 +267,7 @@ void Network::AttachRoutingTable()
 {
     for (auto node : _nodes)
     {
-        if(node->GetNodeType() == "Router")
+        if (node->GetNodeType() == "Router")
         {
             auto router = std::static_pointer_cast<Router>(node);
             router->SetRoutingTable(_routingTable);
@@ -276,7 +277,7 @@ void Network::AttachRoutingTable()
 
 void Network::SetEventTimeSizes()
 {
-    for(auto node : _nodes)
+    for (auto node : _nodes)
     {
         node->ClearReceivedQueue();
         node->ClearTransmitQueue();
@@ -284,7 +285,7 @@ void Network::SetEventTimeSizes()
         auto sim = std::static_pointer_cast<Simulatable>(node);
         sim->SetSize(size); // All nodes can have different sizes
     }
-    for(auto l : _links)
+    for (auto l : _links)
     {
         auto link = std::get<2>(l);
         auto sim = std::static_pointer_cast<Simulatable>(link);
@@ -310,7 +311,8 @@ void Network::PrintRoutingTable(bool showAll) const
         auto sendto = (route.second.lock() == nullptr) ? "nullptr" : route.second.lock()->network_interface.GetAddressStr();
         if (!showAll)
         {
-            if(route.second.lock() == nullptr) continue; // skip nullptrs
+            if (route.second.lock() == nullptr)
+                continue; // skip nullptrs
         }
         std::cout << "\tWhen at: " << current << "\tand target: " << target << "\tsend to: " << sendto << std::endl;
     }
@@ -330,16 +332,16 @@ void Network::RouteAllCurrentPackets()
 
 bool Network::SimulateAllNodesAndLinks()
 {
-    if(IsRunnable())
+    if (IsRunnable())
     {
         // keep track of possible events
         bool ret = false;
         RouteAllCurrentPackets();
-        for(auto node : _nodes)
+        for (auto node : _nodes)
         {
             ret = (node->Simulate()) ? true : ret;
         }
-        for(auto l : _links)
+        for (auto l : _links)
         {
             auto link = std::get<2>(l);
             ret = (link->Simulate()) ? true : ret;
@@ -350,14 +352,13 @@ bool Network::SimulateAllNodesAndLinks()
     {
         return false;
     }
-    
 }
 
 void Network::StartAllEndHosts()
 {
-    for(auto node : _nodes)
+    for (auto node : _nodes)
     {
-        if(node->GetNodeType() == "EndHost")
+        if (node->GetNodeType() == "EndHost")
         {
             auto eh = std::static_pointer_cast<EndHost>(node);
             eh->RunApplication();
@@ -367,19 +368,19 @@ void Network::StartAllEndHosts()
 
 void Network::PrintNetwork() const
 {
-    for(auto node : _nodes)
+    for (auto node : _nodes)
     {
         // EndHost 123.123.123.123
         // Router
         std::cout << std::right << std::setw(8) << node->GetNodeType() << " ";
-        std::cout << std::left  << std::setw(15) << node->network_interface.GetAddressStr();
+        std::cout << std::left << std::setw(15) << node->network_interface.GetAddressStr();
         std::cout << " linked to: " << std::endl;
-        for(auto neighbor : node->_connected)
+        for (auto neighbor : node->_connected)
         {
             auto n = neighbor.first.lock();
             std::cout << "\t";
             std::cout << std::right << std::setw(8) << node->GetNodeType() << " ";
-            std::cout << std::left  << std::setw(15) << node->network_interface.GetAddressStr();
+            std::cout << std::left << std::setw(15) << node->network_interface.GetAddressStr();
             std::cout << std::endl;
         }
         std::cout << std::endl;
@@ -388,12 +389,12 @@ void Network::PrintNetwork() const
 
 void Network::PrintSimPlan() const
 {
-    for(auto node : _nodes)
+    for (auto node : _nodes)
     {
         if (node->GetNodeType() == "EndHost")
         {
             auto eh = std::static_pointer_cast<EndHost>(node);
-            if(eh->network_interface.GetAddressStr() != eh->GetTargetAddress())
+            if (eh->network_interface.GetAddressStr() != eh->GetTargetAddress())
             {
                 std::cout << std::left << std::setw(15) << eh->network_interface.GetAddressStr();
                 std::cout << " sends ";
@@ -406,34 +407,55 @@ void Network::PrintSimPlan() const
     }
 }
 
-void Network::PrintPacketQueueStatuses() const 
+size_t Network::PrintPacketQueueStatuses(const size_t backtrack, const size_t timestep) const
 {
-    std::cout << "NODES:" << std::endl;
-    for(auto node : _nodes)
+    std::size_t linecount = 0;
+    std::stringstream ss;
+    if (backtrack != 0)
+    {
+        // ANSI escape number of lines.
+        ss << "\x1b[" << backtrack << "A";
+    }
+    ss << "NODES:"
+       << "\n";
+    linecount++;
+    for (auto node : _nodes)
     {
         // EndHost 123.123.123.123
         // Router
-        std::cout << "\t";
-        std::cout << std::right << std::setw(8)  << node->GetNodeType() << " ";
-        std::cout << std::left  << std::setw(15) << node->network_interface.GetAddressStr();
-        std::cout << " TX: ";
-        std::cout << std::left  << std::setw(5) << node->GetTransmitQueueLength();
-        std::cout << " RX: ";
-        std::cout << std::left  << std::setw(5) << node->GetReceivedQueueLength();
-        std::cout << std::endl;       
+        ss << "\t";
+        ss << std::right << std::setw(8) << node->GetNodeType() << " ";
+        ss << std::left << std::setw(15) << node->network_interface.GetAddressStr();
+        ss << " TX: ";
+        ss << std::left << std::setw(5) << node->GetTransmitQueueLength();
+        ss << " RX: ";
+        ss << std::left << std::setw(5) << node->GetReceivedQueueLength();
+        ss << "\n";
+        linecount++;
     }
-    std::cout << "LINKS:" << std::endl;
-    for(auto l : _links)
+    ss << "LINKS:"
+       << "\n";
+    linecount++;
+    for (auto l : _links)
     {
-        auto n1   = std::get<0>(l);
-        auto n2   = std::get<1>(l); 
+        auto n1 = std::get<0>(l);
+        auto n2 = std::get<1>(l);
         auto link = std::get<2>(l);
-        std::cout << "\t";
-        std::cout << std::right << std::setw(15) << n1->network_interface.GetAddressStr();
-        std::cout << " - ";
-        std::cout << std::left  << std::setw(15) << n2->network_interface.GetAddressStr();
-        std::cout << " TX: ";
-        std::cout << std::left  << std::setw(5) << link->GetTransmissionQueueLength();
-        std::cout << std::endl;  
+        ss << "\t";
+        ss << std::right << std::setw(15) << n1->network_interface.GetAddressStr();
+        ss << " - ";
+        ss << std::left << std::setw(15) << n2->network_interface.GetAddressStr();
+        ss << " TX: ";
+        ss << std::left << std::setw(5) << link->GetTransmissionQueueLength();
+        ss << "\n";
+        linecount++;
     }
+    if (timestep > 0)
+    {
+        ss << "Current timestep: " << timestep << "\n";
+        linecount++;
+    }
+    std::string s = ss.str();
+    std::cout << s << std::flush;
+    return linecount;
 }
