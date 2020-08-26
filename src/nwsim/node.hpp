@@ -133,7 +133,7 @@ namespace NWSim
     {
     public:
         // Guards against dumb packet counts crashing the application
-        const uint32_t MAXPACKETS = 100;
+        const uint32_t MAXPACKETS = 1000;
         const uint32_t MINPACKETS = 1;
 
         EndHost() : Node("EndHost") 
