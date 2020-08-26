@@ -366,10 +366,14 @@ void Network::PrintNetwork() const
         // Router
         std::cout << std::right << std::setw(8) << node->GetNodeType() << " ";
         std::cout << std::left  << std::setw(15) << node->network_interface.GetAddressStr();
-        std::cout << " linked to: ";
+        std::cout << " linked to: " << std::endl;
         for(auto neighbor : node->_connected)
         {
-            std::cout << std::right << std::setw(25) << node->GetNodeType() << " " << node->network_interface.GetAddressStr() << std::endl;
+            auto n = neighbor.first.lock();
+            std::cout << "\t";
+            std::cout << std::right << std::setw(8) << node->GetNodeType() << " ";
+            std::cout << std::left  << std::setw(15) << node->network_interface.GetAddressStr();
+            std::cout << std::endl;
         }
         std::cout << std::endl;
     }
@@ -384,9 +388,11 @@ void Network::PrintSimPlan() const
             auto eh = std::static_pointer_cast<EndHost>(node);
             if(eh->network_interface.GetAddressStr() != eh->GetTargetAddress())
             {
-                std::cout << std::left  << std::setw(15) << eh->network_interface.GetAddressStr();
-                std::cout << std::left << std::setw(15) << " sends " << eh->GetPacketCount() << " to: ";
-                std::cout << std::left  << std::setw(15) << eh->GetTargetAddress();
+                std::cout << std::left << std::setw(15) << eh->network_interface.GetAddressStr();
+                std::cout << " sends ";
+                std::cout << std::left << std::setw(5) << eh->GetPacketCount();
+                std::cout << " to: ";
+                std::cout << std::left << std::setw(15) << eh->GetTargetAddress();
                 std::cout << std::endl;
             }
         }
@@ -403,8 +409,10 @@ void Network::PrintPacketQueueStatuses() const
         std::cout << "\t";
         std::cout << std::right << std::setw(8)  << node->GetNodeType() << " ";
         std::cout << std::left  << std::setw(15) << node->network_interface.GetAddressStr();
-        std::cout << std::left  << std::setw(10) << " TX: " << node->GetTransmitQueueLength();
-        std::cout << std::left  << std::setw(10) << " RX: " << node->GetReceivedQueueLength();
+        std::cout << " TX: ";
+        std::cout << std::left  << std::setw(5) << node->GetTransmitQueueLength();
+        std::cout << " RX: ";
+        std::cout << std::left  << std::setw(5) << node->GetReceivedQueueLength();
         std::cout << std::endl;       
     }
     std::cout << "LINKS:" << std::endl;
@@ -417,7 +425,8 @@ void Network::PrintPacketQueueStatuses() const
         std::cout << std::right << std::setw(15) << n1->network_interface.GetAddressStr();
         std::cout << " - ";
         std::cout << std::left  << std::setw(15) << n2->network_interface.GetAddressStr();
-        std::cout << std::left  << std::setw(10) << " TX: " << link->GetTransmissionQueueLength();
+        std::cout << " TX: ";
+        std::cout << std::left  << std::setw(5) << link->GetTransmissionQueueLength();
         std::cout << std::endl;  
     }
 }
