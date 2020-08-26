@@ -617,10 +617,12 @@ int main(void)
         }
         else if (parsed[0] == "save")
         {
+            printline("TODO");
             // TODO: Save current network as JSON file
         }
         else if (parsed[0] == "load")
         {
+            printline("TODO");
             // TODO: drop current network and load from file instead.
             // nw = nullptr;
             // json = ReadFileETC(parsed[1]);
@@ -632,6 +634,11 @@ int main(void)
             {
                 std::cerr << e.what() << '\n';
             }
+        }
+        else if (parsed[0] == "sim")
+        {
+            // TODO: the actual simulation program...
+            printline("TODO");
         }
     }
 
