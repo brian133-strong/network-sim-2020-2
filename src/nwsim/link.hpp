@@ -41,6 +41,7 @@ namespace NWSim
         uint32_t GetPropagationDelay() const { return _propagation_delay; }
         // Cost to transmit over this link.
         uint32_t GetTransmitCost() const { return _transmission_speed + _propagation_delay; }
+        size_t GetTransmissionQueueLength() const { return _transmissionQueue1.second.size() + _transmissionQueue2.second.size(); }
         // Returns time when next packet can be accessed from this link
         // TODO: Needs better way to call this, cant call blind
         uint32_t MoveTopTransmitPacketToNode(std::shared_ptr<Node>);
@@ -49,7 +50,7 @@ namespace NWSim
         ~Link() {}
 
 
-        void Simulate();
+        bool Simulate();
 
     private:
         // Queue of currently transmitted packets.

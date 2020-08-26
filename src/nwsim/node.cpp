@@ -122,7 +122,7 @@ void Router::RunApplication()
             continue;
         auto current = network_interface.GetAddressStr();
         auto target = NWSim::AddressIntToStr(packet.GetTargetAddress());
-        auto sendto = routingTable[{current, target}];
+        auto sendto = routingTable[{current, target}].lock();
         // drop if there is nowhere to send to
         if (sendto != nullptr)
         {
@@ -206,7 +206,7 @@ void EndHost::RunApplication()
     }
 }
 
-void Node::Simulate()
+bool Node::Simulate()
 {
     // Router and EndHost "simulate" the same way
     // evt_times and _connected have same size as set by Network::SetEventTimeSizes()
@@ -222,4 +222,5 @@ void Node::Simulate()
             SetEventTime(((newtime <= 0) ? -1 : newtime), i);
         }
     }
+    return ContainsEvents();
 }

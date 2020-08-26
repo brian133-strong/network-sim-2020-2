@@ -71,7 +71,7 @@ namespace NWSim
                 return false;
             }
         }
-        void Simulate();
+        bool Simulate();
         void RunApplication();
         // Returns time when next packet from this node can be added to the link, if 0, no packets exist.
         uint32_t MoveTopTransmitPacketToLink(std::shared_ptr<Node> n);
@@ -80,7 +80,10 @@ namespace NWSim
         void AddTransmitPacket(Packet p, std::shared_ptr<Node> n);
         void ReceivePacket(Packet p);
         std::queue<Packet> GetReceivedPackets() const { return _receive; }
+        size_t GetReceivedQueueLength() const { return _receive.size(); }
 
+        void ClearReceivedQueue() { while(!_receive.empty()) _receive.pop(); }
+        void ClearTransmitQueue() { _transmit.clear(); }
         // If address needs to be changed, check if it is unique against the Network's _nodes vector first.
         NetworkInterface network_interface;
         // Vector of connected nodes. Using std::weak_ptr to not end up with memory management issues.
@@ -119,17 +122,18 @@ namespace NWSim
          *  - if not connected to correct End-host, refer to Routing Table for which Link to place packet on.
          */
         void RunApplication();
-        void SetRoutingTable(std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>>  rt) { routingTable = rt; }
+        void SetRoutingTable(std::map<std::pair<std::string,std::string>, std::weak_ptr<Node>>  rt) { routingTable = rt; }
+        void ClearRoutingTable() {routingTable.clear(); }
 
     private:
         // copy of the one from Network.. TODO: this node specific table?
-        std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>> routingTable;
+        std::map<std::pair<std::string,std::string>, std::weak_ptr<Node>> routingTable;
     };
     class EndHost : public Node
     {
     public:
         // Guards against dumb packet counts crashing the application
-        const uint32_t MAXPACKETS = 100;
+        const uint32_t MAXPACKETS = 1000;
         const uint32_t MINPACKETS = 1;
 
         EndHost() : Node("EndHost") 

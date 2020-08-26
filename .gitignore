@@ -1,4 +1,5 @@
 # copied from https://courses-git.comnet.aalto.fi/CPP-S2020/student_base/src/branch/master/.gitignore
+!doc/*
 /bin/*
 .vs/
 .vscode/
@@ -11,6 +12,7 @@
 *.user
 src/CMakeFiles
 src/*/CMakeFiles
+src/*/CMakeCache.txt
 *.cmake
 *~
 .*.swp
@@ -19,5 +21,4 @@ src/*/CMakeFiles
 *.a
 *~
 settings.json
-*.txt
 *.exe

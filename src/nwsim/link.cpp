@@ -15,8 +15,9 @@ void Link::InitTransmissionQueues(std::shared_ptr<Node> n1, std::shared_ptr<Node
 void Link::RemoveNodeReferences()
 {
     _transmissionQueue1.first.lock() = nullptr;
+    while(!_transmissionQueue1.second.empty()) _transmissionQueue1.second.pop();
     _transmissionQueue2.first.lock() = nullptr;
-    
+    while(!_transmissionQueue2.second.empty()) _transmissionQueue2.second.pop();    
 }
 
 void Link::AddPacketToQueue(std::shared_ptr<Node> n, Packet p)
@@ -86,7 +87,7 @@ u_int32_t Link::MoveTopTransmitPacketToNode(std::shared_ptr<Node> target)
     return nextEvent;
 }
 
-void Link::Simulate()
+bool Link::Simulate()
 {
     std::vector<int> times = AdvanceTime();
     // All links have size 2, one for each direction
@@ -98,4 +99,5 @@ void Link::Simulate()
     {
         MoveTopTransmitPacketToNode(_transmissionQueue2.first.lock());
     }
+    return ContainsEvents();
 }

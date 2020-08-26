@@ -1,221 +1,761 @@
 #include <iostream>
+#include <iomanip>
+#include <algorithm>
+#include <memory>
+#include <vector>
+#include <map>
+#include <chrono>
+#include <unistd.h>
+#include "network.hpp"
+#include "node.hpp"
+#include "link.hpp"
+#include "address.hpp"
+#include "packet.hpp"
+#include "simulatable.hpp"
 #include "./tests/testroutines.hpp"
 
+// Map of valid commands and command related options
+std::map<std::string, std::vector<std::string>> ValidCommands(const std::string &type = "root")
+{
+    std::map<std::string, std::vector<std::string>> ret;
+    ret["help"] = {"", "edit", "sim"};
+    ret["list"] = {};
+    ret["exit"] = {};
+    ret["quit"] = {};
+    ret["q"] = {};
+    if (type == "root")
+    {
+        ret["save"] = {};
+        ret["load"] = {};
+        ret["add"] = {"e", "r"};
+        ret["rem"] = {};
+        ret["link"] = {};
+        ret["unlink"] = {};
+        ret["edit"] = {};
+        ret["tests"] = {};
+        ret["sim"] = {};
+    }
+    if (type == "editnode")
+    {
+        ret["set"] = {"target", "count", "address"};
+    }
+    if (type == "editlink")
+    {
+        ret["set"] = {"ts", "pd"};
+    }
+    if (type == "sim")
+    {
+        ret["routes"] = {};
+        ret["run"] = {};
+    }
+
+    return ret;
+}
+
 //print line
-void println(const std::string& s) {
+void println(const std::string &s)
+{
     std::cout << s << std::endl;
 }
-int main(void) {
-    PacketTestRoutine();
-    AddressTestRoutine();
-    NetworkInterfaceTestRoutine();
-    NodeTestRoutine();
-    EndHostTestRoutine();
-    RouterTestRoutine();
-    LinkTestRoutine();
-    NetworkTestRoutine();
-    return 0;
+
+void PrintUsageLine(const std::string &cmd, const std::string &options, const std::string &desc)
+{
+    int W_CMD = 10;
+    int W_PAR = 20;
+    std::string sep = " - ";
+    if (cmd == "" && options == "")
+        sep = "   ";
+    std::cout << std::right << std::setw(W_CMD) << cmd + " " << std::left << std::setw(W_PAR) << options << sep << desc << std::endl;
 }
 
+void PrintUsage(const std::string &mode = "")
+{
+    if (mode == "")
+    {
+        PrintUsageLine("help", "", "Print this manual.");
+        PrintUsageLine("", "<mode>", "Prints mode specific usage.");
+        println("");
 
-// int main(void) {
-//     println("=== Testing NetworkInterface ===");
-//     std::cout << "Default constructor:" << std::endl;
-//     NetworkInterface n1;
-//     std::cout << "adr: '" << n1.GetAddressStr() << "', '" << n1.GetAddressInt() << "'" << std::endl;
-    
-//     std::cout << "Setting address to '000.111.222.000', this should pass" << std::endl;
-//     try 
-//     {
-//         n1.SetAddress("000.111.222.000");
-//     }
-//     catch (const std::logic_error &e)
-//     {
-//         std::cout << "logic_error:" << std::endl;
-//         std::cout << e.what() << std::endl;
-//     }
-//     std::cout << "adr: '" << n1.GetAddressStr() << "', '" << n1.GetAddressInt() << "'" << std::endl;
-    
-//     std::cout << "Setting address to '555.111.222.000', this should throw" << std::endl;
-//     try 
-//     {
-//         n1.SetAddress("555.111.222.000");
-//     }
-//     catch (const std::logic_error &e)
-//     {
-//         std::cout << "logic_error:" << std::endl;
-//         std::cout << e.what() << std::endl;
-//     }
-//     std::cout << "adr: '" << n1.GetAddressStr() << "', '" << n1.GetAddressInt() << "'" << std::endl;
-    
-//     std::cout << "Setting address to '51289075', this should throw" << std::endl;
-//     try 
-//     {
-//         n1.SetAddress("51289075");
-//     }
-//     catch (const std::logic_error &e)
-//     {
-//         std::cout << "logic_error:" << std::endl;
-//         std::cout << e.what() << std::endl;
-//     }
-//     std::cout << "adr: '" << n1.GetAddressStr() << "', '" << n1.GetAddressInt() << "'" << std::endl;
-    
-//     std::cout << "Setting address to 'asd', this should throw" << std::endl;
-//     try 
-//     {
-//         n1.SetAddress("asd");
-//     }
-//     catch (const std::logic_error &e)
-//     {
-//         std::cout << "logic_error:" << std::endl;
-//         std::cout << e.what() << std::endl;
-//     }
-//     std::cout << "adr: '" << n1.GetAddressStr() << "', '" << n1.GetAddressInt() << "'" << std::endl;
-//     std::cout << std::endl;
-    
-//     std::cout << "Str constructor:" << std::endl;
-//     std::cout << "Constructing with address '127.0.0.1', should pass" << std::endl;
-//     NetworkInterface n2 = NetworkInterface("127.0.0.1");
-//     std::cout << "adr: '" << n2.GetAddressStr() << "', '" << n2.GetAddressInt() << "'" << std::endl;
-        
-//     std::cout << "Constructing with address '51289075', should fail to default" << std::endl;
-//     NetworkInterface n3 = NetworkInterface("51289075");
-//     std::cout << "adr: '" << n3.GetAddressStr() << "', '" << n3.GetAddressInt() << "'" << std::endl;
-    
-//     std::cout << "Constructing with address 'asd', should fail to default" << std::endl;
-//     NetworkInterface n4 = NetworkInterface("asd");
-//     std::cout << "adr: '" << n4.GetAddressStr() << "', '" << n4.GetAddressInt() << "'" << std::endl;
-    
-//     std::cout << "Constructing with address '255.255.255.255', should pass" << std::endl;
-//     NetworkInterface n5 = NetworkInterface("255.255.255.255");
-//     std::cout << "adr: '" << n5.GetAddressStr() << "', '" << n5.GetAddressInt() << "'" << std::endl;
-//     std::cout << std::endl;
+        PrintUsageLine("save", "<filename>", "Save current network configuration as JSON to given file.");
+        println("");
 
-//     println("=== Testing Packet ===");
-//     std::cout << "Default constructor" << std::endl;
-//     Packet p1;
-//     std::cout << "data: " << p1.GetData() << std::endl;
-//     std::cout << "target: " << p1.GetTargetAddress() << std::endl;
-//     std::cout << "source: " << p1.GetSourceAddress() << std::endl;
-//     std::cout << "size: " << p1.GetSize() << std::endl;
-//     std::cout << "ttl: " << (int)p1.GetTimeToLive() << std::endl;
-//     std::cout << "Decremented ttl: " << (int)p1.DecrementTimeToLive() << std::endl;    
-//     std::cout << "Manual override size - 25: " << p1.SetSize(25) << std::endl;
-//     std::cout << "Manual override size - 0: " << p1.SetSize(0) << std::endl;
-//     std::cout << std::endl;
+        PrintUsageLine("load", "<filename>", "Discard current network configuration and load from specified file.");
+        println("");
 
-//     std::cout << "Proper constructor" << std::endl;
-//     Packet p2 = Packet("Hello World!", 0xFF000000, 0xFF000001,0);
-//     std::cout << "data: " << p2.GetData() << std::endl;
-//     std::cout << "target: " << p2.GetTargetAddress() << std::endl;
-//     std::cout << "source: " << p2.GetSourceAddress() << std::endl;
-//     std::cout << "size: " << p2.GetSize() << std::endl;
-//     std::cout << "ttl: " << (int)p2.GetTimeToLive() << std::endl;
-//     std::cout << "Decremented ttl: " << (int)p2.DecrementTimeToLive() << std::endl;    
-//     std::cout << "Manual override size - 25: " << p2.SetSize(25) << std::endl;
-//     std::cout << "Manual override size - 0: " << p2.SetSize(0) << std::endl;
-     
+        PrintUsageLine("exit", "", "Exit program.");
+        println("");
 
-//     // Testing node position
-//     println("=== Testing node position ===");
-//     std::shared_ptr<Node> NodePos1 = std::make_shared<Node>(); // default constructed
-//     std::shared_ptr<Node> NodePos2 = std::make_shared<Node>(10,20); // constructed with int values
-//     std::shared_ptr<Node> NodePos3 = std::make_shared<Node>(123.456, 666.666); // constructed with float values
-    
-//     std::cout << "Default pos: '" << NodePos1->GetPosition().posX << "," << NodePos1->GetPosition().posY << "'" << std::endl;
-//     std::cout << "Int constructed pos: '" << NodePos2->GetPosition().posX << "," << NodePos2->GetPosition().posY << "'" << std::endl;
-//     std::cout << "Float constructed pos: '" << NodePos3->GetPosition().posX << "," << NodePos3->GetPosition().posY << "'" << std::endl;
-    
-//     NodePos1->SetPosition(0.123, 0.666);
-//     std::cout << "Moved pos: '" << NodePos1->GetPosition().posX << "," << NodePos1->GetPosition().posY << "'" << std::endl << std::endl;
-    
+        PrintUsageLine("list", "", "Lists all current nodes and what other nodes they are linked to.");
+        println("");
 
-//     /*
-//      * Testing a Network of Nodes and Links
-//      */
-//     println("=== Testing Network of Nodes and Links ===");
+        PrintUsageLine("add", "e|r <address>", "Adds an [e]ndhost or [r]outer with given address.");
+        PrintUsageLine("", "", "NOTE: Address must be IP format and unique in network.");
+        println("");
 
-//     Network nw;
+        PrintUsageLine("rem", "<address>", "Removes an endhost or router that matches the given address, and severs affected links.");
+        PrintUsageLine("", "", "If node doesn't exist, nothing happens.");
+        println("");
 
-//     // creating nodes
-//     println("Attempt to create some valid nodes...");
-//     std::shared_ptr<Node> nw_node1 = nw.CreateNode("192.168.0.1");
-//     std::shared_ptr<Node> nw_node2 = nw.CreateNode("0.0.0.0");
-//     std::shared_ptr<Node> nw_node3 = nw.CreateNode("123.123.123.123");
-//     std::shared_ptr<Node> nw_node4 = nw.CreateNode("255.255.255.255");
-//     std::cout << "Node count: " << nw.size() << std::endl;
+        PrintUsageLine("link", "<address> <address>", "Links given nodes, if they exist.");
+        println("");
+        PrintUsageLine("unlink", "<address> <address>", "Unlinks given nodes, if they are currently linked.");
+        println("");
 
-//     println("Attempt to create a non-unique node.");
-//     std::shared_ptr<Node> nw_node_nonunique = nw.CreateNode("192.168.0.1");
-//     std::cout << "Node count: " << nw.size() << std::endl;
-//     std::cout << std::boolalpha << "Ptr should be null: " << (nw_node_nonunique == nullptr) << std::endl;
+        PrintUsageLine("edit", "<address>", "Enter node (endhost, router) edit mode.");
+        PrintUsageLine("", "<address> <address>", "Enter link edit mode.");
+        println("");
 
-//     println("Attempt to link nodes");
-//     std::shared_ptr<Link> nw_link12 = nw.LinkNodes(nw_node1, nw_node2);
-//     std::shared_ptr<Link> nw_link13 = nw.LinkNodes(nw_node1, nw_node3);
-//     std::shared_ptr<Link> nw_link14 = nw.LinkNodes(nw_node1, nw_node4);
-    
-//     std::cout << "Nodes 1,2 should be linked: " << nw_node1->IsConnectedTo(nw_node2) << std::endl;
-//     std::cout << "Link works in both ways: " << nw_node2->IsConnectedTo(nw_node1) << std::endl;
-    
-//     println("Removing link between nodes 1,2");
-//     nw.RemoveLink(nw_node1,nw_node2);
-//     std::cout << "Nodes 1,2 should not be linked: " << !nw_node1->IsConnectedTo(nw_node2) << std::endl;
-//     std::cout << "Link removed both ways: " << !nw_node2->IsConnectedTo(nw_node1) << std::endl;
+        PrintUsageLine("sim","","Enter simulation mode.");
+        println("");
 
-//     println("Removing link 13 removes the references in nodes as well");
-//     std::cout << "before node count: " << nw.size() << std::endl;
-//     std::cout << "before removal: 1,3 linked: " << nw_node1->IsConnectedTo(nw_node3) << std::endl;
-//     std::cout << "before removal: 3,1 linked: " << nw_node3->IsConnectedTo(nw_node1) << std::endl;
-//     nw.RemoveLink(nw_node1,nw_node3);
-//     std::cout << "after node count should not change: " << nw.size() << std::endl;
-//     std::cout << "after removal: 1,3 linked: " << nw_node1->IsConnectedTo(nw_node3) << std::endl;
-//     std::cout << "after removal: 3,1 linked: " << nw_node3->IsConnectedTo(nw_node1) << std::endl;
+        PrintUsageLine("tests", "", "Prinst result of all tests and exit program.");
+        println("");
+    }
+    else if (mode == "editnode" || mode == "editlink" || mode == "edit")
+    {
+        PrintUsageLine("help", "", "Print this help for edit mode.");
+        println("");
 
-//     println("Removing the node 4 removes the link between 1,4 and the references in node 1");
-//     std::cout << "node count: " << nw.size() << std::endl;    
-//     std::cout << "before removal: 1,4 linked: " << nw_node1->IsConnectedTo(nw_node4) << std::endl;
-//     nw.RemoveNode(nw_node4);
-//     std::cout << "after node count: " << nw.size() << std::endl;
-//     std::cout << "after removal: 1,4 linked: " << nw_node1->IsConnectedTo(nw_node4) << std::endl;
+        PrintUsageLine("exit", "", "Exit edit mode.");
+        println("");
 
-// 	// // Testing eventqueue
-//     // println("=== Testing event queue ===");
-// 	// println("Adding events");
-// 	// EventQueue eq;
-// 	// eq.AddEventTimeStep(1, link12);
-// 	// eq.AddEventTimeStep(2, link12);
-// 	// eq.AddEventTimeStep(3, link12);
+        PrintUsageLine("list", "", "List all changeable parameters.");
+        println("");
+        if (mode == "editnode" || mode == "edit")
+        {
+            PrintUsageLine("set", "address <address>", "Changes this nodes to use the given address.");
+            PrintUsageLine("", "", "NOTE: Address must be IP format and unique in network.");
+            println("");
+            PrintUsageLine("set", "target <address>", "Requires endhost source and endhost target. Sets target address for simulation.");
+            PrintUsageLine("", "", "NOTE: Address must be IP format and exist in current network.");
+            PrintUsageLine("", "", "      If set to self, no packets sent in simulation.");
+            println("");
+            PrintUsageLine("set", "count <integer>", "Requires endhost. Sets amount of packets sent to target for smiulation.");
+            println("");
+        }
+        if (mode == "editlink" || mode == "edit")
+        {
+            PrintUsageLine("set", "ts <integer>", "Sets links transmission speed to given value (timeunit).");
+            PrintUsageLine("", "", "Value determines the interval at which new packets can be transmitted to the link.");
+            println("");
+            PrintUsageLine("set", "pd <integer>", "Sets links propagation delay to given value (timeunit / byte).");
+            PrintUsageLine("", "", "Value determines the time it takes for a packet to travel accross the link.");
+            PrintUsageLine("", "", "time = propagation_delay * packet_size");
+            println("");
+        }
+    }
+    else if (mode == "sim")
+    {
+        PrintUsageLine("help", "", "Print this help for sim mode.");
+        println("");
 
-// 	// println("Trying to retrieve events");
+        PrintUsageLine("list", "", "Lists all endhosts that are configured to send packets to other endhosts.");
+        println("");
 
-// 	// try {
-// 	// 	while (true) {
-// 	// 		auto temp = eq.GetNextTimeStep();
-// 	// 		std::cout << "got next event\n";
-// 	// 	}
-// 	// }
-// 	// catch (std::logic_error& e) {
-// 	// 	std::cout << "got error: " << e.what() << std::endl;
-// 	// }
-	
-// 	// eq.ClearQueue();
-// 	// println("adding 100 random events");
-// 	// for (int i = 0; i < 100; ++i) {
-// 	// 	eq.AddEventTimeStep(rand() % 100 + 1, link12);
-// 	// }
+        PrintUsageLine("routes", "", "Prints current network routing table.");
+        println("");
 
-// 	// int got = 0;
-// 	// try {
-// 	// 	while (true) {
-// 	// 		auto temp = eq.GetNextTimeStep();
-// 	// 		got++;
-// 	// 	}
-// 	// }
-// 	// catch (std::logic_error& e) {
-// 	// 	std::cout << "got error: " << e.what() << std::endl;
-// 	// 	std::cout << "before error got " << got << " events" << std::endl;
-// 	// }
+        PrintUsageLine("run", "", "Starts simulation.");
+        println("");
+    }
+    else
+    {
+        println("Sorry, no help for '" + mode + "'");
+    }
+}
 
-//     return 0;
-// }
+void PrintInvalidCommand()
+{
+    println("Invalid command, type 'help' to see usage.");
+}
+
+std::vector<std::string> ParseUserInput(std::string userin, const std::string &type = "root")
+{
+    auto cmds = ValidCommands(type);
+    std::string buf;
+    std::stringstream ss(userin);
+    std::vector<std::string> split;
+    while (ss >> buf)
+        split.push_back(buf);
+
+    try
+    {
+        // map.at() throws if nothing exists, this is what we use to determine validity
+        auto options = cmds.at(split[0]);
+        // Need better way to parse out possible parameters here
+        // auto match = std::find(options.begin(), options.end(),split[1]);
+        // if(match == options.end() && options.size() > 0)
+        //     split = {}; // null out the commands to indicate invalidity
+    }
+    catch (const std::exception &e)
+    {
+        //std::cerr << e.what() << '\n';
+        split = {};
+    }
+    return split;
+}
+
+void PrintParameterLine(const std::string &param, const std::string &value, const std::string &desc)
+{
+    int W_PAR = 10;
+    int W_VAL = 20;
+    std::string sep = " - ";
+    if (param == "" && value == "")
+    {
+        sep = "   ";
+    }
+    std::cout << std::right << std::setw(W_PAR) << param + sep << std::left << std::setw(W_VAL) << value << sep << desc << std::endl;
+}
+void EditNodeProcedure(std::shared_ptr<NWSim::Node> node, std::shared_ptr<NWSim::Network> nw)
+{
+    auto commands = ValidCommands("editnode");
+    if (node == nullptr)
+        return;
+    std::string userin = "";
+    while (true)
+    {
+        auto ntype = node->GetNodeType();
+        std::cout << "[Edit " << ntype << "]>";
+        std::getline(std::cin, userin);
+        if (userin.length() == 0)
+            continue;
+        auto parsed = ParseUserInput(userin, "editnode");
+        if (parsed.size() == 0)
+        {
+            PrintInvalidCommand();
+            continue;
+        }
+        auto options = commands[parsed[0]];
+        if (parsed[0] == "exit" || parsed[0] == "quit" || parsed[0] == "q")
+            break;
+        if (parsed[0] == "help")
+        {
+            PrintUsage("editnode");
+        }
+        if (parsed[0] == "list")
+        {
+            PrintParameterLine("address", node->network_interface.GetAddressStr(), "Current IP address.");
+            if (ntype == "EndHost")
+            {
+                auto eh = std::static_pointer_cast<NWSim::EndHost>(node);
+                PrintParameterLine("target", eh->GetTargetAddress(), "Simulation target address.");
+                PrintParameterLine("count", std::to_string(eh->GetPacketCount()), "Simulation packet count to be sent to target address.");
+                PrintParameterLine("", "", "Clamped between " + std::to_string(eh->MINPACKETS) + " and " + std::to_string(eh->MAXPACKETS) + ".");
+            }
+            if (ntype == "Router")
+            {
+                // No router specific parameters
+            }
+        }
+        if (parsed[0] == "set")
+        {
+            // Validity checks
+            if (!parsed.size() == 3)
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            auto match = std::find(options.begin(), options.end(), parsed[1]);
+            if (match == options.end())
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            // Router has only address editable
+            if (ntype == "Router" && parsed[1] != "address")
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            // checks end
+            if (parsed[1] == "address" || parsed[1] == "target")
+            {
+                // Validity checks
+                try
+                {
+                    // this will throw if the address is invalid
+                    NWSim::AddressStrToInt(parsed[2]);
+                }
+                catch (const std::exception &e)
+                {
+                    println(e.what());
+                    continue;
+                }
+                auto tmp = nw->FindNode(parsed[2]);
+                if (tmp != nullptr && parsed[1] == "address")
+                {
+                    printline("Node with that address already exists.");
+                    continue;
+                }
+                else if (tmp == nullptr && parsed[1] == "target")
+                {
+                    printline("No node with that address.");
+                    continue;
+                }
+                // checks end
+                if (parsed[1] == "address")
+                {
+                    node->network_interface.SetAddress(parsed[2]);
+                    printline("Successfully changed node address to " + parsed[2]);
+                    if (node->GetNodeType() == "EndHost")
+                    {
+                        auto eh = std::static_pointer_cast<NWSim::EndHost>(node);
+                        eh->SetTargetAddress(parsed[2]);
+                    }
+                    continue;
+                }
+                if (parsed[1] == "target")
+                {
+                    if (tmp->GetNodeType() != "EndHost")
+                    {
+                        printline("Target must be an endhost.");
+                        continue;
+                    }
+                    auto eh = std::static_pointer_cast<NWSim::EndHost>(node);
+                    eh->SetTargetAddress(parsed[2]);
+                    printline("Successfully changed target address to " + parsed[2]);
+                    continue;
+                }
+            }
+            else if (parsed[1] == "count")
+            {
+                int val = 0;
+                try
+                {
+                    val = std::stoi(parsed[2], nullptr, 10);
+                }
+                catch (const std::exception &e)
+                {
+                    PrintInvalidCommand();
+                    continue;
+                }
+                auto eh = std::static_pointer_cast<NWSim::EndHost>(node);
+                eh->SetPacketCount(val);
+                printline("Successfully changed packet count to " + parsed[2]);
+            }
+        }
+    }
+}
+
+void EditLinkProcedure(std::shared_ptr<NWSim::Link> link)
+{
+    auto commands = ValidCommands("editlink");
+    if (link == nullptr)
+        return;
+    std::string userin = "";
+    while (true)
+    {
+        std::cout << "[Edit Link]>";
+        std::getline(std::cin, userin);
+        if (userin.length() == 0)
+            continue;
+        auto parsed = ParseUserInput(userin, "editlink");
+        if (parsed.size() == 0)
+        {
+            PrintInvalidCommand();
+            continue;
+        }
+        auto options = commands[parsed[0]];
+        if (parsed[0] == "exit" || parsed[0] == "quit" || parsed[0] == "q")
+            break;
+        if (parsed[0] == "help")
+        {
+            PrintUsage("editlink");
+        }
+        if (parsed[0] == "list")
+        {
+            PrintParameterLine("ts", std::to_string(link->GetTransmissionSpeed()), "Transmission speed (ts) determines the interval at which new packets can be transmitted to the link.");
+            PrintParameterLine("pd", std::to_string(link->GetPropagationDelay()), "Propagation delay (pd) determines the time it takes for a packet to travel accross the link.");
+            PrintParameterLine("", "", "time = propagation_delay * packet_size");
+        }
+        if (parsed[0] == "set")
+        {
+            // Validity checks
+            if (!parsed.size() == 3)
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            auto match = std::find(options.begin(), options.end(), parsed[1]);
+            if (match == options.end())
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            if (parsed[1] == "pd")
+            {
+                int val = 0;
+                try
+                {
+                    val = std::stoi(parsed[2], nullptr, 10);
+                }
+                catch (const std::exception &e)
+                {
+                    PrintInvalidCommand();
+                    continue;
+                }
+                link->SetPropagationDelay(val);
+                printline("Successfully changed propagation delay to " + parsed[2]);
+            }
+            else if (parsed[1] == "ts")
+            {
+                int val = 0;
+                try
+                {
+                    val = std::stoi(parsed[2], nullptr, 10);
+                }
+                catch (const std::exception &e)
+                {
+                    PrintInvalidCommand();
+                    continue;
+                }
+                link->SetTransmissionSpeed(val);
+                printline("Successfully changed transmission speed to " + parsed[2]);
+            }
+        }
+    }
+}
+
+void SimulationProcedure(std::shared_ptr<NWSim::Network> nw)
+{
+    auto commands = ValidCommands("sim");
+    if (nw == nullptr)
+        return;
+    std::string userin = "";
+    while (true)
+    {
+        std::cout << "[Sim]>";
+        std::getline(std::cin, userin);
+        if (userin.length() == 0)
+            continue;
+        auto parsed = ParseUserInput(userin, "sim");
+        if (parsed.size() != 1) // all sim commands are one word
+        {
+            PrintInvalidCommand();
+            continue;
+        }
+        // no need to get the options, none for sim
+        //auto options = commands[parsed[0]];
+        if (parsed[0] == "exit" || parsed[0] == "quit" || parsed[0] == "q")
+            break;
+        if (parsed[0] == "help")
+        {
+            PrintUsage("sim");
+        }
+        if (parsed[0] == "list")
+        {
+            nw->PrintSimPlan();
+            continue;
+        }
+        if (parsed[0] == "routes")
+        {
+            if (!nw->IsRunnable())
+            {
+                std::cout << "Generating routing table... ";
+                nw->InitializeForSimulation();
+                std::cout << "Done!" << std::endl;
+            }
+            nw->PrintRoutingTable();
+            continue;
+        }
+        if (parsed[0] == "run")
+        {
+            if (!nw->IsRunnable())
+            {
+                std::cout << "Initializing network... ";
+                nw->InitializeForSimulation();
+                std::cout << "Done!" << std::endl;
+            }
+            std::cout << "Generating endhost packets... ";
+            nw->StartAllEndHosts();
+            std::cout << "Done!" << std::endl;
+            printline("Packet counts before simulation:");
+            nw->PrintPacketQueueStatuses();
+            printline("===========");
+            printline("Starting sim...");
+            size_t ts = 0;
+            size_t backtrack = 0;
+            // Introduce a timeout incase loop wont end..
+            uint64_t start_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                      std::chrono::system_clock::now().time_since_epoch())
+                                      .count();
+
+            uint64_t cur_time = start_time;
+            uint64_t to_time = start_time + 5*60000;
+            while (nw->SimulateAllNodesAndLinks())
+            {
+                ts++;
+                cur_time = std::chrono::duration_cast<std::chrono::milliseconds>(
+                               std::chrono::system_clock::now().time_since_epoch())
+                               .count();
+                if (cur_time >= to_time)
+                {
+                    printline("Sorry, simulation timed out...");
+                    break;
+                }
+                backtrack = nw->PrintPacketQueueStatuses(backtrack,ts);
+                usleep(500); // sleep for n microseconds
+            }
+
+            printline("Stopping sim. Runtime: " + std::to_string(cur_time - start_time) + "ms.");
+            printline("===========");
+        }
+    }
+}
+
+int main(void)
+{
+
+    std::shared_ptr<NWSim::Network> nw = std::make_shared<NWSim::Network>();
+    auto commands = ValidCommands();
+    std::string userin = "";
+    println("=== nwsim v1 ===");
+    while (true)
+    {
+        std::cout << ">";
+        std::getline(std::cin, userin);
+        if (userin.length() == 0)
+            continue;
+        auto parsed = ParseUserInput(userin);
+        if (parsed.size() == 0)
+        {
+            PrintInvalidCommand();
+            continue;
+        }
+        auto options = commands[parsed[0]];
+        if (parsed[0] == "help")
+        {
+            std::string help = "";
+            if (parsed.size() > 1)
+            {
+                help = parsed[1];
+            }
+            PrintUsage(help);
+        }
+        else if (parsed[0] == "exit" || parsed[0] == "quit" || parsed[0] == "q")
+        {
+            println("Exiting, any unsaved changes are lost.");
+            break;
+        }
+        else if (parsed[0] == "tests")
+        {
+            PacketTestRoutine();
+            AddressTestRoutine();
+            NetworkInterfaceTestRoutine();
+            NodeTestRoutine();
+            EndHostTestRoutine();
+            RouterTestRoutine();
+            LinkTestRoutine();
+            NetworkTestRoutine();
+        }
+        else if (parsed[0] == "add")
+        {
+            // Validity checks
+            if (!parsed.size() == 3)
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            auto match = std::find(options.begin(), options.end(), parsed[1]);
+            if (match == options.end())
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            try
+            {
+                // this will throw if the address is invalid
+                NWSim::AddressStrToInt(parsed[2]);
+                auto n = nw->FindNode(parsed[2]);
+                if (n != nullptr)
+                {
+                    println("Node with that address already exists.");
+                    continue;
+                }
+            }
+            catch (const std::exception &e)
+            {
+                println(e.what());
+                continue;
+            }
+            // Checks end
+            if (parsed[1] == "e")
+            {
+                auto n = nw->CreateEndHost(parsed[2]);
+                println("Added EndHost " + parsed[2]);
+                EditNodeProcedure(n, nw);
+            }
+            if (parsed[1] == "r")
+            {
+                auto n = nw->CreateRouter(parsed[2]);
+                println("Added Router " + parsed[2]);
+                EditNodeProcedure(n, nw);
+            }
+        }
+        else if (parsed[0] == "rem")
+        {
+            // Validity checks
+            if (!parsed.size() == 2)
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            try
+            {
+                // this will throw if the address is invalid
+                NWSim::AddressStrToInt(parsed[1]);
+            }
+            catch (const std::exception &e)
+            {
+                println(e.what());
+                continue;
+            }
+            auto n = nw->FindNode(parsed[1]);
+            if (n == nullptr)
+            {
+                println("No node with address " + parsed[1]);
+                continue;
+            }
+            else //checks end
+            {
+                nw->RemoveNode(n);
+                printline("Node " + parsed[1] + " removed successfully.");
+                continue;
+            }
+        }
+        else if (parsed[0] == "link" || parsed[0] == "unlink")
+        {
+            // We can use same logic for both link and unlink to validate addresses
+            // validity checks
+            if (!parsed.size() == 3)
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+            std::shared_ptr<NWSim::Node> n1 = nullptr;
+            std::shared_ptr<NWSim::Node> n2 = nullptr;
+            try
+            {
+                NWSim::AddressStrToInt(parsed[1]);
+                NWSim::AddressStrToInt(parsed[2]);
+            }
+            catch (const std::exception &e)
+            {
+                println(e.what());
+                continue;
+            }
+            n1 = nw->FindNode(parsed[1]);
+            n2 = nw->FindNode(parsed[2]);
+            try
+            {
+                // checks end
+                if (parsed[0] == "link")
+                {
+                    auto l = nw->LinkNodes(n1, n2);
+                    println("Linked nodes " + parsed[1] + " - " + parsed[2]);
+                    EditLinkProcedure(l);
+                    continue;
+                }
+                else if (parsed[0] == "unlink")
+                {
+                    // RemoveLink does not actually check if the two nodes are linked,
+                    // but calling NWSim::Node.DisconnectFromNode does nothing if they arent linked
+                    nw->RemoveLink(n1, n2);
+                    continue;
+                }
+            }
+            catch (const std::exception &e)
+            {
+                println(e.what());
+                continue;
+            }
+        }
+        else if (parsed[0] == "edit")
+        {
+            if (parsed.size() == 2)
+            {
+                try
+                {
+                    NWSim::AddressStrToInt(parsed[1]);
+                }
+                catch (const std::exception &e)
+                {
+                    println(e.what());
+                    continue;
+                }
+                auto n = nw->FindNode(parsed[1]);
+                if (n == nullptr)
+                {
+                    println("No node with address " + parsed[1]);
+                    continue;
+                }
+                else
+                {
+                    EditNodeProcedure(n, nw);
+                }
+            }
+            else if (parsed.size() == 3)
+            {
+                try
+                {
+                    NWSim::AddressStrToInt(parsed[1]);
+                    NWSim::AddressStrToInt(parsed[2]);
+                }
+                catch (const std::exception &e)
+                {
+                    println(e.what());
+                    continue;
+                }
+                auto n1 = nw->FindNode(parsed[1]);
+                auto n2 = nw->FindNode(parsed[2]);
+                auto l = nw->FindLink(n1, n2);
+                if (l == nullptr)
+                {
+                    println("No link between " + parsed[1] + " - " + parsed[2]);
+                    continue;
+                }
+                else
+                {
+                    EditLinkProcedure(l);
+                }
+            }
+            else
+            {
+                PrintInvalidCommand();
+                continue;
+            }
+        }
+        else if (parsed[0] == "list")
+        {
+            nw->PrintNetwork();
+            continue;
+        }
+        else if (parsed[0] == "save")
+        {
+            printline("TODO");
+            // TODO: Save current network as JSON file
+        }
+        else if (parsed[0] == "load")
+        {
+            printline("TODO");
+            // TODO: drop current network and load from file instead.
+            // nw = nullptr;
+            // json = ReadFileETC(parsed[1]);
+            try
+            {
+                // nw = std::make_shared<NWSim::Network>(json);
+            }
+            catch (const std::exception &e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
+        else if (parsed[0] == "sim")
+        {
+            SimulationProcedure(nw);
+            continue;
+        }
+    }
+
+    return 0;
+}
