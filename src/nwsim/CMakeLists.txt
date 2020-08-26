@@ -3,7 +3,8 @@ project (networksim)
 #include_directories("src")
 
 # Set the name of the executable to be produced
-set(EXECUTABLE_NAME networksim)
+set(EXECUTABLE_NAME nwsim-cli)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} /../../bin/)
 
 # Use C++17
 SET(CMAKE_CXX_STANDARD 17)
