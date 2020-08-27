@@ -16,6 +16,14 @@ namespace NWSim
     {
     public:
         Network() {}
+        // Constructor for Network, initializes NW from a file to be read from (JSON by default).
+        Network(const std::string fn, fileType sf = Json) : Network() {
+            if (!Load(fn, sf)) {
+                std::cout << "Failed to load network from file." << std::endl;
+                delete this;
+            }
+        }
+
         ~Network() {}
         /* 
          * Creates new nodes. If non-unique IP is used, a nullptr is returned and nothing is added to _nodes.
@@ -37,14 +45,13 @@ namespace NWSim
         void GenerateRoutingTable();
         void PrintRoutingTable();
 
-
-        void Read(const QJsonObject &json);
-        void Write(QJsonObject &json);
-
-        bool Load(const std::string fileName, fileType saveFormat);
         bool Save(std::string fileName, fileType saveFormat);
 
     private:
+        void Read(const QJsonObject &json);
+        bool Load(const std::string fileName, fileType saveFormat);
+        void Write(QJsonObject &json);
+
         // Routing table of <<CurrentNode, TargetAddress>, IntermediateTargetNode>
         // Keeping CurrentNode and TargetAddress as strings for readability
         std::map<std::pair<std::string,std::string>, std::shared_ptr<Node>> _routingTable;

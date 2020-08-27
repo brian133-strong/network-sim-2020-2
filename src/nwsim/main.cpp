@@ -11,15 +11,16 @@ void println(const std::string& s) {
     std::cout << s << std::endl;
 }
 int main(void) {
-    // PacketTestRoutine();
-    // AddressTestRoutine();
-    // NetworkInterfaceTestRoutine();
-    // NodeTestRoutine();
-    // EndHostTestRoutine();
-    // RouterTestRoutine();
-    // LinkTestRoutine();
-    // NetworkTestRoutine();
+    PacketTestRoutine();
+    AddressTestRoutine();
+    NetworkInterfaceTestRoutine();
+    NodeTestRoutine();
+    EndHostTestRoutine();
+    RouterTestRoutine();
+    LinkTestRoutine();
+    NetworkTestRoutine();
     TestNetworkSave();
+    TestNetworkLoad();
     return 0;
 }
 

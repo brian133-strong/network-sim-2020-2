@@ -303,12 +303,12 @@ void Network::PrintRoutingTable()
 }
 
 void Network::Read(const QJsonObject &json) {
-    if (json.contains("nodes") && json["nodes"].isObject()) {
+    if (json.contains("nodes") && json["nodes"].isArray()) {
         for (auto n : json["nodes"].toArray()) {
             QJsonObject node = n.toObject();
             if (node.contains("address") && node["address"].isString() &&
                 node.contains("type") && node["type"].isString() &&
-                node.contains("position") && node["position"].isDouble()) 
+                node.contains("position") && node["position"].isObject()) 
             {
                 std::string address = node["address"].toString().toStdString();
                 std::string type = node["type"].toString().toStdString();
@@ -325,7 +325,7 @@ void Network::Read(const QJsonObject &json) {
         }
     }
 
-    if (json.contains("links") && json["links"].isString()) {
+    if (json.contains("links") && json["links"].isArray()) {
         for (auto l : json["links"].toArray()) {
             QJsonObject link = l.toObject();
             if (link.contains("address_1") && link["address_1"].isString() &&
@@ -357,19 +357,17 @@ void Network::Write(QJsonObject &json) {
         const QString address = QString::fromStdString(n->network_interface.GetAddressStr());
         const QString type = QString::fromStdString(n->GetNodeType()); 
         Position pos = n->GetPosition();
-        const QString target = (type == "EndHost") 
-            ? QString::fromStdString(std::static_pointer_cast<EndHost>(n)->GetTargetAddress())
-            : QString("null");
-        int count = (type == "EndHost") 
-            ? std::static_pointer_cast<EndHost>(n)->GetPacketCount()
-            : 0;
 
         nodeObject["address"] = address; // has to be unique
-        nodeObject["application"] = type;
+        nodeObject["type"] = type;
         nodeObject["position"] = QJsonObject {{"x", pos.posX }, {"y", pos.posY }};
-        nodeObject["targetAddress"] = target;
-        nodeObject["packetCount"] = count;
 
+        if (type == "EndHost") {
+            const QString target = QString::fromStdString(std::static_pointer_cast<EndHost>(n)->GetTargetAddress());
+            int count = std::static_pointer_cast<EndHost>(n)->GetPacketCount();
+            nodeObject["targetAddress"] = target;
+            nodeObject["packetCount"] = count;
+        }
         nodes_arr.push_back(nodeObject);
     }
 
@@ -407,6 +405,7 @@ bool Network::Load(std::string fileName, fileType saveFormat) {
     QJsonDocument loadDoc(saveFormat == Json
         ? QJsonDocument::fromJson(data)
         : QJsonDocument::fromBinaryData(data));
+
     Read(loadDoc.object());
 
     return true;
