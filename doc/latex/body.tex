@@ -25,7 +25,8 @@
 \hline
 0.1 & 2020-08-26 & All & Template \\
 0.9 & 2020-08-27 & Jani & Majority written. TODO: Dancun info on GUI.\\
-0.9.1 & 2020-08-27 & Jani & Requirement B5 was implemented, changed to Yes \\ 
+0.9.1 & 2020-08-27 & Jani & Requirement B5 was implemented, changed to Yes \\
+1.0 & 2020-08-27 & Jani and Dancun & GUI info 
 \end{tabular}
 }
 \caption{Document changelog.}
@@ -183,7 +184,7 @@ unlink <adr> <adr>  - Unlinks given nodes, if they are currently linked.
 edit   <adr>        - Enter node (endhost, router) edit mode.
 edit   <adr> <adr>  - Enter link edit mode.
 sim                 - Enter simulation mode.
-tests               - Prinst result of all tests and exit program.
+tests               - Prints result of all tests and exit program.
 EDIT MODE HELP:
 help                - Print this help for edit mode.
 exit                - Exit edit mode.
@@ -503,35 +504,35 @@ The amount of hours for each week for every group member is described here.
 \footnotesize{
 \begin{tabular}{c|p{0.15\textwidth}|c|p{0.55\textwidth}}
 \textbf{Week} & \textbf{Dates} & \textbf{Hours} & \textbf{What was done?} \\
-\hline 1 & July 6 - July 12     & 0 & Something or nothing \\
-\hline 2 & July 13 - July 19    & 0 & Something or nothing \\
-\hline 3 & July 20 - July 26    & 0 & Something or nothing \\
-\hline 4 & July 27 - Aug 2      & 0 & Something or nothing \\
-\hline 5 & Aug 3 - Aug 9        & 0 & Something or nothing \\
-\hline 6 & Aug 10 - Aug 16      & 0 & Something or nothing \\
-\hline 7 & Aug 17 - Aug 23      & 0 & Something or nothing \\
-\hline 8 & Aug 24 - Aug 30      & 0 & Something or nothing \\
-\hline\hline\textbf{Total}&All  & 0 & - \\
+\hline 1 & July 6 - July 12     & 4 & Studied about Qt and how to use it in making GUIs in C++ \\
+\hline 2 & July 13 - July 19    & 2 & Tried making nodes which would represent the routers plus the necessary buttons needed to add nodes \\
+\hline 3 & July 20 - July 26    & 4 & Researched on a ways in which to connect the nodes to each other so that traffic could be implemented in the network between the nodes \\
+\hline 4 & July 27 - Aug 2      & 2 & Changed the GUI as the original setup I had was not able to send any communication over the kink between the two nodes \\
+\hline 5 & Aug 3 - Aug 9        & 1 & Worked on improving the GUI by adding the needed buttons and other features needed \\
+\hline 6 & Aug 10 - Aug 16      & 2 & Came with nodes that can display on the screen and can be connected to each other \\
+\hline 7 & Aug 17 - Aug 23      & 2 & Tried adding the source code but did not find the expected results on how to tie the GUI to the code \\
+\hline 8 & Aug 24 - Aug 30      & 1 & GUI works but still problems trying to get the code and GUI to work \\
+\hline\hline\textbf{Total}&All  & 18 & - \\
 \end{tabular}
 }
 \caption{Dancun's work log. }
 \label{table:worklog-dancun}
 \end{table}
 
-%TODO: Brian
+
 \begin{table}[!htbp]
 \footnotesize{
 \begin{tabular}{c|p{0.15\textwidth}|c|p{0.55\textwidth}}
 \textbf{Week} & \textbf{Dates} & \textbf{Hours} & \textbf{What was done?} \\
-\hline 1 & July 6 - July 12     & 0 & Something or nothing \\
-\hline 2 & July 13 - July 19    & 0 & Something or nothing \\
-\hline 3 & July 20 - July 26    & 0 & Something or nothing \\
-\hline 4 & July 27 - Aug 2      & 0 & Something or nothing \\
-\hline 5 & Aug 3 - Aug 9        & 0 & Something or nothing \\
-\hline 6 & Aug 10 - Aug 16      & 0 & Something or nothing \\
-\hline 7 & Aug 17 - Aug 23      & 0 & Something or nothing \\
-\hline 8 & Aug 24 - Aug 30      & 0 & Something or nothing \\
-\hline\hline\textbf{Total}&All  & 0 & - \\
+\hline 1 & July 6 - July 12     & 4 & UML for Project Plan, studied network basics \\
+\hline 2 & July 13 - July 19    & 1 & Weekly meeting. \\
+\hline 3 & July 20 - July 26    & 5 & Weekly meeting. Studied the use of CMake and linking libraries \\
+\hline 4 & July 27 - Aug 2      & 3 & Weekly meeting. Decided on the use of Qt's own JSON libraries. \\
+\hline 5 & Aug 3 - Aug 9        & 4 & Weekly meeting. Figured out how to use QJson-classes, some preliminary implementations for reading/writing to JSON.\\
+\hline 6 & Aug 10 - Aug 16      & 0 & Nothing \\
+\hline 7 & Aug 17 - Aug 23      & 2 & Weekly Meeting. \\
+\hline 8 & Aug 24 - Aug 30      & 5 & Implemented save/load functionality for user-configurable attributes of the network in JSON file format. \\
+\hline\hline\textbf{Total}&All  & 24 & - \\
 \end{tabular}
 }
 \caption{Brian's work log. }
@@ -542,7 +543,7 @@ The amount of hours for each week for every group member is described here.
 \footnotesize{
 \begin{tabular}{c|p{0.15\textwidth}|c|p{0.55\textwidth}}
 \textbf{Week} & \textbf{Dates} & \textbf{Hours} & \textbf{What was done?} \\
-\hline 1 & July 6 - July 12     & 1 & Project plan \\
+\hline 1 & July 6 - July 12     & 3 & Project plan, studied network protocols \\
 \hline 2 & July 13 - July 19    & 2 & Attended weekly meeting, planned parts of the implementation \\
 \hline 3 & July 20 - July 26    & 2 & Attended weekly meeting, wrote initial version of event queue \\
 \hline 4 & July 27 - Aug 2      & 2 & Attended weekly meeting, rewrote event queue \\
@@ -550,7 +551,7 @@ The amount of hours for each week for every group member is described here.
 \hline 6 & Aug 10 - Aug 16      & 1 & Attended weekly meeting \\
 \hline 7 & Aug 17 - Aug 23      & 3 & Attended weekly meeting, created routing table for the network \\
 \hline 8 & Aug 24 - Aug 30      & 0 & nothing \\
-\hline\hline\textbf{Total}&All  & 12 & - \\
+\hline\hline\textbf{Total}&All  & 14 & - \\
 \end{tabular}
 }
 \caption{Leo's work log. }
@@ -574,11 +575,26 @@ It is quite obvious from the output of the project that we did not meet the goal
 \end{center}
 \end{figure}
 
+\subsection{GUI}
 The GUI was being worked on as mentioned, and some functionality was achieved:
 % TODO Dancun
 \begin{enumerate}
-    \item \textcolor{red}{Dancun please write here about the GUI, some screenshots of what functionality you wrote already, some that was missing}
-    \item Functionality 2
-    \item Feature 3
+    \item The GUI we have so far has the ability to add nodes on the screen. The nodes can be connected to each other and a given node can be deleted. The implementation is simple and does not include 2D or 3D
+    \item For the time being the functionality that exist, is one to add nodes and connect them. There is not any additional functionalities that have been implemented as of now
 \end{enumerate}
 
+\begin{figure}[!htbp]
+\begin{center}
+	\includegraphics[width=13cm]{Screenshot 2020-08-27 at 14.03.23.png}
+    \caption{Screenshot 1 from the GUI.}
+	\label{img:gui-1}			% use \ref{img:example} to refer to this figure
+\end{center}
+\end{figure}
+
+\begin{figure}[!htbp]
+\begin{center}
+	\includegraphics[width=13cm]{Screenshot 2020-08-27 at 14.03.42.png}
+    \caption{Screenshot 2 from the GUI.}
+	\label{img:gui-2}			% use \ref{img:example} to refer to this figure
+\end{center}
+\end{figure}
