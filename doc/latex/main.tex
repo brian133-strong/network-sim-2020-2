@@ -1,0 +1,101 @@
+\documentclass[a4paper,11pt]{article}
+% text settings
+\usepackage[T1]{fontenc} 				% use actual å ä ö letters, 8-bit font
+\usepackage[utf8]{inputenc} 			% let me input å ä ö
+\usepackage[english]{babel}
+\usepackage{CormorantGaramond}
+\usepackage{geometry}                   % margins
+\usepackage{nicefrac}
+\usepackage{setspace}
+\usepackage{enumitem}
+\usepackage[fleqn]{amsmath}				% left align align-environment
+\usepackage{amssymb,amsthm,textcomp}	% improve math presentation
+\usepackage{mathtools}					% dcases
+\usepackage{siunitx}
+\usepackage{graphicx}					% takes care of including graphics 
+\usepackage{rotating}
+
+\usepackage{listings}                   % include code with \begin{lstlisting}
+
+\usepackage{cite}
+\usepackage{parskip}
+
+\usepackage{float}
+\renewcommand\topfraction{.9}
+\renewcommand\textfraction{0.35}
+\renewcommand\floatpagefraction{0.8}
+\usepackage{floatpag}
+
+\usepackage{lastpage}
+\usepackage[export]{adjustbox}[2011/08/13]	% Center figure that is wider than \textwidth
+
+
+\usepackage[usenames,dvipsnames]{xcolor} 		% add some named colors
+% https://en.wikibooks.org/wiki/LaTeX/Colors
+ 
+\usepackage{scalerel}
+\usepackage{stackengine}
+\usepackage{xcolor}
+% https://en.wikibooks.org/wiki/LaTeX/Colors
+
+%plusminus ja minusplus määrittelyt
+\newcommand\varpm{\mathbin{\vcenter{\hbox{%
+  \oalign{\hfil$\scriptstyle+$\hfil\cr
+          \noalign{\kern-.3ex}
+          $\scriptscriptstyle({-})$\cr}%
+}}}}
+\newcommand\varmp{\mathbin{\vcenter{\hbox{%
+  \oalign{$\scriptstyle({+})$\cr
+          \noalign{\kern-.3ex}
+          \hfil$\scriptscriptstyle-$\hfil\cr}%
+}}}}
+
+
+\usepackage{xcolor}
+\definecolor{niceblue}{RGB}{47, 112, 216}
+
+% date formatting settings
+\usepackage[ddmmyyyy]{datetime}
+\renewcommand{\dateseparator}{.}
+
+\usepackage{pdfpages} % appendices as pdf
+\usepackage{longtable} % split table on multiple pages
+% custom commands
+\newcommand{\liner}{\rule{\linewidth}{0.5pt}} % use \liner for a whole page dividing line
+
+% custom footers and headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\lhead{ELEC-A7151 - Object oriented programming with C++}
+\rhead{Project Plan}
+
+\cfoot{\thepage\ / \pageref{LastPage}}
+%\renewcommand{\headrulewidth}{0pt}
+%\renewcommand{\footrulewidth}{0pt}
+
+% for fixed width text
+\newcommand{\fw}[1]{\fontfamily{qcr}\selectfont{#1}}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,       % false: boxed links; true: colored links
+	linkcolor=black,        % color of internal links to tables etc.
+	citecolor=black,        % color of links to bibliography
+	filecolor=magenta,     % color of file links
+	urlcolor=black         
+}
+
+\begin{document}
+
+%\setcounter{secnumdepth}{0}         % remove section header numbering
+% because the titlepage refused to cooperate...
+% --> this sets the page numbers right
+\setcounter{page}{0}
+
+\input{titlepage}
+\newpage
+\input{body}
+\newpage
+\pagestyle{empty}
+%\input{appendices}
+\end{document}

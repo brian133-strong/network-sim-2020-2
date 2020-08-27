@@ -1,0 +1,28 @@
+add e 1.1.1.1
+exit
+add r 2.2.2.2
+exit
+add e 3.3.3.3
+list
+set target 1.1.1.1
+set count 200
+q
+edit 1.1.1.1
+set target 3.3.3.3
+set count 100
+q
+list
+link 1.1.1.1 2.2.2.2
+list
+set ts 100
+set pd 2
+q
+link 2.2.2.2 3.3.3.3
+set ts 50
+q
+sim
+list
+routes
+run
+q
+q

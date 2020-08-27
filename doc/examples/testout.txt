@@ -1,0 +1,252 @@
+=== nwsim v1 ===
+>
+==============================
+TESTING - NWSim::Packet class
+==============================
+
+Default constructed packet should have:
+	ttl = 0: true
+	decrementing ttl is still 0: true
+	target address all zeroes: true
+	source address all zeroes: true
+	ID = 0: true
+	data string is empty: true
+	size = MINPACKETSIZE: true
+	can set size to >= MINPACKETSIZE: set to 123: true
+	can NOT set size to < MINPACKETSIZE: set to 0, size now: 18
+Using "actual" constructor with valid data:
+data = test, target = 123.123.123.123, source = 255.255.255.255, ID = 666
+	ttl = 255: 255
+	decrementing ttl gives 254: true
+	target address matches: true
+	source address matches: true
+	ID matches: true
+id is666should be666
+	data string is test: true
+	size is MINPACKETSIZE + len(test): true
+
+==============================
+TESTING - NWSim::Address helpers
+==============================
+
+Converting from int to string:
+	arg 0 gives 0.0.0.0: true
+	UINT32_MAX gives 255.255.255.255: true
+Converting from str to int:
+	0.0.0.0 = 0: true
+	255.255.255.255 = UINT32_MAX: true
+	Testing randomly generated (valid) address strings:: 
+		Generated str '3.182.89.53' doesnt throw - : true
+		Generated str '31.253.46.58' doesnt throw - : true
+		Generated str '1.134.129.19' doesnt throw - : true
+		Generated str '95.167.144.3' doesnt throw - : true
+		Generated str '180.3.111.222' doesnt throw - : true
+		Generated str '100.172.49.85' doesnt throw - : true
+		Generated str '101.153.212.37' doesnt throw - : true
+		Generated str '151.240.19.26' doesnt throw - : true
+		Generated str '39.108.206.70' doesnt throw - : true
+		Generated str '106.252.1.234' doesnt throw - : true
+		Generated str '3.130.254.99' doesnt throw - : true
+	invalid address "asd" throws: true
+	invalid address "1" throws: true
+	invalid address "255.255.255.256" throws: true
+Double wrapped:
+	Setting to 1.2.3.4, converting to int, and back to str, matches: true
+
+==============================
+TESTING - NWSim::NetworkInterface class
+==============================
+
+NOTE: Valid addresses handled by NWSim::Address helpers!
+Default constructed
+	address is 0: true
+	Possible to set address to valid one 1.2.3.4: true
+	Address string matches after setting: true
+	NOT Possible to set address to invalid one invalid adr: true
+	Address string hasn't changed after setting to invalid: true
+adr should be 1.2.3.41.2.3.4
+Constructing with given VALID adr '1.2.3.4'
+	Address string matches after constructing: true
+Constructing with given INVALID adr 'invalid adr'
+	Address string should be 0.0.0.0 after constructing: true
+
+==============================
+TESTING - NWSim::Node class
+==============================
+
+NOTE: Addressing handled by NWSim::NetworkInterface!
+NOTE: Methods that cannot be tested without network/link:
+	ConnectToNode,IsConnectedTo,DisconnectFromNode,MoveTopTransmitPacketToLinkRunApplication: 
+Can generate default constructed nodes:
+	Default pos is (0,0): true
+	Can move to new position (1.2,3.4): true
+	Node type is "DEFAULT": true
+	NOT connected to any other nodes: true
+	Transmit queue is empty: true
+	Receive queue is empty: true
+	Default address is 0.0.0.0: true
+Using "correct" constructor:
+	Constructed at pos (1.200000,3.400000): true
+	Constructed with adr 1.2.3.4: true
+Compare node equality (address):
+	Node against same adr as str: true
+	Two different nodes with different IP's are NOT the same: true
+	Comparing node to itself is equal: true
+Packet handling of the Node
+	After receiving 1 packet, receive queue holds 1 packet: : true
+	Can NOT add packet with TTL==0 to transmit queue: : true
+	Can add packet with TTL>0 to transmit queue: : true
+
+==============================
+TESTING - NWSim::EndHost class
+==============================
+
+NOTE: Only checking EndHost specific functionality, check Node for shared, or Network for "fuller" functions.
+Packet generation variables
+	Node type is EndHost: true
+	Initial packet count is MINPACKETS: true
+	Can set packet count >MINPACKETS but <= MAXPACKETS: true
+	Can NOT set packet count >MAXPACKETS, clamped to MAXPACKETS: true
+	Initial target address is self: true
+	Can set target address to a new valid one: true
+	Target address after set matches: true
+	Can NOT set target address to a new invalid one: true
+	Target address after ivnalid set  matches old one: true
+
+==============================
+TESTING - NWSim::Router class
+==============================
+
+NONE YET, TODO, false
+Default constructor
+	Node type is Router: true
+
+==============================
+TESTING - NWSim::Link class
+==============================
+
+NOTE: Methods that cannot be tested without network/link:
+	InitTransmissionQueues,MoveTopTransmitPacketToNode,AddPacketToQueue: 
+Default constructed:
+	transmission speed is MIN: true
+	propagation delay is MIN: true
+	transmission speed is set: true
+	propagation delay is set: true
+Constructed with 0,0:
+	transmission speed is MIN: true
+	propagation delay is MIN: true
+Constructed with 123,321:
+	transmission speed is 123: true
+	propagation delay is 321: true
+
+==============================
+TESTING - NWSim::Network class
+==============================
+
+NOTE: A deeper exploration of node/link specific functions in their respective tests.
+Empty network tests
+	New network is empty: true
+	A non-existent node can not be found and returns nullptr: true
+	Can add default EndHost: true
+	Can find existing node: true
+	Can NOT add node with same IP again: true
+Linking nodes...
+	After adding another host and router, size is 3: true
+	Linking two nodes worked: true
+	Attempting to relink throws an exception: true
+	Attempting to backwards relink throws an exception: true
+	Linking other two nodes worked: true
+Removing node from network
+	Network size is 2 nodes: true
+	Removing the router between hosts severed all links: ...
+		h1 -/- r1: true
+		h2 -/- r1: true
+		h1 size == 0: true
+		h2 size == 0: true
+Removing link from network
+	Network size is 3 as no nodes removed: true
+	Removing a link between h1,r2 only removes that link: ...
+		h1 -/- r2: true
+		h2 --- r2: true
+		h1 size == 0: true
+		h2 size == 1: true
+**** Manually see below routing table if it makes sense... ****
+	New print table should not be simulatable out of the box: true
+Current routing table size: 9
+	When at: 0.0.0.11	and target: 0.0.0.22	send to: 0.0.0.22
+	When at: 0.0.0.11	and target: 0.0.0.33	send to: 0.0.0.22
+	When at: 0.0.0.22	and target: 0.0.0.11	send to: 0.0.0.11
+	When at: 0.0.0.22	and target: 0.0.0.33	send to: 0.0.0.33
+	When at: 0.0.0.33	and target: 0.0.0.11	send to: 0.0.0.22
+	When at: 0.0.0.33	and target: 0.0.0.22	send to: 0.0.0.22
+Testing packet transfer in network
+	Setting target adr for h1: true
+	Before run, transmit queue size is 0: true
+	After run transmit queue == packetcount == set packet count: true
+Starting packet movement...
+	Link is empty and can not move any packets: true
+	Moving packet from node h1 to link is succesful: true
+	Link h1-r1 now has 1 packet: true
+	Link has moved packet to next node r1: true
+	Next link l1 timestamp should be 0 as no other packets exist: true
+	After running router, receive queue is 0 and transmit is 1: true
+	After moving from the router, transmit q is empty: true
+	Link has moved packet to next node h2: true
+	Next link l2 timestamp should be 0 as no other packets exist: true
+Moving the remaining packets...
+	Before run - h1 and l1 are empty: true
+	Before run - Router reveived holds rest of the packets: true
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 30	TTL: 255	ID: 1	Data: Test
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 29	TTL: 255	ID: 2	Data: Test
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 22	TTL: 255	ID: 3	Data: Test
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 40	TTL: 255	ID: 4	Data: Test
+	After run - Router transmit holds rest of the packets: true
+	All packets found on endhost: true
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 41	TTL: 254	ID: 0	Data: Test
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 30	TTL: 254	ID: 1	Data: Test
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 29	TTL: 254	ID: 2	Data: Test
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 22	TTL: 254	ID: 3	Data: Test
+Source: 0.0.0.11	Target: 0.0.0.33	Size: 40	TTL: 254	ID: 4	Data: Test
+**** Testing Simulatable runs ****
+	Set up network, can not run yet: true
+	Initialized network for running: true
+	Check below routing table...: 
+Current routing table size: 25
+	When at: 1.1.1.1	and target: 2.2.2.2	send to: 3.3.3.3
+	When at: 1.1.1.1	and target: 3.3.3.3	send to: 3.3.3.3
+	When at: 1.1.1.1	and target: 4.4.4.4	send to: 3.3.3.3
+	When at: 1.1.1.1	and target: 5.5.5.5	send to: 3.3.3.3
+	When at: 2.2.2.2	and target: 1.1.1.1	send to: 3.3.3.3
+	When at: 2.2.2.2	and target: 3.3.3.3	send to: 3.3.3.3
+	When at: 2.2.2.2	and target: 4.4.4.4	send to: 3.3.3.3
+	When at: 2.2.2.2	and target: 5.5.5.5	send to: 3.3.3.3
+	When at: 3.3.3.3	and target: 1.1.1.1	send to: 1.1.1.1
+	When at: 3.3.3.3	and target: 2.2.2.2	send to: 2.2.2.2
+	When at: 3.3.3.3	and target: 4.4.4.4	send to: 4.4.4.4
+	When at: 3.3.3.3	and target: 5.5.5.5	send to: 4.4.4.4
+	When at: 4.4.4.4	and target: 1.1.1.1	send to: 3.3.3.3
+	When at: 4.4.4.4	and target: 2.2.2.2	send to: 3.3.3.3
+	When at: 4.4.4.4	and target: 3.3.3.3	send to: 3.3.3.3
+	When at: 4.4.4.4	and target: 5.5.5.5	send to: 5.5.5.5
+	When at: 5.5.5.5	and target: 1.1.1.1	send to: 4.4.4.4
+	When at: 5.5.5.5	and target: 2.2.2.2	send to: 4.4.4.4
+	When at: 5.5.5.5	and target: 3.3.3.3	send to: 4.4.4.4
+	When at: 5.5.5.5	and target: 4.4.4.4	send to: 4.4.4.4
+Actual simulation ---
+Packet counts before simulation:
+EndHost 1.1.1.1          - transmit: 100    receive: 0     
+EndHost 2.2.2.2          - transmit: 50     receive: 0     
+Router  3.3.3.3          - transmit: 0      receive: 0     
+Router  4.4.4.4          - transmit: 0      receive: 0     
+EndHost 5.5.5.5          - transmit: 10     receive: 0     
+Packet counts after simulation:
+1.1.1.1          - 3.3.3.3          : 85    waiting: (  -1,4)
+2.2.2.2          - 3.3.3.3          : 33    waiting: (  -1,19)
+3.3.3.3          - 4.4.4.4          : 17    waiting: (  -1,9)
+4.4.4.4          - 5.5.5.5          : 1     waiting: (  -1,9)
+EndHost 1.1.1.1          - transmit: 0      receive: 10    
+EndHost 2.2.2.2          - transmit: 0      receive: 0     
+Router  3.3.3.3          - transmit: 0      receive: 0     
+Router  4.4.4.4          - transmit: 0      receive: 0     
+EndHost 5.5.5.5          - transmit: 0      receive: 14    
+>Exiting, any unsaved changes are lost.
