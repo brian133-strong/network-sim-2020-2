@@ -547,6 +547,8 @@ int main(void)
             RouterTestRoutine();
             LinkTestRoutine();
             NetworkTestRoutine();
+	    TestNetworkSave();
+	    TestNetworkLoad();
         }
         else if (parsed[0] == "add")
         {
