@@ -26,7 +26,8 @@
 0.1 & 2020-08-26 & All & Template \\
 0.9 & 2020-08-27 & Jani & Majority written. TODO: Dancun info on GUI.\\
 0.9.1 & 2020-08-27 & Jani & Requirement B5 was implemented, changed to Yes \\
-1.0 & 2020-08-27 & Jani and Dancun & GUI info 
+1.0 & 2020-08-27 & Jani and Dancun & GUI info
+1.1 & 2020-08-27 & Jani & Added external library info
 \end{tabular}
 }
 \caption{Document changelog.}
@@ -109,6 +110,9 @@ The \texttt{Network} class ties everything else together. It is the interface to
     \item Build the software by first generating the Makefile with \texttt{cmake CMakeLists.txt} and then running \texttt{make}
     \item The software is built to the projects root/bin and the executables name is \texttt{nwsim-cli}
 \end{enumerate}
+
+\subsection{External libraries}
+The GUI portion and the JSON parser are both external libraries provided by Qt. As the GUI was ultimately dropped, only the file saving and loading requires external libraries.
 
 \section{Running the software}
 The software is a CLI implementation and has rather intuitive usage. For usage, please run the \texttt{help} command, or see the compiled version below in section \ref{sec:help}.
@@ -598,3 +602,4 @@ The GUI was being worked on as mentioned, and some functionality was achieved:
 	\label{img:gui-2}			% use \ref{img:example} to refer to this figure
 \end{center}
 \end{figure}
+
