@@ -22,4 +22,4 @@ src/*/CMakeCache.txt
 *~
 settings.json
 *.exe
-.log
+*.log
