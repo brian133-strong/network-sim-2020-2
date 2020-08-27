@@ -8,7 +8,8 @@ project (networksim)
 #include_directories("src")
 
 # Set the name of the executable to be produced
-set(EXECUTABLE_NAME networksim)
+set(EXECUTABLE_NAME nwsim-cli)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} /../../bin/)
 
 # Use C++17
 SET(CMAKE_CXX_STANDARD 17)
@@ -23,5 +24,5 @@ find_package(Qt5 COMPONENTS Core REQUIRED)
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
 set(CMAKE_BUILD_TYPE Debug)
 
-target_link_libraries(networksim Qt5::Core)
+target_link_libraries(nwsim-cli Qt5::Core)
 

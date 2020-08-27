@@ -1,0 +1,9 @@
+% Remove header? Don't include appendices in page count?
+\begin{appendix}
+    \centering
+    \includepdf[pages=1,fitpaper,offset=0mm -75,pagecommand={
+    \begin{flushleft}  
+        \section*{\centering Appendix A: Example appendix}
+    \end{flushleft}
+    \label{Gantt}}]{example.pdf}
+\end{appendix}
