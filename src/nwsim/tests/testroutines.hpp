@@ -472,8 +472,6 @@ void NetworkTestRoutine()
         q.pop();
     }
 
-
-
     // Sims
     printline("**** Testing Simulatable runs ****");
     NWSim::Network nw_sim = NWSim::Network();
@@ -550,4 +548,46 @@ void NetworkTestRoutine()
     printpacketcounts(e5);
 
 }
+
+void TestNetworkSave() {
+    printtitle("NWSim::Network Save()) test");
+    printline("See if a Network can be successfully saved to JSON-format.");
+
+    NWSim::Network nw = NWSim::Network();
+    std::string addr1 = "0.0.0.0";
+    std::string addr2 = "1.2.3.4";
+    std::string addr3 = "10.10.10.10";
+
+    auto host1 = nw.CreateEndHost(addr1);
+    host1->SetPosition(2.2, 3.3);
+    auto host2 = nw.CreateEndHost(addr2);
+    auto rout1 = nw.CreateRouter(addr3);
+
+    auto link_h1r1 = nw.LinkNodes(host1, rout1);
+    auto link_h2r1 = nw.LinkNodes(host2, rout1);
+
+    QJsonObject nwObject;
+    bool saveRes = nw.Save("saveTest", NWSim::Json);
+
+    printassert("After creating nodes and links, saving to Json-file should return true. ", saveRes);
+}
+
+void TestNetworkLoad() {
+    printtitle("NWSim::Network Load() test");
+    printline("See if network can be constructed from a file.");
+
+    NWSim::Network nw("saveTest");
+    std::shared_ptr<NWSim::Node> n = nw.FindNode("1.2.3.4");
+
+    if (n == NULL) {
+        std::cout << "Test failed." << std::endl;
+    }
+    else {
+        std::cout << n->network_interface.GetAddressStr() << std::endl;
+    }
+}
+
+
+
+
 

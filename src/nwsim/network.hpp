@@ -3,14 +3,26 @@
 #include <map>
 #include "node.hpp"
 #include "link.hpp"
+
+#include <QJsonObject>
+
 namespace NWSim
 {
     //class Node;
     //class Link;
+    enum fileType {binary, Json};
+
     class Network
     {
     public:
         Network() {}
+        // Constructor for Network, initializes NW from a file to be read from (JSON by default).
+        Network(const std::string fn, fileType sf = Json) : Network() {
+            if (!Load(fn, sf)) {
+                std::cout << "Failed to load network from file." << std::endl;
+                delete this;
+            }
+        }
         ~Network() {
             _routingTable.clear();
         }
@@ -45,7 +57,12 @@ namespace NWSim
         // Prints node and link queue packet counts. parameter tells how many chars backwards to \b to reprint. Returns charcount
         size_t PrintPacketQueueStatuses(const size_t backtrack = 0, const size_t timestep = 0) const;
         void PrintRoutingTable(bool showAll = false) const;
+
+        bool Save(std::string fileName, fileType saveFormat);
     private:
+        void Read(const QJsonObject &json);
+        bool Load(const std::string fileName, fileType saveFormat);
+        void Write(QJsonObject &json);
         // Dijkstra from each source to each target
         void GenerateRoutingTable();
         // Naive copy to all router nodes

@@ -47,6 +47,11 @@ namespace NWSim
         uint32_t MoveTopTransmitPacketToNode(std::shared_ptr<Node>);
         size_t size() const { return _transmissionQueue1.second.size() + _transmissionQueue2.second.size();}
         void AddPacketToQueue(std::shared_ptr<Node>, Packet p);
+
+        //void WriteToJson(QJsonObject &json) const;
+    
+        //void ReadFromJson(QJsonObject &json);
+
         ~Link() {}
 
 

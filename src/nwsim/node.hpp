@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <vector>
 #include <queue>
 #include <list>
@@ -7,6 +8,7 @@
 #include <map>
 #include "networkinterface.hpp"
 #include "link.hpp"
+
 namespace NWSim
 {
     // Need to forward declare Link in order to compile

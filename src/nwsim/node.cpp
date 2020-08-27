@@ -60,6 +60,48 @@ void Node::AddTransmitPacket(Packet p, std::shared_ptr<Node> n)
     }
 }
 
+/*
+// DEPRECATED
+
+void Node::WriteToJson(QJsonObject &json) const {
+    const QString address = QString::fromStdString( this->network_interface.GetAddressStr() );
+    //QString application = QString::fromStdString( _app._placeholder ); 
+
+    json["address"] = QJsonValue(address); // has to be unique
+    json["application"] = "Yay, I'm an application!"; // TODO
+    json["position"] = QJsonObject { { "x", _pos.posX }, { "y", _pos.posY } }; // has to be unique
+
+    // Save information about connect nodes.
+    QJsonArray arr;
+
+    for (auto n : _connected) {
+        std::shared_ptr node_ptr(n.second); 
+        const QString n_address = QString::fromStdString( node_ptr->network_interface.GetAddressStr() );
+        arr.push_back( QJsonValue(n_address) );
+    }
+
+    json["connectedNodes"] = arr;
+    
+}
+
+void Node::ReadFromJson(QJsonObject &json) {
+
+    if (json.contains("address") && json["address"].isString())
+        this->network_interface.SetAddress( json["address"].toString().toStdString()); // TODO: Handle invalid input
+
+    if (json.contains("application") && json["application"].isString()) {
+        
+    }
+
+
+    if (json.contains("position") && json["position"].isObject()) {
+        QJsonObject pos = json["position"].toObject();
+        this->SetPosition(pos["x"].toInt(), pos["y"].toInt());
+    }
+}
+
+*/
+
 void Node::ConnectToNode(std::shared_ptr<Node> n, std::shared_ptr<Link> l)
 {
     // Only work with valid nodes and links
