@@ -26,8 +26,9 @@
 0.1 & 2020-08-26 & All & Template \\
 0.9 & 2020-08-27 & Jani & Majority written. TODO: Dancun info on GUI.\\
 0.9.1 & 2020-08-27 & Jani & Requirement B5 was implemented, changed to Yes \\
-1.0 & 2020-08-27 & Jani and Dancun & GUI info
-1.1 & 2020-08-27 & Jani & Added external library info
+1.0 & 2020-08-27 & Jani and Dancun & GUI info \\
+1.1 & 2020-08-27 & Jani & Added external library info \\
+1.2 & 2020-08-28 & Jani & Added notes about cmake in build and Valgrind errors in tests.\\
 \end{tabular}
 }
 \caption{Document changelog.}
@@ -58,7 +59,7 @@ The purpose of this document is to be the final documentation of the project in 
 & B1.2.2    & End-hosts shall be able to run applications that can send and/or receive packets to/from other end-hosts for a specified length of time. & Yes\footnote{}\\
 & B2        & The model code shall be written in such a way that it is easy to extend with e.g. new kinds of links or applications. & Yes\\ 
 \hline Program
-& B3        & Running simulations shall be "easily configurable" for different network scenarios, through e.g. configuration files. & \textcolor{red}{TODO}\\
+& B3        & Running simulations shall be "easily configurable" for different network scenarios, through e.g. configuration files. & Yes\\
 & B4        & It shall be possible to collect statistics on the simulated network, e.g. packet to destination times, link utilization, queue lengths, etc. & No\\
 & B5        & From the applications user interface, it shall be possible to follow the progress of simulation, including statistics and states for links, queues and packets. & Yes \\
 \hline GUI
@@ -103,17 +104,28 @@ The \texttt{Network} class ties everything else together. It is the interface to
 \end{center}
 \end{figure}
 
+\subsection{External libraries}
+The GUI portion and the JSON parser are both external libraries provided by Qt. As the GUI was ultimately dropped, only the file saving and loading requires external libraries.
+
 \section{Build instructions}
+
 \begin{enumerate}
     \item Clone the project repository to your machine, or download and unzip.
     \item Open terminal and navigate to the project root, run \texttt{cd src/nwsim}
     \item Build the software by first generating the Makefile with \texttt{cmake CMakeLists.txt} and then running \texttt{make}
+    \begin{enumerate}
+        \item If you get Qt related errors running \texttt{cmake}, see below.
+    \end{enumerate}
     \item The software is built to the projects root/bin and the executables name is \texttt{nwsim-cli}
 \end{enumerate}
 
-\subsection{External libraries}
-The GUI portion and the JSON parser are both external libraries provided by Qt. As the GUI was ultimately dropped, only the file saving and loading requires external libraries.
-
+Building the software requires the \texttt{Qt5::Core} library from Qt. The location of this library depends on your setup, but we have included the following possible paths. If running \texttt{cmake} produces library related errors for you, please include the correct path\footnote{Apparently on Aalto Linux machines the Qt libraries are found under \texttt{~/usr/lib} (?)} in the \texttt{src/nwsim/CMakeLists.txt} file. 
+\lstset{basicstyle=\scriptsize,numbers=left}
+\begin{lstlisting}[firstnumber=3]
+# Appends the location of qt5 to CMAKE_PREFIX_PATH **UNIQUE TO HOST**
+list(APPEND CMAKE_PREFIX_PATH "~/usr/lib/")
+list(APPEND CMAKE_PREFIX_PATH "~/Qt/5.15.0/gcc_64/lib/cmake")
+\end{lstlisting}
 \section{Running the software}
 The software is a CLI implementation and has rather intuitive usage. For usage, please run the \texttt{help} command, or see the compiled version below in section \ref{sec:help}.
 
@@ -165,7 +177,7 @@ The software is a CLI implementation and has rather intuitive usage. For usage, 
 \end{enumerate}
 
 \subsection{Help documentation} \label{sec:help}
-\lstset{basicstyle=\scriptsize}
+\lstset{basicstyle=\scriptsize,numbers=no}
 \begin{lstlisting}
 LEGEND:
 <mode>      - edit, sim
@@ -175,8 +187,10 @@ LEGEND:
 NWSIM HELP:
 help                - Print this manual.
        <mode>       - Prints mode specific usage.
-save   <filename>   - Save current network configuration as JSON to given file.
+save   <filename>   - Save current network configuration to given file. Possible file
+                      formats: .json .dat
 load   <filename>   - Discard current network configuration and load from specified file.
+                      Possible file formats: .json .dat
 exit                - Exit current mode or if at root, exits the program.
 list                - Lists all current nodes and what other nodes they are linked to.
 add    e|r <adr>    - Adds an [e]ndhost or [r]outer with given address.
@@ -216,7 +230,7 @@ run                 - Starts simulation.
 \end{lstlisting}
 
 \section{Tests}
-The software was tested while it was being written and refactored, by writing unit tests and updating as necessary when the underlying logic changed. The \texttt{src/nwsim/tests/testroutines.hpp} file holds all testcases and they can be executed in software by running the \texttt{tests} command. The program output was then simply searched for the flag \texttt{false} for any tests that didnt pass, e.g:
+The software was tested while it was being written and refactored, by writing unit tests and updating as necessary when the underlying logic changed. The \texttt{src/nwsim/tests/testroutines.hpp} file holds all testcases and they can be executed in software by running the \texttt{tests} command. The program output was then simply searched for the flag \texttt{false} for any tests that didn't pass, e.g:
 \begin{enumerate}
     \item \texttt{./bin/nwsim-cli | tee testout.txt}
     \item Run the \texttt{tests} command for test output and \texttt{exit}
@@ -224,262 +238,15 @@ The software was tested while it was being written and refactored, by writing un
 \end{enumerate}
 
 \subsection{Test output}
-Below is the output of running \texttt{tests} in the program. Note that all tests that pass hold value \texttt{true}. If it was not possible to write simple and quick enough tests, e.g. for the routing table or actual simulation output, then a manual look is needed.
-\\\\
-Note in the simulation test output not all packets have moved to their corresponding nodes. This is because the test is only run for \texttt{n} timesteps, and the packet counts are too high to be transferred during this,
+All tests that pass hold value \texttt{true}. If it was not possible to write simple and quick enough tests, e.g. for the routing table or actual simulation output, then a manual look is needed. In the simulation test output not all packets have moved to their corresponding nodes. This is because the test is only run for \texttt{n} timesteps, and the packet counts are too high to be transferred during this period. 
 
-\lstset{basicstyle=\scriptsize}
-\begin{lstlisting}
-==============================
-TESTING - NWSim::Packet class
-==============================
+\subsection{Valgrind}
+Running the network simulator with valgrind shows, that there is some memory leak still present. This was introduced in merging the feature of saving / loading the network to / from a file. After spending (too) many hours hunting this issue, we have decided to leave it as is.
+\lstset{basicstyle=\scriptsize,breaklines=true}
+\lstinputlisting{noleak-commit-1e911efa9b.txt}
+\lstinputlisting{latest.txt}
 
-Default constructed packet should have:
-	ttl = 0: true
-	decrementing ttl is still 0: true
-	target address all zeroes: true
-	source address all zeroes: true
-	ID = 0: true
-	data string is empty: true
-	size = MINPACKETSIZE: true
-	can set size to >= MINPACKETSIZE: set to 123: true
-	can NOT set size to < MINPACKETSIZE: set to 0, size now: 18
-Using "actual" constructor with valid data:
-data = test, target = 123.123.123.123, source = 255.255.255.255, ID = 666
-	ttl = 255: 255
-	decrementing ttl gives 254: true
-	target address matches: true
-	source address matches: true
-	ID matches: true
-id is666should be666
-	data string is test: true
-	size is MINPACKETSIZE + len(test): true
 
-==============================
-TESTING - NWSim::Address helpers
-==============================
-
-Converting from int to string:
-	arg 0 gives 0.0.0.0: true
-	UINT32_MAX gives 255.255.255.255: true
-Converting from str to int:
-	0.0.0.0 = 0: true
-	255.255.255.255 = UINT32_MAX: true
-	Testing randomly generated (valid) address strings:: 
-		Generated str '3.182.89.53' doesnt throw - : true
-		Generated str '31.253.46.58' doesnt throw - : true
-		Generated str '1.134.129.19' doesnt throw - : true
-		Generated str '95.167.144.3' doesnt throw - : true
-		Generated str '180.3.111.222' doesnt throw - : true
-		Generated str '100.172.49.85' doesnt throw - : true
-		Generated str '101.153.212.37' doesnt throw - : true
-		Generated str '151.240.19.26' doesnt throw - : true
-		Generated str '39.108.206.70' doesnt throw - : true
-		Generated str '106.252.1.234' doesnt throw - : true
-		Generated str '3.130.254.99' doesnt throw - : true
-	invalid address "asd" throws: true
-	invalid address "1" throws: true
-	invalid address "255.255.255.256" throws: true
-Double wrapped:
-	Setting to 1.2.3.4, converting to int, and back to str, matches: true
-
-==============================
-TESTING - NWSim::NetworkInterface class
-==============================
-
-NOTE: Valid addresses handled by NWSim::Address helpers!
-Default constructed
-	address is 0: true
-	Possible to set address to valid one 1.2.3.4: true
-	Address string matches after setting: true
-	NOT Possible to set address to invalid one invalid adr: true
-	Address string hasn't changed after setting to invalid: true
-adr should be 1.2.3.41.2.3.4
-Constructing with given VALID adr '1.2.3.4'
-	Address string matches after constructing: true
-Constructing with given INVALID adr 'invalid adr'
-	Address string should be 0.0.0.0 after constructing: true
-
-==============================
-TESTING - NWSim::Node class
-==============================
-
-NOTE: Addressing handled by NWSim::NetworkInterface!
-NOTE: Methods that cannot be tested without network/link:
-	ConnectToNode,IsConnectedTo,DisconnectFromNode,MoveTopTransmitPacketToLinkRunApplication: 
-Can generate default constructed nodes:
-	Default pos is (0,0): true
-	Can move to new position (1.2,3.4): true
-	Node type is "DEFAULT": true
-	NOT connected to any other nodes: true
-	Transmit queue is empty: true
-	Receive queue is empty: true
-	Default address is 0.0.0.0: true
-Using "correct" constructor:
-	Constructed at pos (1.200000,3.400000): true
-	Constructed with adr 1.2.3.4: true
-Compare node equality (address):
-	Node against same adr as str: true
-	Two different nodes with different IP's are NOT the same: true
-	Comparing node to itself is equal: true
-Packet handling of the Node
-	After receiving 1 packet, receive queue holds 1 packet: : true
-	Can NOT add packet with TTL==0 to transmit queue: : true
-	Can add packet with TTL>0 to transmit queue: : true
-
-==============================
-TESTING - NWSim::EndHost class
-==============================
-
-NOTE: Only checking EndHost specific functionality, check Node for shared, or Network for "fuller" functions.
-Packet generation variables
-	Node type is EndHost: true
-	Initial packet count is MINPACKETS: true
-	Can set packet count >MINPACKETS but <= MAXPACKETS: true
-	Can NOT set packet count >MAXPACKETS, clamped to MAXPACKETS: true
-	Initial target address is self: true
-	Can set target address to a new valid one: true
-	Target address after set matches: true
-	Can NOT set target address to a new invalid one: true
-	Target address after ivnalid set  matches old one: true
-
-==============================
-TESTING - NWSim::Router class
-==============================
-
-NONE YET, TODO, false
-Default constructor
-	Node type is Router: true
-
-==============================
-TESTING - NWSim::Link class
-==============================
-
-NOTE: Methods that cannot be tested without network/link:
-	InitTransmissionQueues,MoveTopTransmitPacketToNode,AddPacketToQueue: 
-Default constructed:
-	transmission speed is MIN: true
-	propagation delay is MIN: true
-	transmission speed is set: true
-	propagation delay is set: true
-Constructed with 0,0:
-	transmission speed is MIN: true
-	propagation delay is MIN: true
-Constructed with 123,321:
-	transmission speed is 123: true
-	propagation delay is 321: true
-
-==============================
-TESTING - NWSim::Network class
-==============================
-
-NOTE: A deeper exploration of node/link specific functions in their respective tests.
-Empty network tests
-	New network is empty: true
-	A non-existent node can not be found and returns nullptr: true
-	Can add default EndHost: true
-	Can find existing node: true
-	Can NOT add node with same IP again: true
-Linking nodes...
-	After adding another host and router, size is 3: true
-	Linking two nodes worked: true
-	Attempting to relink throws an exception: true
-	Attempting to backwards relink throws an exception: true
-	Linking other two nodes worked: true
-Removing node from network
-	Network size is 2 nodes: true
-	Removing the router between hosts severed all links: ...
-		h1 -/- r1: true
-		h2 -/- r1: true
-		h1 size == 0: true
-		h2 size == 0: true
-Removing link from network
-	Network size is 3 as no nodes removed: true
-	Removing a link between h1,r2 only removes that link: ...
-		h1 -/- r2: true
-		h2 --- r2: true
-		h1 size == 0: true
-		h2 size == 1: true
-**** Manually see below routing table if it makes sense... ****
-	New print table should not be simulatable out of the box: true
-Current routing table size: 9
-	When at: 0.0.0.11	and target: 0.0.0.22	send to: 0.0.0.22
-	When at: 0.0.0.11	and target: 0.0.0.33	send to: 0.0.0.22
-	When at: 0.0.0.22	and target: 0.0.0.11	send to: 0.0.0.11
-	When at: 0.0.0.22	and target: 0.0.0.33	send to: 0.0.0.33
-	When at: 0.0.0.33	and target: 0.0.0.11	send to: 0.0.0.22
-	When at: 0.0.0.33	and target: 0.0.0.22	send to: 0.0.0.22
-Testing packet transfer in network
-	Setting target adr for h1: true
-	Before run, transmit queue size is 0: true
-	After run transmit queue == packetcount == set packet count: true
-Starting packet movement...
-	Link is empty and can not move any packets: true
-	Moving packet from node h1 to link is succesful: true
-	Link h1-r1 now has 1 packet: true
-	Link has moved packet to next node r1: true
-	Next link l1 timestamp should be 0 as no other packets exist: true
-	After running router, receive queue is 0 and transmit is 1: true
-	After moving from the router, transmit q is empty: true
-	Link has moved packet to next node h2: true
-	Next link l2 timestamp should be 0 as no other packets exist: true
-Moving the remaining packets...
-	Before run - h1 and l1 are empty: true
-	Before run - Router reveived holds rest of the packets: true
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 30	TTL: 255	ID: 1	Data: Test
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 29	TTL: 255	ID: 2	Data: Test
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 22	TTL: 255	ID: 3	Data: Test
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 40	TTL: 255	ID: 4	Data: Test
-	After run - Router transmit holds rest of the packets: true
-	All packets found on endhost: true
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 41	TTL: 254	ID: 0	Data: Test
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 30	TTL: 254	ID: 1	Data: Test
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 29	TTL: 254	ID: 2	Data: Test
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 22	TTL: 254	ID: 3	Data: Test
-Source: 0.0.0.11	Target: 0.0.0.33	Size: 40	TTL: 254	ID: 4	Data: Test
-**** Testing Simulatable runs ****
-	Set up network, can not run yet: true
-	Initialized network for running: true
-	Check below routing table...: 
-Current routing table size: 25
-	When at: 1.1.1.1	and target: 2.2.2.2	send to: 3.3.3.3
-	When at: 1.1.1.1	and target: 3.3.3.3	send to: 3.3.3.3
-	When at: 1.1.1.1	and target: 4.4.4.4	send to: 3.3.3.3
-	When at: 1.1.1.1	and target: 5.5.5.5	send to: 3.3.3.3
-	When at: 2.2.2.2	and target: 1.1.1.1	send to: 3.3.3.3
-	When at: 2.2.2.2	and target: 3.3.3.3	send to: 3.3.3.3
-	When at: 2.2.2.2	and target: 4.4.4.4	send to: 3.3.3.3
-	When at: 2.2.2.2	and target: 5.5.5.5	send to: 3.3.3.3
-	When at: 3.3.3.3	and target: 1.1.1.1	send to: 1.1.1.1
-	When at: 3.3.3.3	and target: 2.2.2.2	send to: 2.2.2.2
-	When at: 3.3.3.3	and target: 4.4.4.4	send to: 4.4.4.4
-	When at: 3.3.3.3	and target: 5.5.5.5	send to: 4.4.4.4
-	When at: 4.4.4.4	and target: 1.1.1.1	send to: 3.3.3.3
-	When at: 4.4.4.4	and target: 2.2.2.2	send to: 3.3.3.3
-	When at: 4.4.4.4	and target: 3.3.3.3	send to: 3.3.3.3
-	When at: 4.4.4.4	and target: 5.5.5.5	send to: 5.5.5.5
-	When at: 5.5.5.5	and target: 1.1.1.1	send to: 4.4.4.4
-	When at: 5.5.5.5	and target: 2.2.2.2	send to: 4.4.4.4
-	When at: 5.5.5.5	and target: 3.3.3.3	send to: 4.4.4.4
-	When at: 5.5.5.5	and target: 4.4.4.4	send to: 4.4.4.4
-Actual simulation ---
-Packet counts before simulation:
-EndHost 1.1.1.1          - transmit: 100    receive: 0     
-EndHost 2.2.2.2          - transmit: 50     receive: 0     
-Router  3.3.3.3          - transmit: 0      receive: 0     
-Router  4.4.4.4          - transmit: 0      receive: 0     
-EndHost 5.5.5.5          - transmit: 10     receive: 0     
-Packet counts after simulation:
-1.1.1.1          - 3.3.3.3          : 85    waiting: (  -1,4)
-2.2.2.2          - 3.3.3.3          : 33    waiting: (  -1,19)
-3.3.3.3          - 4.4.4.4          : 17    waiting: (  -1,9)
-4.4.4.4          - 5.5.5.5          : 1     waiting: (  -1,9)
-EndHost 1.1.1.1          - transmit: 0      receive: 10    
-EndHost 2.2.2.2          - transmit: 0      receive: 0     
-Router  3.3.3.3          - transmit: 0      receive: 0     
-Router  4.4.4.4          - transmit: 0      receive: 0     
-EndHost 5.5.5.5          - transmit: 0      receive: 14   
-\end{lstlisting}
 
 \section{Work log}
 The amount of hours for each week for every group member is described here.
@@ -495,8 +262,8 @@ The amount of hours for each week for every group member is described here.
 \hline 5 & Aug 3 - Aug 9        & 2 & Weekly meeting. Mid-term meeting with Pasi. \\
 \hline 6 & Aug 10 - Aug 16      & 0 & Nothing \\
 \hline 7 & Aug 17 - Aug 23      & 25 & Weekly meeting. Major refactor and cleanup of Node and Link classes, dropped Application as a separate class. Network class to hold Nodes and Links, routing, EndHost, Router, Packet generation. Testcases for Node, Link, Network. Moved testcases to separate file and introduced assert checks to grep for fails.  \\
-\hline 8 & Aug 24 - Aug 30      & 30 & Weekly meeting. Simulatable nodes and links, packet transfer between them, fix routing, testcases. Wrote CLI as GUI was abandoned. Final documentation. Reviewing file save/load implementation from Brian. \\
-\hline\hline\textbf{Total}&All  & 79 & - \\
+\hline 8 & Aug 24 - Aug 30      & 40 & Weekly meeting. Simulatable nodes and links, packet transfer between them, fix routing, testcases. Wrote CLI as GUI was abandoned. Final documentation. Reviewing file save/load implementation from Brian. Demo with Pasi and group 1. Hunting for memory leak in file save/load. Integrating to CLI. \\
+\hline\hline\textbf{Total}&All  & 99 & - \\
 \end{tabular}
 }
 \caption{Jani's work log. Hours are rough estimates from git commit history, stopped tracking on week 7 to keep up.}
@@ -589,7 +356,7 @@ The GUI was being worked on as mentioned, and some functionality was achieved:
 
 \begin{figure}[!htbp]
 \begin{center}
-	\includegraphics[width=13cm]{Screenshot 2020-08-27 at 14.03.23.png}
+	\includegraphics[width=8cm]{Screenshot 2020-08-27 at 14.03.23.png}
     \caption{Screenshot 1 from the GUI.}
 	\label{img:gui-1}			% use \ref{img:example} to refer to this figure
 \end{center}
@@ -597,7 +364,7 @@ The GUI was being worked on as mentioned, and some functionality was achieved:
 
 \begin{figure}[!htbp]
 \begin{center}
-	\includegraphics[width=13cm]{Screenshot 2020-08-27 at 14.03.42.png}
+	\includegraphics[width=8cm]{Screenshot 2020-08-27 at 14.03.42.png}
     \caption{Screenshot 2 from the GUI.}
 	\label{img:gui-2}			% use \ref{img:example} to refer to this figure
 \end{center}
