@@ -16,13 +16,14 @@ namespace NWSim
     {
     public:
         Network() {}
-        // Constructor for Network, initializes NW from a file to be read from (JSON by default).
-        Network(const std::string fn, fileType sf = Json) : Network() {
-            if (!Load(fn, sf)) {
-                std::cout << "Failed to load network from file." << std::endl;
-                delete this;
-            }
-        }
+        // This breaks with invalid filename @Brian
+        // // Constructor for Network, initializes NW from a file to be read from (JSON by default).
+        // Network(const std::string fn, fileType sf = Json) : Network() {
+        //     if (!Load(fn, sf)) {
+        //         std::cout << "Failed to load network from file." << std::endl;
+                
+        //     }
+        // }
         ~Network() {
             _routingTable.clear();
         }
@@ -59,9 +60,9 @@ namespace NWSim
         void PrintRoutingTable(bool showAll = false) const;
 
         bool Save(std::string fileName, fileType saveFormat);
+        bool Load(const std::string fileName, fileType saveFormat);
     private:
         void Read(const QJsonObject &json);
-        bool Load(const std::string fileName, fileType saveFormat);
         void Write(QJsonObject &json);
         // Dijkstra from each source to each target
         void GenerateRoutingTable();
