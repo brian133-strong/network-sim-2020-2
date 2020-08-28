@@ -1,0 +1,46 @@
+{
+    "links": [
+        {
+            "address_1": "1.1.1.1",
+            "address_2": "2.2.2.2",
+            "propagationDelay": 2,
+            "transmissionSpeed": 123
+        },
+        {
+            "address_1": "2.2.2.2",
+            "address_2": "3.3.3.3",
+            "propagationDelay": 1,
+            "transmissionSpeed": 321
+        }
+    ],
+    "nodes": [
+        {
+            "address": "1.1.1.1",
+            "packetCount": 100,
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "targetAddress": "3.3.3.3",
+            "type": "EndHost"
+        },
+        {
+            "address": "3.3.3.3",
+            "packetCount": 50,
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "targetAddress": "1.1.1.1",
+            "type": "EndHost"
+        },
+        {
+            "address": "2.2.2.2",
+            "position": {
+                "x": 0,
+                "y": 0
+            },
+            "type": "Router"
+        }
+    ]
+}
