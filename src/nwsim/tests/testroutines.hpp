@@ -562,10 +562,10 @@ void TestNetworkSave() {
     host1->SetPosition(2.2, 3.3);
     auto host2 = nw.CreateEndHost(addr2);
     auto rout1 = nw.CreateRouter(addr3);
-
+    auto host3 = nw.CreateEndHost("123.123.123.123");
     auto link_h1r1 = nw.LinkNodes(host1, rout1);
     auto link_h2r1 = nw.LinkNodes(host2, rout1);
-
+    auto link_h3r1 = nw.LinkNodes(host3,rout1);
     QJsonObject nwObject;
     bool saveRes = nw.Save("saveTest", NWSim::Json);
 
@@ -576,7 +576,8 @@ void TestNetworkLoad() {
     printtitle("NWSim::Network Load() test");
     printline("See if network can be constructed from a file.");
 
-    NWSim::Network nw("saveTest");
+    NWSim::Network nw;
+    nw.Load("savetest",NWSim::fileType::Json);
     std::shared_ptr<NWSim::Node> n = nw.FindNode("1.2.3.4");
 
     if (n == NULL) {
