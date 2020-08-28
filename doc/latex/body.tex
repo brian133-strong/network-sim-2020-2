@@ -29,6 +29,7 @@
 1.0 & 2020-08-27 & Jani and Dancun & GUI info \\
 1.1 & 2020-08-27 & Jani & Added external library info \\
 1.2 & 2020-08-28 & Jani & Added notes about cmake in build and Valgrind errors in tests.\\
+1.3 & 2020-08-28 & Jani & Added notes about build warnings. \\
 \end{tabular}
 }
 \caption{Document changelog.}
@@ -105,7 +106,7 @@ The \texttt{Network} class ties everything else together. It is the interface to
 \end{figure}
 
 \subsection{External libraries}
-The GUI portion and the JSON parser are both external libraries provided by Qt. As the GUI was ultimately dropped, only the file saving and loading requires external libraries.
+The GUI portion and the JSON parser are both external libraries provided by Qt. As the GUI was ultimately dropped, only the file saving and loading requires external libraries. More information in section \ref{sec:dependencies}.
 
 \section{Build instructions}
 
@@ -114,18 +115,23 @@ The GUI portion and the JSON parser are both external libraries provided by Qt. 
     \item Open terminal and navigate to the project root, run \texttt{cd src/nwsim}
     \item Build the software by first generating the Makefile with \texttt{cmake CMakeLists.txt} and then running \texttt{make}
     \begin{enumerate}
-        \item If you get Qt related errors running \texttt{cmake}, see below.
+        \item If you get Qt related errors running \texttt{cmake}, see \ref{sec:dependencies}.
     \end{enumerate}
     \item The software is built to the projects root/bin and the executables name is \texttt{nwsim-cli}
 \end{enumerate}
 
-Building the software requires the \texttt{Qt5::Core} library from Qt. The location of this library depends on your setup, but we have included the following possible paths. If running \texttt{cmake} produces library related errors for you, please include the correct path\footnote{Apparently on Aalto Linux machines the Qt libraries are found under \texttt{~/usr/lib} (?)} in the \texttt{src/nwsim/CMakeLists.txt} file. 
+\subsection{Dependencies} \label{sec:dependencies}
+Building the software requires the \texttt{Qt5::Core} library from Qt. The location of this library depends on your setup, but we have included the following possible paths (below). If running \texttt{cmake} produces library related errors for you, please include the correct path\footnote{Apparently on Aalto Linux machines the Qt libraries are found under \texttt{~/usr/lib} (?)} in the \texttt{src/nwsim/CMakeLists.txt} file. 
 \lstset{basicstyle=\scriptsize,numbers=left}
 \begin{lstlisting}[firstnumber=3]
 # Appends the location of qt5 to CMAKE_PREFIX_PATH **UNIQUE TO HOST**
 list(APPEND CMAKE_PREFIX_PATH "~/usr/lib/")
 list(APPEND CMAKE_PREFIX_PATH "~/Qt/5.15.0/gcc_64/lib/cmake")
 \end{lstlisting}
+
+\subsection{Build warnings}
+The networks save to / load from file functionality is developed with Qt's libraries. The original development was done with version 5.12.8, and building with these produces no warnings nor errors. However, building with the latest version (5.15.0) the \texttt{QJsonDocument::FromBinaryData(...)} method is deprecated: \begin{footnotesize}{\url{https://doc.qt.io/qt-5/qjsondocument-obsolete.html#fromBinaryData}}\end{footnotesize}. The reason is simply obsoletion, and not functional. As such we felt that this warning was not necessary to fix.
+
 \section{Running the software}
 The software is a CLI implementation and has rather intuitive usage. For usage, please run the \texttt{help} command, or see the compiled version below in section \ref{sec:help}.
 
