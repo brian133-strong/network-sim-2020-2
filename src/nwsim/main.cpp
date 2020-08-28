@@ -25,8 +25,8 @@ std::map<std::string, std::vector<std::string>> ValidCommands(const std::string 
     ret["q"] = {};
     if (type == "root")
     {
-        ret["save"] = {};
-        ret["load"] = {};
+        ret["save"] = {".json", ".dat"}; // valid fileformats
+        ret["load"] = {".json", ".dat"}; // valid fileformats
         ret["add"] = {"e", "r"};
         ret["rem"] = {};
         ret["link"] = {};
@@ -76,10 +76,10 @@ void PrintUsage(const std::string &mode = "")
         PrintUsageLine("", "<mode>", "Prints mode specific usage.");
         println("");
 
-        PrintUsageLine("save", "<filename>", "Save current network configuration as JSON to given file.");
+        PrintUsageLine("save", "<filename>", "Save current network configuration to given file. Supported filetypes: .json .dat");
         println("");
 
-        PrintUsageLine("load", "<filename>", "Discard current network configuration and load from specified file.");
+        PrintUsageLine("load", "<filename>", "Discard current network configuration and load from specified file. Supported filetypes: .json .dat");
         println("");
 
         PrintUsageLine("exit", "", "Exit program.");
@@ -105,7 +105,7 @@ void PrintUsage(const std::string &mode = "")
         PrintUsageLine("", "<address> <address>", "Enter link edit mode.");
         println("");
 
-        PrintUsageLine("sim","","Enter simulation mode.");
+        PrintUsageLine("sim", "", "Enter simulation mode.");
         println("");
 
         PrintUsageLine("tests", "", "Prinst result of all tests and exit program.");
@@ -481,7 +481,7 @@ void SimulationProcedure(std::shared_ptr<NWSim::Network> nw)
                                       .count();
 
             uint64_t cur_time = start_time;
-            uint64_t to_time = start_time + 5*60000;
+            uint64_t to_time = start_time + 5 * 60000;
             while (nw->SimulateAllNodesAndLinks())
             {
                 ts++;
@@ -493,7 +493,7 @@ void SimulationProcedure(std::shared_ptr<NWSim::Network> nw)
                     printline("Sorry, simulation timed out...");
                     break;
                 }
-                backtrack = nw->PrintPacketQueueStatuses(backtrack,ts);
+                backtrack = nw->PrintPacketQueueStatuses(backtrack, ts);
                 usleep(500); // sleep for n microseconds
             }
 
@@ -547,8 +547,8 @@ int main(void)
             RouterTestRoutine();
             LinkTestRoutine();
             NetworkTestRoutine();
-	    TestNetworkSave();
-	    TestNetworkLoad();
+            TestNetworkSave();
+            TestNetworkLoad();
         }
         else if (parsed[0] == "add")
         {
@@ -734,22 +734,108 @@ int main(void)
         }
         else if (parsed[0] == "save")
         {
-            printline("TODO");
-            // TODO: Save current network as JSON file
+            // Detect filetype
+            std::string fn;
+            NWSim::fileType ft;
+            auto it = options.begin();
+            for (; it != options.end(); it++)
+            {
+                auto found = parsed[1].find((*it));
+                if (found != std::string::npos)
+                {
+                    fn = parsed[1].substr(0, found);
+                    if ((*it) == ".json")
+                    {
+                        ft = NWSim::fileType::Json;
+                    }
+                    else if ((*it) == ".dat")
+                    {
+                        ft = NWSim::fileType::binary;
+                    }
+                    break;
+                }
+            }
+            if (it == options.end())
+            {
+                printline("Invalid filetype.");
+                continue;
+            }
+            if (!nw->Save(fn, ft))
+            {
+                printline("Could not save.");
+                continue;
+            }
+            else
+            {
+                printline("Saved to file.");
+            }
         }
         else if (parsed[0] == "load")
         {
-            printline("TODO");
-            // TODO: drop current network and load from file instead.
-            // nw = nullptr;
-            // json = ReadFileETC(parsed[1]);
-            try
+            // Detect filetype
+            std::string fn;
+            NWSim::fileType ft;
+            auto it = options.begin();
+            for (; it != options.end(); it++)
             {
-                // nw = std::make_shared<NWSim::Network>(json);
+                auto found = parsed[1].find((*it));
+                if (found != std::string::npos)
+                {
+                    fn = parsed[1].substr(0, found);
+                    if ((*it) == ".json")
+                    {
+                        ft = NWSim::fileType::Json;
+                    }
+                    else if ((*it) == ".dat")
+                    {
+                        ft = NWSim::fileType::binary;
+                    }
+                    break;
+                }
             }
-            catch (const std::exception &e)
+            if (it == options.end())
             {
-                std::cerr << e.what() << '\n';
+                printline("Invalid filetype.");
+                continue;
+            }
+            // Load file
+            auto new_nw = std::make_shared<NWSim::Network>();
+            if (!new_nw->Load(fn, ft) || new_nw->size() == 0)
+            {
+                printline("Could not load file.");
+                continue;
+            }
+            // Give user chance to decline loading
+            else
+            {
+                bool cont = false;
+                std::string confirm = "";
+                std::cout << "Continuing will overwrite current network, are you sure? (yes/no)>";
+                while (confirm.length() == 0)
+                {
+                    std::getline(std::cin, confirm);
+                    if (confirm.length() == 0)
+                    {
+                        std::cout << ">";
+                        continue;
+                    }
+                    else if (confirm.find_first_of("yes") == 0 ||
+                             confirm == "y")
+                    {
+                        cont = true;
+                        break;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if (!cont)
+                    continue;
+                // Actual rewrite
+                nw = nullptr;
+                nw = new_nw;
+                printline("Successfully loaded new network.");
             }
         }
         else if (parsed[0] == "sim")
