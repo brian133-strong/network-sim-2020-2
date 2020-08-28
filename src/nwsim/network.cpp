@@ -386,10 +386,10 @@ void Network::PrintNetwork() const
         std::cout << " linked to: " << std::endl;
         for (auto neighbor : node->_connected)
         {
-            auto n = neighbor.first.lock();
+            auto n = neighbor.second.lock();
             std::cout << "\t";
-            std::cout << std::right << std::setw(8) << node->GetNodeType() << " ";
-            std::cout << std::left << std::setw(15) << node->network_interface.GetAddressStr();
+            std::cout << std::right << std::setw(8) << n->GetNodeType() << " ";
+            std::cout << std::left << std::setw(15) << n->network_interface.GetAddressStr();
             std::cout << std::endl;
         }
         std::cout << std::endl;
@@ -496,7 +496,7 @@ void Network::Read(const QJsonObject &json) {
         for (auto l : json["links"].toArray()) {
             QJsonObject link = l.toObject();
             if (link.contains("address_1") && link["address_1"].isString() &&
-                link.contains("address_2") && link["taddress_2"].isString() &&
+                link.contains("address_2") && link["address_2"].isString() &&
                 link.contains("transmissionSpeed") &&
                 link.contains("propagationDelay")) 
             {
@@ -539,9 +539,9 @@ void Network::Write(QJsonObject &json) {
     }
 
     for (auto l : _links) {
-        std::shared_ptr node_1 = std::get<0>(l);
-        std::shared_ptr node_2 = std::get<1>(l);
-        std::shared_ptr link = std::get<2>(l);
+        std::shared_ptr<Node> node_1 = std::get<0>(l);
+        std::shared_ptr<Node> node_2 = std::get<1>(l);
+        std::shared_ptr<Link> link = std::get<2>(l);
         QJsonObject linkObject;
 
         const QString address_1 = QString::fromStdString(node_1->network_interface.GetAddressStr());
