@@ -1,0 +1,10 @@
+# No memory leaks in commit 1e911efa9b i.e. before JSON
+==45226== 
+==45226== HEAP SUMMARY:
+==45226==     in use at exit: 0 bytes in 0 blocks
+==45226==   total heap usage: 6,514 allocs, 6,514 frees, 263,917 bytes allocated
+==45226== 
+==45226== All heap blocks were freed -- no leaks are possible
+==45226== 
+==45226== For lists of detected and suppressed errors, rerun with: -s
+==45226== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

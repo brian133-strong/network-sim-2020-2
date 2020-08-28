@@ -1,0 +1,167 @@
+==58572== 
+==58572== HEAP SUMMARY:
+==58572==     in use at exit: 19,092 bytes in 12 blocks
+==58572==   total heap usage: 7,290 allocs, 7,278 frees, 350,221 bytes allocated
+==58572== 
+==58572== 4 bytes in 1 blocks are still reachable in loss record 1 of 12
+==58572==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x7766743: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x7766D63: g_private_get (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x77382A0: g_slice_alloc (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x7707181: g_hash_table_new_full (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x772A602: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x4011B89: call_init.part.0 (dl-init.c:72)
+==58572==    by 0x4011C90: call_init (dl-init.c:30)
+==58572==    by 0x4011C90: _dl_init (dl-init.c:119)
+==58572==    by 0x4001139: ??? (in /usr/lib/x86_64-linux-gnu/ld-2.31.so)
+==58572== 
+==58572== 16 bytes in 1 blocks are still reachable in loss record 2 of 12
+==58572==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x48FC6F6: QThreadData::current(bool) (qthread_unix.cpp:225)
+==58572==    by 0x4B1B0C0: QObject::QObject(QObjectPrivate&, QObject*) (qobject.cpp:919)
+==58572==    by 0x4A17148: QIODevice::QIODevice(QIODevicePrivate&, QObject*) (qiodevice.cpp:489)
+==58572==    by 0x4A0EA68: QFileDevice::QFileDevice(QFileDevicePrivate&, QObject*) (qfiledevice.cpp:219)
+==58572==    by 0x4A2FA02: QSaveFile::QSaveFile(QString const&) (qsavefile.cpp:119)
+==58572==    by 0x188B77: NWSim::Network::Save(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, NWSim::fileType) (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572==    by 0x16BD73: TestNetworkSave() (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572==    by 0x175111: main (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572== 
+==58572== 32 bytes in 1 blocks are still reachable in loss record 3 of 12
+==58572==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x771FD30: g_malloc0 (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x7705F8F: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x77071C0: g_hash_table_new_full (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x772A602: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x4011B89: call_init.part.0 (dl-init.c:72)
+==58572==    by 0x4011C90: call_init (dl-init.c:30)
+==58572==    by 0x4011C90: _dl_init (dl-init.c:119)
+==58572==    by 0x4001139: ??? (in /usr/lib/x86_64-linux-gnu/ld-2.31.so)
+==58572== 
+==58572== 56 bytes in 1 blocks are still reachable in loss record 4 of 12
+==58572==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x597F1C9: UDataMemory_createNewInstance_56 (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x597D6B3: doLoadFromCommonData(signed char, char const*, char const*, char const*, char const*, char const*, char const*, char const*, signed char (*)(void*, char const*, char const*, UDataInfo const*), void*, UErrorCode*, UErrorCode*) (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x597E437: doOpenChoice(char const*, char const*, char const*, signed char (*)(void*, char const*, char const*, UDataInfo const*), void*, UErrorCode*) (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x598ED3B: initAliasData(UErrorCode&) (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x598FA20: ucnv_getStandardName_56 (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x4B4A0BD: QIcuCodec::codecForNameUnlocked(char const*) (qicucodec.cpp:474)
+==58572==    by 0x4B4AE8C: QIcuCodec::defaultCodecUnlocked() (qicucodec.cpp:451)
+==58572==    by 0x4B480C6: QTextCodec::codecForLocale() (qtextcodec.cpp:719)
+==58572==    by 0x4990E36: qt_convert_to_local_8bit (qstring.cpp:5283)
+==58572==    by 0x4990E36: QString::toLocal8Bit_helper(QChar const*, int) (qstring.cpp:5275)
+==58572==    by 0x4A48AAF: toLocal8Bit (qstring.h:683)
+==58572==    by 0x4A48AAF: encodeName (qfile.h:94)
+==58572==    by 0x4A48AAF: resolveNativeFilePath (qfilesystementry.cpp:168)
+==58572==    by 0x4A48AAF: QFileSystemEntry::nativeFilePath() const (qfilesystementry.cpp:136)
+==58572==    by 0x4A7AF9F: qIsFilenameBroken (qfilesystemengine_p.h:80)
+==58572==    by 0x4A7AF9F: QFileSystemEngine::fillMetaData(QFileSystemEntry const&, QFileSystemMetaData&, QFlags<QFileSystemMetaData::MetaDataFlag>) (qfilesystemengine_unix.cpp:880)
+==58572== 
+==58572== 56 bytes in 1 blocks are still reachable in loss record 5 of 12
+==58572==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x597F1C9: UDataMemory_createNewInstance_56 (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x597D74E: doLoadFromCommonData(signed char, char const*, char const*, char const*, char const*, char const*, char const*, char const*, signed char (*)(void*, char const*, char const*, UDataInfo const*), void*, UErrorCode*, UErrorCode*) (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x597E437: doOpenChoice(char const*, char const*, char const*, signed char (*)(void*, char const*, char const*, UDataInfo const*), void*, UErrorCode*) (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x598ED3B: initAliasData(UErrorCode&) (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x598FA20: ucnv_getStandardName_56 (in /home/jani/Qt/5.15.0/gcc_64/lib/libicuuc.so.56.1)
+==58572==    by 0x4B4A0BD: QIcuCodec::codecForNameUnlocked(char const*) (qicucodec.cpp:474)
+==58572==    by 0x4B4AE8C: QIcuCodec::defaultCodecUnlocked() (qicucodec.cpp:451)
+==58572==    by 0x4B480C6: QTextCodec::codecForLocale() (qtextcodec.cpp:719)
+==58572==    by 0x4990E36: qt_convert_to_local_8bit (qstring.cpp:5283)
+==58572==    by 0x4990E36: QString::toLocal8Bit_helper(QChar const*, int) (qstring.cpp:5275)
+==58572==    by 0x4A48AAF: toLocal8Bit (qstring.h:683)
+==58572==    by 0x4A48AAF: encodeName (qfile.h:94)
+==58572==    by 0x4A48AAF: resolveNativeFilePath (qfilesystementry.cpp:168)
+==58572==    by 0x4A48AAF: QFileSystemEntry::nativeFilePath() const (qfilesystementry.cpp:136)
+==58572==    by 0x4A7AF9F: qIsFilenameBroken (qfilesystemengine_p.h:80)
+==58572==    by 0x4A7AF9F: QFileSystemEngine::fillMetaData(QFileSystemEntry const&, QFileSystemMetaData&, QFlags<QFileSystemMetaData::MetaDataFlag>) (qfilesystemengine_unix.cpp:880)
+==58572== 
+==58572== 64 bytes in 1 blocks are still reachable in loss record 6 of 12
+==58572==    at 0x483B723: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x483E017: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x771FD7F: g_realloc (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x7705F7A: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x77071C0: g_hash_table_new_full (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x772A602: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x4011B89: call_init.part.0 (dl-init.c:72)
+==58572==    by 0x4011C90: call_init (dl-init.c:30)
+==58572==    by 0x4011C90: _dl_init (dl-init.c:119)
+==58572==    by 0x4001139: ??? (in /usr/lib/x86_64-linux-gnu/ld-2.31.so)
+==58572== 
+==58572== 96 bytes in 1 blocks are still reachable in loss record 7 of 12
+==58572==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x771FCD8: g_malloc (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x77382C5: g_slice_alloc (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x7707181: g_hash_table_new_full (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x772A602: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x4011B89: call_init.part.0 (dl-init.c:72)
+==58572==    by 0x4011C90: call_init (dl-init.c:30)
+==58572==    by 0x4011C90: _dl_init (dl-init.c:119)
+==58572==    by 0x4001139: ??? (in /usr/lib/x86_64-linux-gnu/ld-2.31.so)
+==58572== 
+==58572== 96 bytes in 1 blocks are still reachable in loss record 8 of 12
+==58572==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x4903994: QWaitCondition::QWaitCondition() (qwaitcondition_unix.cpp:175)
+==58572==    by 0x48FB691: QThreadPrivate::QThreadPrivate(QThreadData*) (qthread.cpp:170)
+==58572==    by 0x48FB871: QAdoptedThread::QAdoptedThread(QThreadData*) (qthread.cpp:137)
+==58572==    by 0x48FC704: QThreadData::current(bool) (qthread_unix.cpp:225)
+==58572==    by 0x4B1B0C0: QObject::QObject(QObjectPrivate&, QObject*) (qobject.cpp:919)
+==58572==    by 0x4A17148: QIODevice::QIODevice(QIODevicePrivate&, QObject*) (qiodevice.cpp:489)
+==58572==    by 0x4A0EA68: QFileDevice::QFileDevice(QFileDevicePrivate&, QObject*) (qfiledevice.cpp:219)
+==58572==    by 0x4A2FA02: QSaveFile::QSaveFile(QString const&) (qsavefile.cpp:119)
+==58572==    by 0x188B77: NWSim::Network::Save(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, NWSim::fileType) (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572==    by 0x16BD73: TestNetworkSave() (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572==    by 0x175111: main (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572== 
+==58572== 120 bytes in 1 blocks are still reachable in loss record 9 of 12
+==58572==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x48FC6A8: QThreadData::current(bool) (qthread_unix.cpp:222)
+==58572==    by 0x4B1B0C0: QObject::QObject(QObjectPrivate&, QObject*) (qobject.cpp:919)
+==58572==    by 0x4A17148: QIODevice::QIODevice(QIODevicePrivate&, QObject*) (qiodevice.cpp:489)
+==58572==    by 0x4A0EA68: QFileDevice::QFileDevice(QFileDevicePrivate&, QObject*) (qfiledevice.cpp:219)
+==58572==    by 0x4A2FA02: QSaveFile::QSaveFile(QString const&) (qsavefile.cpp:119)
+==58572==    by 0x188B77: NWSim::Network::Save(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, NWSim::fileType) (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572==    by 0x16BD73: TestNetworkSave() (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572==    by 0x175111: main (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572== 
+==58572== 136 bytes in 1 blocks are still reachable in loss record 10 of 12
+==58572==    at 0x483BE63: operator new(unsigned long) (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x48FB863: QAdoptedThread::QAdoptedThread(QThreadData*) (qthread.cpp:137)
+==58572==    by 0x48FC704: QThreadData::current(bool) (qthread_unix.cpp:225)
+==58572==    by 0x4B1B0C0: QObject::QObject(QObjectPrivate&, QObject*) (qobject.cpp:919)
+==58572==    by 0x4A17148: QIODevice::QIODevice(QIODevicePrivate&, QObject*) (qiodevice.cpp:489)
+==58572==    by 0x4A0EA68: QFileDevice::QFileDevice(QFileDevicePrivate&, QObject*) (qfiledevice.cpp:219)
+==58572==    by 0x4A2FA02: QSaveFile::QSaveFile(QString const&) (qsavefile.cpp:119)
+==58572==    by 0x188B77: NWSim::Network::Save(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, NWSim::fileType) (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572==    by 0x16BD73: TestNetworkSave() (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572==    by 0x175111: main (in /home/jani/c++/project/nwsim/bin/nwsim-cli)
+==58572== 
+==58572== 2,032 bytes in 1 blocks are still reachable in loss record 11 of 12
+==58572==    at 0x483DD99: calloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x771FD30: g_malloc0 (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x77439C5: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x7738512: g_slice_alloc (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x7707181: g_hash_table_new_full (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x772A602: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x4011B89: call_init.part.0 (dl-init.c:72)
+==58572==    by 0x4011C90: call_init (dl-init.c:30)
+==58572==    by 0x4011C90: _dl_init (dl-init.c:119)
+==58572==    by 0x4001139: ??? (in /usr/lib/x86_64-linux-gnu/ld-2.31.so)
+==58572== 
+==58572== 16,384 bytes in 1 blocks are still reachable in loss record 12 of 12
+==58572==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==58572==    by 0x771FCD8: g_malloc (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x772A613: ??? (in /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0.6400.3)
+==58572==    by 0x4011B89: call_init.part.0 (dl-init.c:72)
+==58572==    by 0x4011C90: call_init (dl-init.c:30)
+==58572==    by 0x4011C90: _dl_init (dl-init.c:119)
+==58572==    by 0x4001139: ??? (in /usr/lib/x86_64-linux-gnu/ld-2.31.so)
+==58572== 
+==58572== LEAK SUMMARY:
+==58572==    definitely lost: 0 bytes in 0 blocks
+==58572==    indirectly lost: 0 bytes in 0 blocks
+==58572==      possibly lost: 0 bytes in 0 blocks
+==58572==    still reachable: 19,092 bytes in 12 blocks
+==58572==         suppressed: 0 bytes in 0 blocks
+==58572== 
+==58572== For lists of detected and suppressed errors, rerun with: -s
+==58572== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
